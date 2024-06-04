@@ -4,7 +4,8 @@ import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { Tables } from "./database.types";
 import { createClerkServerSupabaseClient } from "./serverSupabaseClient";
-import { PostgrestError } from "@supabase/postgrest-js";
+import { PostgrestError, PostgrestBuilder } from "@supabase/postgrest-js";
+import { PostgresError } from "postgres";
 
 export async function authenticateAndRedirect() {
   const { userId } = auth();
@@ -18,37 +19,18 @@ export const insertProject = async ({
 }: {
   name: string;
 }): Promise<{ data: Tables<"projects">[] | null; error?: unknown | PostgrestError }> => {
-  let error: PostgrestError | null = null;
-  let data: Tables<"projects">[] | null = null;
-
   const client = await createClerkServerSupabaseClient();
 
-  try {
-    ({ data, error } = await client.from("projects").insert({ name }).select());
-    if (error) throw new Error(error.message);
-  } catch (e) {
-    console.log(e);
-  } finally {
-    return { data, error };
-  }
+  return withErrorHandling(client.from("projects").insert({ name }).select());
 };
 
 export const selectAllProjects = async (): Promise<{
   data: Tables<"projects">[] | null;
   error?: PostgrestError | null;
 }> => {
-  let error: PostgrestError | null = null;
-  let data: Tables<"projects">[] | null = null;
   const client = await createClerkServerSupabaseClient();
 
-  try {
-    ({ data, error } = await client.from("projects").select());
-    if (error) throw new Error(error.message);
-  } catch (e) {
-    console.log(e);
-  } finally {
-    return { data, error };
-  }
+  return withErrorHandling(client.from("projects").select());
 };
 
 export const updateProject = async ({
@@ -61,18 +43,9 @@ export const updateProject = async ({
   data: Tables<"projects"> | null;
   error?: PostgrestError | null;
 }> => {
-  let error: PostgrestError | null = null;
-  let data: Tables<"projects"> | null = null;
   const client = await createClerkServerSupabaseClient();
 
-  try {
-    ({ data, error } = await client.from("projects").update(projectData).eq("id", projectId).select().maybeSingle());
-    if (error) throw new Error(error.message);
-  } catch (e) {
-    console.log(e);
-  } finally {
-    return { data, error };
-  }
+  return withErrorHandling(client.from("projects").update(projectData).eq("id", projectId).select().maybeSingle());
 };
 
 type ProjectWithActiveBlock = {
@@ -86,12 +59,10 @@ type ProjectWithActiveBlock = {
 export const selectProjectById = async (
   id: number
 ): Promise<{ data: ProjectWithActiveBlock | null; error?: PostgrestError | null }> => {
-  let error: PostgrestError | null = null;
-  let data: ProjectWithActiveBlock | null = null;
   const client = await createClerkServerSupabaseClient();
 
-  try {
-    ({ data, error } = await client
+  return withErrorHandling(
+    client
       .from("projects")
       .select(
         `name, 
@@ -100,13 +71,8 @@ export const selectProjectById = async (
       )
       .eq("id", id)
       .returns<ProjectWithActiveBlock>()
-      .maybeSingle());
-    if (error) throw new Error(error.message);
-  } catch (e) {
-    console.log(e);
-  } finally {
-    return { data, error };
-  }
+      .maybeSingle()
+  );
 };
 
 export const insertBlock = async ({
@@ -114,24 +80,16 @@ export const insertBlock = async ({
 }: {
   projectId: number;
 }): Promise<{ data: Tables<"working_blocks"> | null; error?: unknown | PostgrestError }> => {
-  let error: PostgrestError | null = null;
-  let data: Tables<"working_blocks"> | null = null;
-
   const client = await createClerkServerSupabaseClient();
 
-  try {
-    ({ data, error } = await client
+  return withErrorHandling(
+    client
       .from("working_blocks")
       .insert({ project_id: projectId })
       .select()
       .returns<Tables<"working_blocks">>()
-      .maybeSingle());
-    if (error) throw new Error(error.message);
-  } catch (e) {
-    console.log(e);
-  } finally {
-    return { data, error };
-  }
+      .maybeSingle()
+  );
 };
 
 export const insertStartTime = async ({
@@ -139,24 +97,11 @@ export const insertStartTime = async ({
 }: {
   blockId: number;
 }): Promise<{ data: Tables<"start_times"> | null; error?: unknown | PostgrestError }> => {
-  let error: PostgrestError | null = null;
-  let data: Tables<"start_times"> | null = null;
-
   const client = await createClerkServerSupabaseClient();
 
-  try {
-    ({ data, error } = await client
-      .from("start_times")
-      .insert({ block_id: blockId })
-      .select()
-      .returns<Tables<"start_times">>()
-      .maybeSingle());
-    if (error) throw new Error(error.message);
-  } catch (e) {
-    console.log(e);
-  } finally {
-    return { data, error };
-  }
+  return withErrorHandling(
+    client.from("start_times").insert({ block_id: blockId }).select().returns<Tables<"start_times">>().maybeSingle()
+  );
 };
 
 export const insertStopTime = async ({
@@ -164,21 +109,33 @@ export const insertStopTime = async ({
 }: {
   startTimeId: number;
 }): Promise<{ data: Tables<"stop_times"> | null; error?: unknown | PostgrestError }> => {
-  let error: PostgrestError | null = null;
-  let data: Tables<"stop_times"> | null = null;
-
   const client = await createClerkServerSupabaseClient();
 
-  try {
-    ({ data, error } = await client
+  return withErrorHandling(
+    client
       .from("stop_times")
       .insert({ start_time_id: startTimeId })
       .select()
       .returns<Tables<"stop_times">>()
-      .maybeSingle());
-    if (error) throw new Error(error.message);
+      .maybeSingle()
+  );
+};
+
+const withErrorHandling = async <T>(
+  fn: PostgrestBuilder<T>
+): Promise<{ data: T | null; error?: PostgrestError | null }> => {
+  let error: PostgrestError | null = null;
+  let data: T | null = null;
+
+  try {
+    ({ data, error } = await fn);
+    if (error) throw new PostgresError(error.message);
   } catch (e) {
-    console.log(e);
+    if (error instanceof PostgresError) {
+      console.error(error.message);
+    } else {
+      console.error("Something went wrong");
+    }
   } finally {
     return { data, error };
   }

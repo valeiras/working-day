@@ -15,7 +15,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" data-theme="business">
-        <body className="min-h-screen w-screen flex flex-col items-stretch fixed px-3">{children}</body>
+        <body className="min-h-screen w-screen flex flex-col items-stretch">{children}</body>
       </html>
     </ClerkProvider>
   );

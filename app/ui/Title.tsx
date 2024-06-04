@@ -1,7 +1,8 @@
 import React from "react";
 import Info from "./Info";
 
-const infoText = "Please, use it to limit the amount of hours you spend working. Work less. Live better. Tax the rich.";
+const infoText =
+  "Please, use this app to limit the amount of hours you spend working. Work less. Live happier. Tax the rich.";
 
 const Title: React.FC = () => {
   return (

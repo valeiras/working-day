@@ -10,7 +10,7 @@ export default function Layout({
       <header>
         <Navbar />
       </header>
-      <main className="flex flex-1 flex-col items-center justify-start gap-4 p-24">
+      <main className="flex flex-1 flex-col items-center justify-start gap-4 p-12">
         <Title />
         {children}
       </main>

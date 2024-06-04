@@ -20,12 +20,13 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
       const { data, error } = await res.json();
       if (error) return;
 
-      console.log(data);
       // The current project is running if it is active and the last start time has no stop time
       const isProjectRunning =
         data.activeBlock !== null && data.activeBlock.startTimes.slice(-1)[0].stopTimes.length === 0;
       const projectTimer = computeTimer(data?.activeBlock?.startTimes);
-      console.log("isProjectRunninc: ", isProjectRunning);
+
+      console.log(data);
+      console.log("is project running: ", isProjectRunning);
       console.log("project timer: ", projectTimer);
 
       if (isProjectRunning) {
@@ -70,14 +71,24 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
 
     const { data, error } = await addStopTime({ startTimeId: startTimeIdRef.current });
     if (error || !data) return console.error(error);
-    startTimeIdRef.current = data.id;
+    startTimeIdRef.current = null;
 
     setIsRunning(false);
     if (intervalRef.current) clearInterval(intervalRef.current);
   };
 
-  const resetTimer = () => {
+  const handleStop = async () => {
+    if (!projectId) return console.error("Project ID is missing");
     setIsRunning(false);
+
+    if (isRunning) {
+      if (!startTimeIdRef.current) return console.error("Start time id is missing");
+      await addStopTime({ startTimeId: startTimeIdRef.current });
+      startTimeIdRef.current = null;
+    }
+
+    await setActiveBlock({ projectId, blockId: null });
+    activeBlockIdRef.current = null;
     if (intervalRef.current) clearInterval(intervalRef.current);
     setTimer(0);
   };
@@ -88,7 +99,7 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
       isRunning={isRunning}
       handleStart={handleStart}
       handlePause={handlePause}
-      resetTimer={resetTimer}
+      handleStop={handleStop}
     />
   );
 };

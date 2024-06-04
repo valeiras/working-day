@@ -46,7 +46,7 @@ const LocalStopwatch: React.FC = () => {
         isRunning={isRunning}
         handleStart={handleStart}
         handlePause={handlePause}
-        resetTimer={resetTimer}
+        handleStop={resetTimer}
       />
       <FirstClickModal startTimer={startTimer} ref={firstClickModalRef} />
     </>

@@ -11,7 +11,7 @@ export const createNewBlock = async ({ projectId }: { projectId: number }) => {
   return { data, error };
 };
 
-export const setActiveBlock = async ({ projectId, blockId }: { projectId: number; blockId: number }) => {
+export const setActiveBlock = async ({ projectId, blockId }: { projectId: number; blockId: number | null }) => {
   const { data, error } = await updateProject({ projectId, projectData: { active_block_id: blockId } });
   return { data, error };
 };

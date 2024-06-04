@@ -1,18 +1,19 @@
+"use client";
+
 import React, { useRef } from "react";
-import Timer from "./Timer";
-import ConfirmResetModal from "./ConfirmResetModal";
+import { Timer, ConfirmationModal } from "@/app/ui";
 
 type Props = {
   timer: number;
   isRunning: boolean;
   handleStart: () => void;
   handlePause: () => void;
-  resetTimer: () => void;
+  handleStop: () => void;
 };
-const Watch: React.FC<Props> = ({ timer, isRunning, handleStart, handlePause, resetTimer }) => {
+const Watch: React.FC<Props> = ({ timer, isRunning, handleStart, handlePause, handleStop }) => {
   const confirmResetModalRef = useRef<HTMLDialogElement>(null);
 
-  const handleReset = () => {
+  const handleStopClick = () => {
     confirmResetModalRef.current?.showModal();
   };
 
@@ -21,9 +22,15 @@ const Watch: React.FC<Props> = ({ timer, isRunning, handleStart, handlePause, re
       <Timer timer={timer} />
       <div className="join grid grid-cols-2">
         {isRunning ? <PauseButton handlePause={handlePause} /> : <StartButton handleStart={handleStart} />}
-        <ResetButton handleReset={handleReset} />
+        <StopButton handleClick={handleStopClick} timer={timer} />
       </div>
-      <ConfirmResetModal ref={confirmResetModalRef} resetTimer={resetTimer} />
+      <ConfirmationModal
+        ref={confirmResetModalRef}
+        handleClick={handleStop}
+        title="Are you sure you want to stop?"
+        message="The watch will be set to 0"
+        buttonText="Yes"
+      />
     </div>
   );
 };
@@ -38,16 +45,16 @@ const StartButton: React.FC<{ handleStart: () => void }> = ({ handleStart }) => 
 
 const PauseButton: React.FC<{ handlePause: () => void }> = ({ handlePause }) => {
   return (
-    <button className="btn btn-accent join-item" onClick={handlePause}>
-      Stop
+    <button className="btn btn-warning join-item" onClick={handlePause}>
+      Pause
     </button>
   );
 };
 
-const ResetButton: React.FC<{ handleReset: () => void }> = ({ handleReset }) => {
+const StopButton: React.FC<{ handleClick: () => void; timer: number }> = ({ handleClick, timer }) => {
   return (
-    <button className="btn btn-secondary join-item" onClick={handleReset}>
-      Reset
+    <button className="btn btn-accent join-item" onClick={handleClick} disabled={timer === 0}>
+      Stop
     </button>
   );
 };

@@ -3,7 +3,7 @@ import { LocalStopwatch, ConnectedStopwatchAndProjectSelector } from "../ui";
 
 export default function Home() {
   return (
-    <div className="flex flex-1 justify-center flex-col gap-12 mb-12">
+    <div className="flex flex-1 justify-start flex-col gap-12 mb-12">
       <SignedIn>
         <ConnectedStopwatchAndProjectSelector />
       </SignedIn>

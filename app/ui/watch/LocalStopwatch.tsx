@@ -1,6 +1,6 @@
 "use client";
 import React, { useRef, useState } from "react";
-// import FirstClickModal from "./FirstClickModal";
+import { FaPlay } from "react-icons/fa";
 import Watch from "./Watch";
 import Link from "next/link";
 
@@ -53,16 +53,18 @@ const StartButton: React.FC<{
   return isFirstClick ? (
     <Link
       href="/first-click"
-      className="btn btn-success join-item"
+      className="btn btn-success join-item flex gap-2 items-center text-[#1a3224]"
       onClick={() => {
         setIsFirstClick(false);
       }}
     >
       Start
+      <FaPlay />
     </Link>
   ) : (
-    <button className="btn btn-success join-item" onClick={handleStart}>
+    <button className="btn btn-success join-item gap-2 items-center text-[#1a3224]" onClick={handleStart}>
       Start
+      <FaPlay />
     </button>
   );
 };

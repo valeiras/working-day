@@ -4,7 +4,6 @@ import React from "react";
 const Page: React.FC = () => {
   return (
     <Modal>
-      <div>Interception!!!</div>
       <FirstClick />
     </Modal>
   );

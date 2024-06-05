@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Watch from "./Watch";
 import { addStartTime, addStopTime, createNewBlock, setActiveBlock } from "@/app/lib/actions";
+import { FaPlay } from "react-icons/fa";
 
 type Props = { projectId: number | null };
 const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
@@ -125,8 +126,8 @@ const computeTimer = (startTimes: { time: string; stopTimes: { time: string }[] 
 
 const StartButton: React.FC<{ handleStart: () => void }> = ({ handleStart }) => {
   return (
-    <button className="btn btn-success join-item" onClick={handleStart}>
-      Start
+    <button className="btn btn-success join-item flex gap-1 items-center text-[#1a3224]" onClick={handleStart}>
+      <FaPlay /> Start
     </button>
   );
 };

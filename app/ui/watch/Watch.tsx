@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useRef } from "react";
-import { Timer, ConfirmationModal } from "@/app/ui";
+import React from "react";
+import { Timer } from "@/app/ui";
+import { FaPause, FaStop } from "react-icons/fa6";
 
 type Props = {
   timer: number;
@@ -11,50 +12,36 @@ type Props = {
   handleStop: () => void;
   modalMessage?: string;
 };
-const Watch: React.FC<Props> = ({
-  timer,
-  isRunning,
-  StartButton,
-  handlePause,
-  handleStop,
-  modalMessage = "The current block will be stopped",
-}) => {
-  const confirmResetModalRef = useRef<HTMLDialogElement>(null);
-
-  const handleStopClick = () => {
-    confirmResetModalRef.current?.showModal();
-  };
-
+const Watch: React.FC<Props> = ({ timer, isRunning, StartButton, handlePause, handleStop }) => {
   return (
     <div className="flex flex-col items-stretch gap-4 bg-base-300 rounded-xl shadow-lg p-6 -mx-6">
       <Timer timer={timer} />
       <div className="join grid grid-cols-2">
         {isRunning ? <PauseButton handlePause={handlePause} /> : StartButton}
-        <StopButton handleClick={handleStopClick} timer={timer} />
+        <StopButton handleStop={handleStop} timer={timer} />
       </div>
-      <ConfirmationModal
-        ref={confirmResetModalRef}
-        handleClick={handleStop}
-        title="Are you sure you want to stop?"
-        message={modalMessage}
-        buttonText="Yes"
-      />
     </div>
   );
 };
 
 const PauseButton: React.FC<{ handlePause: () => void }> = ({ handlePause }) => {
   return (
-    <button className="btn btn-warning join-item" onClick={handlePause}>
+    <button className="btn btn-warning join-item  flex gap-2 items-center text-[#3f2e0e]" onClick={handlePause}>
       Pause
+      <FaPause />
     </button>
   );
 };
 
-const StopButton: React.FC<{ handleClick: () => void; timer: number }> = ({ handleClick, timer }) => {
+const StopButton: React.FC<{ handleStop: () => void; timer: number }> = ({ handleStop, timer }) => {
   return (
-    <button className="btn btn-accent join-item" onClick={handleClick} disabled={timer === 0}>
+    <button
+      className="btn btn-accent join-item flex gap-2 items-center text-[#451508]"
+      onClick={handleStop}
+      disabled={timer === 0}
+    >
       Stop
+      <FaStop />
     </button>
   );
 };

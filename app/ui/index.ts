@@ -10,4 +10,3 @@ export { default as LocalStopwatch } from "./watch/LocalStopwatch";
 export { default as Watch } from "./watch/Watch";
 export { default as ConnectedStopwatch } from "./watch/ConnectedStopwatch";
 export { default as Timer } from "./watch/Timer";
-export { default as ConfirmationModal } from "./ConfirmationModal";

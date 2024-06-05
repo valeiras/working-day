@@ -2,8 +2,12 @@ import { Navbar, Title } from "@/app/ui";
 
 export default function Layout({
   children,
+  firstClickModal,
+  newProjectModal,
 }: Readonly<{
   children: React.ReactNode;
+  firstClickModal: React.ReactNode;
+  newProjectModal: React.ReactNode;
 }>) {
   return (
     <>
@@ -13,6 +17,8 @@ export default function Layout({
       <main className="flex flex-1 flex-col items-center justify-start gap-4 p-12">
         <Title />
         {children}
+        {firstClickModal}
+        {newProjectModal}
       </main>
     </>
   );

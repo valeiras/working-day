@@ -6,11 +6,19 @@ import { Timer, ConfirmationModal } from "@/app/ui";
 type Props = {
   timer: number;
   isRunning: boolean;
-  handleStart: () => void;
+  StartButton: React.ReactNode;
   handlePause: () => void;
   handleStop: () => void;
+  modalMessage?: string;
 };
-const Watch: React.FC<Props> = ({ timer, isRunning, handleStart, handlePause, handleStop }) => {
+const Watch: React.FC<Props> = ({
+  timer,
+  isRunning,
+  StartButton,
+  handlePause,
+  handleStop,
+  modalMessage = "The current block will be stopped",
+}) => {
   const confirmResetModalRef = useRef<HTMLDialogElement>(null);
 
   const handleStopClick = () => {
@@ -21,25 +29,17 @@ const Watch: React.FC<Props> = ({ timer, isRunning, handleStart, handlePause, ha
     <div className="flex flex-col items-stretch gap-4 bg-base-300 rounded-xl shadow-lg p-6 -mx-6">
       <Timer timer={timer} />
       <div className="join grid grid-cols-2">
-        {isRunning ? <PauseButton handlePause={handlePause} /> : <StartButton handleStart={handleStart} />}
+        {isRunning ? <PauseButton handlePause={handlePause} /> : StartButton}
         <StopButton handleClick={handleStopClick} timer={timer} />
       </div>
       <ConfirmationModal
         ref={confirmResetModalRef}
         handleClick={handleStop}
         title="Are you sure you want to stop?"
-        message="The watch will be set to 0"
+        message={modalMessage}
         buttonText="Yes"
       />
     </div>
-  );
-};
-
-const StartButton: React.FC<{ handleStart: () => void }> = ({ handleStart }) => {
-  return (
-    <button className="btn btn-success join-item" onClick={handleStart}>
-      Start
-    </button>
   );
 };
 

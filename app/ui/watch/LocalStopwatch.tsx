@@ -1,25 +1,16 @@
 "use client";
 import React, { useRef, useState } from "react";
-import FirstClickModal from "./FirstClickModal";
+// import FirstClickModal from "./FirstClickModal";
 import Watch from "./Watch";
+import Link from "next/link";
 
 const LocalStopwatch: React.FC = () => {
   const [timer, setTimer] = useState<number>(0);
   const [isFirstClick, setIsFirstClick] = useState<boolean>(true);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const firstClickModalRef = useRef<HTMLDialogElement>(null);
 
   const handleStart = () => {
-    if (isFirstClick) {
-      firstClickModalRef.current?.showModal();
-      setIsFirstClick(false);
-    } else {
-      startTimer();
-    }
-  };
-
-  const startTimer = () => {
     if (isRunning) return;
     setIsRunning(true);
     intervalRef.current = setInterval(() => {
@@ -44,12 +35,35 @@ const LocalStopwatch: React.FC = () => {
       <Watch
         timer={timer}
         isRunning={isRunning}
-        handleStart={handleStart}
+        StartButton={
+          <StartButton handleStart={handleStart} isFirstClick={isFirstClick} setIsFirstClick={setIsFirstClick} />
+        }
         handlePause={handlePause}
         handleStop={resetTimer}
       />
-      <FirstClickModal startTimer={startTimer} ref={firstClickModalRef} />
     </>
+  );
+};
+
+const StartButton: React.FC<{
+  handleStart: () => void;
+  isFirstClick: boolean;
+  setIsFirstClick: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ handleStart, isFirstClick, setIsFirstClick }) => {
+  return isFirstClick ? (
+    <Link
+      href="/first-click"
+      className="btn btn-success join-item"
+      onClick={() => {
+        setIsFirstClick(false);
+      }}
+    >
+      Start
+    </Link>
+  ) : (
+    <button className="btn btn-success join-item" onClick={handleStart}>
+      Start
+    </button>
   );
 };
 

@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useRef, useState } from "react";
 import Watch from "./Watch";
 import { addStartTime, addStopTime, createNewBlock, setActiveBlock } from "@/app/lib/actions";
@@ -44,9 +45,23 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
     fetchData();
   }, [projectId]);
 
-  const handleStart = async () => {
+  const handleStart = () => {
     if (isRunning) return;
-    if (!projectId) return console.error("Project ID is missing");
+    if (!projectId) {
+      alert("Select a project first");
+      return console.error("Project ID is missing");
+    }
+
+    setIsRunning(true);
+    intervalRef.current = setInterval(() => {
+      setTimer((prev) => prev + 1);
+    }, 10);
+
+    handleDBStart();
+  };
+
+  const handleDBStart = async () => {
+    if (!projectId) return;
 
     if (!activeBlockIdRef.current) {
       const { data, error } = await createNewBlock({ projectId });
@@ -54,40 +69,32 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
       activeBlockIdRef.current = data.id;
       await setActiveBlock({ projectId, blockId: data.id });
     }
-
     const { data, error } = await addStartTime({ blockId: activeBlockIdRef.current });
     if (error || !data) return console.error(error);
     startTimeIdRef.current = data.id;
-
-    setIsRunning(true);
-    intervalRef.current = setInterval(() => {
-      setTimer((prev) => prev + 1);
-    }, 10);
   };
 
-  const handlePause = async () => {
+  const handlePause = () => {
     if (!isRunning) return;
     if (!startTimeIdRef.current) return console.error("Start time id is missing");
-
-    const { data, error } = await addStopTime({ startTimeId: startTimeIdRef.current });
-    if (error || !data) return console.error(error);
-    startTimeIdRef.current = null;
-
     setIsRunning(false);
     if (intervalRef.current) clearInterval(intervalRef.current);
+
+    addStopTime({ startTimeId: startTimeIdRef.current });
+    startTimeIdRef.current = null;
   };
 
-  const handleStop = async () => {
+  const handleStop = () => {
     if (!projectId) return console.error("Project ID is missing");
     setIsRunning(false);
 
     if (isRunning) {
       if (!startTimeIdRef.current) return console.error("Start time id is missing");
-      await addStopTime({ startTimeId: startTimeIdRef.current });
+      addStopTime({ startTimeId: startTimeIdRef.current });
       startTimeIdRef.current = null;
     }
 
-    await setActiveBlock({ projectId, blockId: null });
+    setActiveBlock({ projectId, blockId: null });
     activeBlockIdRef.current = null;
     if (intervalRef.current) clearInterval(intervalRef.current);
     setTimer(0);
@@ -97,9 +104,10 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
     <Watch
       timer={timer}
       isRunning={isRunning}
-      handleStart={handleStart}
+      StartButton={<StartButton handleStart={handleStart} />}
       handlePause={handlePause}
       handleStop={handleStop}
+      modalMessage="The current block will be stopped and stored in the database."
     />
   );
 };
@@ -113,6 +121,14 @@ const computeTimer = (startTimes: { time: string; stopTimes: { time: string }[] 
     // The timer cumulates 10 milliseconds intervals
     return acc + diff / 10;
   }, 0);
+};
+
+const StartButton: React.FC<{ handleStart: () => void }> = ({ handleStart }) => {
+  return (
+    <button className="btn btn-success join-item" onClick={handleStart}>
+      Start
+    </button>
+  );
 };
 
 export default ConnectedStopwatch;

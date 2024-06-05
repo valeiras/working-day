@@ -5,7 +5,7 @@ import { auth } from "@clerk/nextjs/server";
 import { Tables } from "./database.types";
 import { createClerkServerSupabaseClient } from "./serverSupabaseClient";
 import { PostgrestError, PostgrestBuilder } from "@supabase/postgrest-js";
-import { PostgresError } from "postgres";
+import { DBError } from "../errors";
 
 export async function authenticateAndRedirect() {
   const { userId } = auth();
@@ -129,9 +129,9 @@ const withErrorHandling = async <T>(
 
   try {
     ({ data, error } = await fn);
-    if (error) throw new PostgresError(error.message);
+    if (error) throw new DBError(error.message);
   } catch (e) {
-    if (error instanceof PostgresError) {
+    if (error instanceof DBError) {
       console.error(error.message);
     } else {
       console.error("Something went wrong");

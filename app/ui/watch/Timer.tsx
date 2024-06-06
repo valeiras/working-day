@@ -15,7 +15,7 @@ const formatTime = (timer: number) => {
   const hours = Math.floor(timer / 360000)
     .toString()
     .padStart(2, "0");
-  const minutes = Math.floor(timer / 6000)
+  const minutes = Math.floor((timer / 6000) % 60)
     .toString()
     .padStart(2, "0");
   const seconds = Math.floor((timer / 100) % 60)

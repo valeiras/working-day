@@ -67,7 +67,7 @@ export const selectProjectById = async (
       .select(
         `name, 
         activeBlock:working_blocks!projects_active_block_id_fkey(
-          id, startTimes:start_times(time, stopTimes:stop_times(time)))`
+          id, startTimes:start_times(id, time, stopTimes:stop_times(time)))`
       )
       .eq("id", id)
       .returns<ProjectWithActiveBlock>()

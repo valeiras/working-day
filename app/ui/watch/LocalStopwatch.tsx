@@ -1,45 +1,31 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { FaPlay } from "react-icons/fa";
 import Watch from "./Watch";
 import Link from "next/link";
+import { useLocalTimer } from "@/app/lib/hooks";
 
 const LocalStopwatch: React.FC = () => {
-  const [timer, setTimer] = useState<number>(0);
   const [isFirstClick, setIsFirstClick] = useState<boolean>(true);
-  const [isRunning, setIsRunning] = useState<boolean>(false);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  const { handleLocalStart, handleLocalPause, handleLocalStop, setLocalStartTime, localTimer, isRunning } =
+    useLocalTimer();
 
   const handleStart = () => {
-    if (isRunning) return;
-    setIsRunning(true);
-    intervalRef.current = setInterval(() => {
-      setTimer((prev) => prev + 1);
-    }, 10);
-  };
-
-  const handlePause = () => {
-    if (!isRunning) return;
-    setIsRunning(false);
-    if (intervalRef.current) clearInterval(intervalRef.current);
-  };
-
-  const resetTimer = () => {
-    setIsRunning(false);
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    setTimer(0);
+    setLocalStartTime();
+    handleLocalStart();
   };
 
   return (
     <>
       <Watch
-        timer={timer}
+        timer={localTimer}
         isRunning={isRunning}
         StartButton={
           <StartButton handleStart={handleStart} isFirstClick={isFirstClick} setIsFirstClick={setIsFirstClick} />
         }
-        handlePause={handlePause}
-        handleStop={resetTimer}
+        handlePause={handleLocalPause}
+        handleStop={handleLocalStop}
       />
     </>
   );

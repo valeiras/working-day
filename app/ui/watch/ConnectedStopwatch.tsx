@@ -1,17 +1,27 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import Watch from "./Watch";
 import { addStartTime, addStopTime, createNewBlock, setActiveBlock } from "@/app/lib/actions";
 import { FaPlay } from "react-icons/fa";
+import { useLocalTimer } from "@/app/lib/hooks";
 
 type Props = { projectId: number | null };
 const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
-  const [timer, setTimer] = useState<number>(0);
-  const [isRunning, setIsRunning] = useState<boolean>(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const activeBlockIdRef = useRef<number | null>(null);
   const startTimeIdRef = useRef<number | null>(null);
+
+  const {
+    handleLocalStart,
+    handleLocalPause,
+    handleLocalStop,
+    localTimer,
+    setLocalTimer,
+    isRunning,
+    setIsRunning,
+    startTimeRef,
+  } = useLocalTimer();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,19 +41,22 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
       console.log("is project running: ", isProjectRunning);
       console.log("project timer: ", projectTimer);
 
+      activeBlockIdRef.current = data.activeBlock?.id || null;
+      console.log(activeBlockIdRef.current);
       if (isProjectRunning) {
-        activeBlockIdRef.current = data.activeBlock.id;
         startTimeIdRef.current = data.activeBlock.startTimes.slice(-1)[0].id;
-        intervalRef.current = setInterval(() => {
-          setTimer((prev) => prev + 1);
-        }, 10);
+        startTimeRef.current = Date.now() - projectTimer * 10;
+        console.log(startTimeIdRef.current);
+        handleLocalStart();
+      } else {
+        handleLocalPause();
       }
 
-      setIsRunning(isProjectRunning);
-      setTimer(projectTimer);
+      setLocalTimer(projectTimer);
     };
 
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId]);
 
   const handleStart = () => {
@@ -53,16 +66,12 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
       return console.error("Project ID is missing");
     }
 
-    setIsRunning(true);
-    intervalRef.current = setInterval(() => {
-      setTimer((prev) => prev + 1);
-    }, 10);
-
+    handleLocalStart();
     handleDBStart();
   };
 
   const handleDBStart = async () => {
-    if (!projectId) return;
+    if (!projectId) return console.error("Project ID is missing");
 
     if (!activeBlockIdRef.current) {
       const { data, error } = await createNewBlock({ projectId });
@@ -78,8 +87,7 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
   const handlePause = () => {
     if (!isRunning) return;
     if (!startTimeIdRef.current) return console.error("Start time id is missing");
-    setIsRunning(false);
-    if (intervalRef.current) clearInterval(intervalRef.current);
+    handleLocalPause();
 
     addStopTime({ startTimeId: startTimeIdRef.current });
     startTimeIdRef.current = null;
@@ -87,23 +95,17 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
 
   const handleStop = () => {
     if (!projectId) return console.error("Project ID is missing");
-    setIsRunning(false);
 
-    if (isRunning) {
-      if (!startTimeIdRef.current) return console.error("Start time id is missing");
-      addStopTime({ startTimeId: startTimeIdRef.current });
-      startTimeIdRef.current = null;
-    }
+    if (isRunning) handlePause();
+    handleLocalStop();
 
     setActiveBlock({ projectId, blockId: null });
     activeBlockIdRef.current = null;
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    setTimer(0);
   };
 
   return (
     <Watch
-      timer={timer}
+      timer={localTimer}
       isRunning={isRunning}
       StartButton={<StartButton handleStart={handleStart} />}
       handlePause={handlePause}

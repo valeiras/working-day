@@ -5,14 +5,20 @@ const useLocalTimer = () => {
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleLocalStart = ({ timer }: { timer?: number } = {}) => {
+  const handleConnectedStart = (timer: number) => {
+    const initialTime = Date.now() - timer * 10;
+
+    intervalRef.current = setInterval(() => {
+      setLocalTimer((Date.now() - initialTime) / 10);
+    }, 10);
+  };
+
+  const handleLocalStart = () => {
+    if (isRunning) return;
     setIsRunning(true);
 
-    console.log({ timer });
-    const initialTime = Date.now() - (timer || localTimer) * 10;
-    console.log({ initialTime });
+    const initialTime = Date.now() - localTimer * 10;
 
-    if (intervalRef.current) clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
       setLocalTimer((Date.now() - initialTime) / 10);
     }, 10);
@@ -32,6 +38,7 @@ const useLocalTimer = () => {
 
   return {
     handleLocalStart,
+    handleConnectedStart,
     handleLocalPause,
     handleLocalStop,
     localTimer,

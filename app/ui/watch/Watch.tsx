@@ -11,11 +11,12 @@ type Props = {
   handlePause: () => void;
   handleStop: () => void;
   modalMessage?: string;
+  isLoading?: boolean;
 };
-const Watch: React.FC<Props> = ({ timer, isRunning, StartButton, handlePause, handleStop }) => {
+const Watch: React.FC<Props> = ({ timer, isRunning, StartButton, handlePause, handleStop, isLoading = false }) => {
   return (
     <div className="flex flex-col items-stretch gap-4 bg-base-300 rounded-xl shadow-lg p-6 -mx-6">
-      <Timer timer={timer} />
+      <Timer timer={timer} isLoading={isLoading} />
       <div className="join grid grid-cols-2">
         {isRunning ? <PauseButton handlePause={handlePause} /> : StartButton}
         <StopButton handleStop={handleStop} timer={timer} />

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Watch from "./Watch";
 import { addStartTime, addStopTime, createNewBlock, setActiveBlock } from "@/app/lib/actions";
 import { FaPlay } from "react-icons/fa";
@@ -10,11 +10,21 @@ import { PostgrestError } from "@supabase/postgrest-js";
 
 type Props = { projectId: number | null };
 const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
+  const [isFetching, setIsFetching] = useState<boolean>(true);
   const activeBlockIdRef = useRef<number | null>(null);
   const startTimeIdRef = useRef<number | null>(null);
 
-  const { handleLocalStart, handleLocalPause, handleLocalStop, localTimer, setLocalTimer, isRunning, intervalRef } =
-    useLocalTimer();
+  const {
+    handleLocalStart,
+    handleConnectedStart,
+    handleLocalPause,
+    handleLocalStop,
+    localTimer,
+    setLocalTimer,
+    isRunning,
+    setIsRunning,
+    intervalRef,
+  } = useLocalTimer();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,14 +44,16 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
       activeBlockIdRef.current = data.activeBlock?.id || null;
       if (isProjectRunning) {
         startTimeIdRef.current = data.activeBlock?.startTimes?.slice(-1)[0]?.id || null;
-        handleLocalStart({ timer: projectTimer });
-      } else {
-        handleLocalPause();
+        handleConnectedStart(projectTimer);
       }
 
+      setIsRunning(isProjectRunning);
       setLocalTimer(projectTimer);
+      setIsFetching(false);
     };
 
+    setIsFetching(true);
+    if (intervalRef.current) clearInterval(intervalRef.current);
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId]);
@@ -98,6 +110,7 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
       handlePause={handlePause}
       handleStop={handleStop}
       modalMessage="The current block will be stopped and stored in the database."
+      isLoading={isFetching}
     />
   );
 };

@@ -7,6 +7,7 @@ import { FaPlay } from "react-icons/fa";
 import { useLocalTimer } from "@/app/lib/hooks";
 import { ProjectWithActiveBlock, StartTimes } from "@/app/lib/db/queries";
 import { PostgrestError } from "@supabase/postgrest-js";
+import { computeAcumulatedTimer } from "./../../lib/utils";
 
 type Props = { projectId: number | null };
 const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
@@ -39,7 +40,7 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
       // The current project is running if it is active and the last start time has no stop time
       const isProjectRunning =
         data.activeBlock !== null && data.activeBlock.startTimes?.slice(-1)[0]?.stopTimes?.length === 0;
-      const projectTimer = computeTimer(data?.activeBlock?.startTimes || null);
+      const projectTimer = computeAcumulatedTimer(data?.activeBlock?.startTimes || null);
 
       activeBlockIdRef.current = data.activeBlock?.id || null;
       if (isProjectRunning) {
@@ -113,18 +114,6 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
       isLoading={isFetching}
     />
   );
-};
-
-const computeTimer = (startTimes: StartTimes) => {
-  if (!startTimes) return 0;
-  return startTimes.reduce((acc, curr) => {
-    const stopTime =
-      curr.stopTimes && curr.stopTimes.length !== 0 ? curr.stopTimes.slice(-1)[0].time : new Date().toISOString();
-    const startTime = curr.time;
-    const diff = new Date(stopTime).getTime() - new Date(startTime).getTime();
-    // The timer cumulates 10 milliseconds intervals
-    return acc + diff / 10;
-  }, 0);
 };
 
 const StartButton: React.FC<{ handleStart: () => void }> = ({ handleStart }) => {

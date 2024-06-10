@@ -1,19 +1,24 @@
 import React from "react";
 import { SignedIn, UserButton } from "@clerk/nextjs";
-import { GoGear } from "react-icons/go";
-import { IoStatsChart } from "react-icons/io5";
 import Link from "next/link";
+import { IoMdStats, IoMdList, IoMdSettings } from "react-icons/io";
 
 const Navbar: React.FC = () => {
   return (
-    <div className="flex justify-end p-2 pr-4 w-full h-14">
+    <div className="flex justify-between p-2 px-4 w-full items-center">
+      <Link href={"/"}>
+        <h1 className="text-5xl font-bold">W</h1>
+      </Link>
       <SignedIn>
         <div className="flex items-center gap-2">
-          <Link href={"/stats"}>
-            <IoStatsChart className="text-2xl" />
+          <Link href={"/stats"} className="tooltip tooltip-bottom" data-tip="Stats">
+            <IoMdStats className="text-3xl" />
           </Link>
-          <Link href={"/settings"}>
-            <GoGear className="text-2xl" />
+          <Link href={"/projects"} className="tooltip tooltip-bottom" data-tip="Projects">
+            <IoMdList className="text-3xl" />
+          </Link>
+          <Link href={"/settings"} className="tooltip tooltip-bottom" data-tip="Settings">
+            <IoMdSettings className="text-3xl" />
           </Link>
           <UserButton afterSignOutUrl="/" appearance={{ elements: { userButtonAvatarBox: "w-10 h-10" } }} />
         </div>

@@ -7,6 +7,24 @@ import { createClerkServerSupabaseClient } from "./serverSupabaseClient";
 import { PostgrestError, PostgrestBuilder } from "@supabase/postgrest-js";
 import { DBError } from "../errors";
 
+export type StartTimes = { id: number; time: string; stopTimes: { time: string }[] | null }[] | null;
+
+export type ProjectWithWorkingTimes = {
+  name: string;
+  id: number;
+  activeBlock: { id: number } | null;
+  workingBlocks: { id: number; startTimes: StartTimes }[];
+};
+
+export type ProjectWithActiveBlock = {
+  name: string;
+  id: number;
+  activeBlock: {
+    id: number;
+    startTimes: StartTimes;
+  } | null;
+};
+
 export async function authenticateAndRedirect() {
   const { userId } = auth();
   if (!userId) redirect("/");
@@ -33,6 +51,24 @@ export const selectAllProjects = async (): Promise<{
   return withErrorHandling(client.from("projects").select());
 };
 
+export const selectAllProjectsWithWorkingTimes = async (): Promise<{
+  data: ProjectWithWorkingTimes[] | null;
+  error?: PostgrestError | null;
+}> => {
+  const client = await createClerkServerSupabaseClient();
+
+  return withErrorHandling(
+    client
+      .from("projects")
+      .select(
+        `name, id,
+        activeBlock:working_blocks!projects_active_block_id_fkey(id),
+        workingBlocks:working_blocks!working_blocks_project_id_fkey(startTimes:start_times(id, time, stopTimes:stop_times(time)))`
+      )
+      .returns<ProjectWithWorkingTimes[]>()
+  );
+};
+
 export const updateProject = async ({
   projectId,
   projectData,
@@ -48,15 +84,6 @@ export const updateProject = async ({
   return withErrorHandling(client.from("projects").update(projectData).eq("id", projectId).select().maybeSingle());
 };
 
-export type StartTimes = { id: number; time: string; stopTimes: { time: string }[] | null }[] | null;
-export type ProjectWithActiveBlock = {
-  name: string;
-  activeBlock: {
-    id: number;
-    startTimes: StartTimes;
-  } | null;
-};
-
 export const selectProjectById = async (
   id: number
 ): Promise<{ data: ProjectWithActiveBlock | null; error?: PostgrestError | null }> => {
@@ -66,7 +93,7 @@ export const selectProjectById = async (
     client
       .from("projects")
       .select(
-        `name, 
+        `name, id,
         activeBlock:working_blocks!projects_active_block_id_fkey(
           id, startTimes:start_times(id, time, stopTimes:stop_times(time)))`
       )

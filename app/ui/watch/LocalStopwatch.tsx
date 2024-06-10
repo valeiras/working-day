@@ -11,17 +11,15 @@ const LocalStopwatch: React.FC = () => {
   const { handleLocalStart, handleLocalPause, handleLocalStop, localTimer, isRunning } = useLocalTimer();
 
   return (
-    <>
-      <Watch
-        timer={localTimer}
-        isRunning={isRunning}
-        StartButton={
-          <StartButton handleStart={handleLocalStart} isFirstClick={isFirstClick} setIsFirstClick={setIsFirstClick} />
-        }
-        handlePause={handleLocalPause}
-        handleStop={handleLocalStop}
-      />
-    </>
+    <Watch
+      timer={localTimer}
+      isRunning={isRunning}
+      StartButton={
+        <StartButton handleStart={handleLocalStart} isFirstClick={isFirstClick} setIsFirstClick={setIsFirstClick} />
+      }
+      handlePause={handleLocalPause}
+      handleStop={handleLocalStop}
+    />
   );
 };
 

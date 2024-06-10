@@ -6,13 +6,11 @@ const useLocalTimer = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleLocalStart = (timer?: number) => {
-    if (isRunning) return;
     setIsRunning(true);
 
-    console.log("timer: ", timer);
     const initialTime = Date.now() - (timer || localTimer) * 10;
-    console.log({ initialTime });
 
+    if (intervalRef.current) clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
       setLocalTimer((Date.now() - initialTime) / 10);
     }, 10);
@@ -38,6 +36,7 @@ const useLocalTimer = () => {
     setLocalTimer,
     isRunning,
     setIsRunning,
+    intervalRef,
   };
 };
 

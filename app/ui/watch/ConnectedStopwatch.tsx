@@ -10,16 +10,14 @@ import { PostgrestError } from "@supabase/postgrest-js";
 
 type Props = { projectId: number | null };
 const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const activeBlockIdRef = useRef<number | null>(null);
   const startTimeIdRef = useRef<number | null>(null);
 
-  const { handleLocalStart, handleLocalPause, handleLocalStop, localTimer, setLocalTimer, isRunning } = useLocalTimer();
+  const { handleLocalStart, handleLocalPause, handleLocalStop, localTimer, setLocalTimer, isRunning, intervalRef } =
+    useLocalTimer();
 
   useEffect(() => {
     const fetchData = async () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-
       if (!projectId) return;
       const res = await fetch(`/api/v1/projects/${projectId}`);
       const { data, error } = (await res.json()) as {
@@ -33,12 +31,7 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
         data.activeBlock !== null && data.activeBlock.startTimes?.slice(-1)[0]?.stopTimes?.length === 0;
       const projectTimer = computeTimer(data?.activeBlock?.startTimes || null);
 
-      console.log(data);
-      console.log("is project running: ", isProjectRunning);
-      console.log("project timer: ", projectTimer);
-
       activeBlockIdRef.current = data.activeBlock?.id || null;
-      console.log(activeBlockIdRef.current);
       if (isProjectRunning) {
         startTimeIdRef.current = data.activeBlock?.startTimes?.slice(-1)[0]?.id || null;
         handleLocalStart(projectTimer);
@@ -54,7 +47,6 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
   }, [projectId]);
 
   const handleStart = () => {
-    console.log("Active block: ", activeBlockIdRef.current);
     if (isRunning) return;
     if (!projectId) {
       alert("Select a project first");

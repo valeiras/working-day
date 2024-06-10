@@ -5,6 +5,8 @@ import Watch from "./Watch";
 import { addStartTime, addStopTime, createNewBlock, setActiveBlock } from "@/app/lib/actions";
 import { FaPlay } from "react-icons/fa";
 import { useLocalTimer } from "@/app/lib/hooks";
+import { ProjectWithActiveBlock, StartTimes } from "@/app/lib/db/queries";
+import { PostgrestError } from "@supabase/postgrest-js";
 
 type Props = { projectId: number | null };
 const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
@@ -12,16 +14,7 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
   const activeBlockIdRef = useRef<number | null>(null);
   const startTimeIdRef = useRef<number | null>(null);
 
-  const {
-    handleLocalStart,
-    handleLocalPause,
-    handleLocalStop,
-    localTimer,
-    setLocalTimer,
-    isRunning,
-    setIsRunning,
-    startTimeRef,
-  } = useLocalTimer();
+  const { handleLocalStart, handleLocalPause, handleLocalStop, localTimer, setLocalTimer, isRunning } = useLocalTimer();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,13 +22,16 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
 
       if (!projectId) return;
       const res = await fetch(`/api/v1/projects/${projectId}`);
-      const { data, error } = await res.json();
-      if (error) return;
+      const { data, error } = (await res.json()) as {
+        data: ProjectWithActiveBlock | null;
+        error?: PostgrestError | null;
+      };
+      if (error || !data) return;
 
       // The current project is running if it is active and the last start time has no stop time
       const isProjectRunning =
-        data.activeBlock !== null && data.activeBlock.startTimes.slice(-1)[0].stopTimes.length === 0;
-      const projectTimer = computeTimer(data?.activeBlock?.startTimes);
+        data.activeBlock !== null && data.activeBlock.startTimes?.slice(-1)[0]?.stopTimes?.length === 0;
+      const projectTimer = computeTimer(data?.activeBlock?.startTimes || null);
 
       console.log(data);
       console.log("is project running: ", isProjectRunning);
@@ -44,10 +40,8 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
       activeBlockIdRef.current = data.activeBlock?.id || null;
       console.log(activeBlockIdRef.current);
       if (isProjectRunning) {
-        startTimeIdRef.current = data.activeBlock.startTimes.slice(-1)[0].id;
-        startTimeRef.current = Date.now() - projectTimer * 10;
-        console.log(startTimeIdRef.current);
-        handleLocalStart();
+        startTimeIdRef.current = data.activeBlock?.startTimes?.slice(-1)[0]?.id || null;
+        handleLocalStart(projectTimer);
       } else {
         handleLocalPause();
       }
@@ -60,6 +54,7 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
   }, [projectId]);
 
   const handleStart = () => {
+    console.log("Active block: ", activeBlockIdRef.current);
     if (isRunning) return;
     if (!projectId) {
       alert("Select a project first");
@@ -115,10 +110,11 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
   );
 };
 
-const computeTimer = (startTimes: { time: string; stopTimes: { time: string }[] }[] | null) => {
+const computeTimer = (startTimes: StartTimes) => {
   if (!startTimes) return 0;
   return startTimes.reduce((acc, curr) => {
-    const stopTime = curr.stopTimes.length === 0 ? new Date().toISOString() : curr.stopTimes.slice(-1)[0].time;
+    const stopTime =
+      curr.stopTimes && curr.stopTimes.length !== 0 ? curr.stopTimes.slice(-1)[0].time : new Date().toISOString();
     const startTime = curr.time;
     const diff = new Date(stopTime).getTime() - new Date(startTime).getTime();
     // The timer cumulates 10 milliseconds intervals

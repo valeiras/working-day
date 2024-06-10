@@ -48,11 +48,12 @@ export const updateProject = async ({
   return withErrorHandling(client.from("projects").update(projectData).eq("id", projectId).select().maybeSingle());
 };
 
-type ProjectWithActiveBlock = {
+export type StartTimes = { id: number; time: string; stopTimes: { time: string }[] | null }[] | null;
+export type ProjectWithActiveBlock = {
   name: string;
   activeBlock: {
     id: number;
-    startTimes: { time: string; stopTimes: { time: string }[] | null }[];
+    startTimes: StartTimes;
   } | null;
 };
 

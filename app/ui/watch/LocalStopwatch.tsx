@@ -8,13 +8,7 @@ import { useLocalTimer } from "@/app/lib/hooks";
 const LocalStopwatch: React.FC = () => {
   const [isFirstClick, setIsFirstClick] = useState<boolean>(true);
 
-  const { handleLocalStart, handleLocalPause, handleLocalStop, setLocalStartTime, localTimer, isRunning } =
-    useLocalTimer();
-
-  const handleStart = () => {
-    setLocalStartTime();
-    handleLocalStart();
-  };
+  const { handleLocalStart, handleLocalPause, handleLocalStop, localTimer, isRunning } = useLocalTimer();
 
   return (
     <>
@@ -22,7 +16,7 @@ const LocalStopwatch: React.FC = () => {
         timer={localTimer}
         isRunning={isRunning}
         StartButton={
-          <StartButton handleStart={handleStart} isFirstClick={isFirstClick} setIsFirstClick={setIsFirstClick} />
+          <StartButton handleStart={handleLocalStart} isFirstClick={isFirstClick} setIsFirstClick={setIsFirstClick} />
         }
         handlePause={handleLocalPause}
         handleStop={handleLocalStop}

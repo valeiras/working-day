@@ -1,7 +1,8 @@
+import { NewProjectForm } from "@/app/ui";
 import React from "react";
 
 const Page: React.FC = () => {
-  return <dialog>New Project Modal</dialog>;
+  return <NewProjectForm />;
 };
 
 export default Page;

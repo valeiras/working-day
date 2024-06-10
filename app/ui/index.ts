@@ -2,6 +2,7 @@ export { default as Navbar } from "./Navbar";
 export { default as ProjectSelector } from "./ProjectSelector";
 export { default as Title } from "./Title";
 export { default as FirstClick } from "./FirstClick";
+export { default as NewProjectForm } from "./NewProjectForm";
 export { default as Modal } from "./Modal";
 export { default as Info } from "./Info";
 export { default as ConnectedStopwatchAndProjectSelector } from "./ConnectedStopwatchAndProjectSelector";

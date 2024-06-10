@@ -34,7 +34,7 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
       activeBlockIdRef.current = data.activeBlock?.id || null;
       if (isProjectRunning) {
         startTimeIdRef.current = data.activeBlock?.startTimes?.slice(-1)[0]?.id || null;
-        handleLocalStart(projectTimer);
+        handleLocalStart({ timer: projectTimer });
       } else {
         handleLocalPause();
       }

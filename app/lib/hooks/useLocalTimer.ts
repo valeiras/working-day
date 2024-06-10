@@ -5,10 +5,12 @@ const useLocalTimer = () => {
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleLocalStart = (timer?: number) => {
+  const handleLocalStart = ({ timer }: { timer?: number } = {}) => {
     setIsRunning(true);
 
+    console.log({ timer });
     const initialTime = Date.now() - (timer || localTimer) * 10;
+    console.log({ initialTime });
 
     if (intervalRef.current) clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {

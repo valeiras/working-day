@@ -1,11 +1,8 @@
-import { ProjectWithWorkingTimes } from "@/app/lib/db/queries";
-
 import React, { ReactNode } from "react";
 
-import { Info, ProjectRow, ProjectsContextSetter, ProjectsList } from "@/app/ui";
+import { Info, ProjectsList } from "@/app/ui";
 import { ProjectColumns } from "@/app/lib/types";
 import { cn } from "@/app/lib/utils";
-import { useProjectsContext } from "@/app/contexts/ProjectsContext";
 import { getAllProjects } from "@/app/lib/actions";
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
 

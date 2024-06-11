@@ -19,7 +19,7 @@ const ProjectRow: React.FC<Props> = ({ project, idx, columns }) => {
     totalTime: { content: <TotalTime id={project.id} /> },
     currentTime: { content: <CurrentTime id={project.id} /> },
     isActive: { content: activeBlock?.id ? <FaCheck /> : <IoClose /> },
-    controls: { content: <Controls id={project.id} /> },
+    controls: { content: <Controls id={project.id} isActive={activeBlock?.id !== undefined} project={project} /> },
     alerts: { content: <div>Mail(8h)</div> },
     overtimeThreshold: { content: <div>8h/day</div> },
     edit: {

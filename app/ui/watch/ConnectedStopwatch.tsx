@@ -6,6 +6,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Watch from "./Watch";
 import { useProjectsContext } from "@/app/contexts/ProjectsContext";
 import { useLocalTimer } from "@/app/lib/hooks";
+import { useDBTimer } from "@/app/lib/hooks/useDBTimer";
 
 type Props = { projectId: number | null };
 const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
@@ -36,6 +37,8 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
     intervalRef,
   } = useLocalTimer();
 
+  const { handleDBStart, handleDBPause, handleDBStop } = useDBTimer();
+
   const {
     contextObject: { currentTimersCs, isRunning: isRunningFromContext },
   } = projectsContext;
@@ -55,27 +58,13 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
 
   const handleStart = () => {
     if (isRunning) return;
-    if (!projectId) {
+    if (!projectId || !currProject) {
       alert("Select a project first");
       return console.error("Project ID is missing");
     }
 
     handleLocalStart();
-    handleDBStart(projectId);
-  };
-
-  const handleDBStart = async (projectId: number) => {
-    let blockId: number | undefined = currProject?.activeBlock?.id;
-
-    if (!blockId) {
-      const { data, error } = await createNewBlock({ projectId });
-      if (error || !data) return console.error(error);
-      blockId = data.id;
-      await setActiveBlock({ projectId, blockId });
-    }
-    const { data, error } = await addStartTime({ blockId });
-    if (error || !data) return console.error(error);
-    queryClient.invalidateQueries({ queryKey: ["projects"] });
+    handleDBStart(currProject);
   };
 
   const handlePause = async () => {
@@ -87,21 +76,11 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
     handleDBPause(startTimeId);
   };
 
-  const handleDBPause = async (startTimeId: number) => {
-    await addPauseTime({ startTimeId });
-    queryClient.invalidateQueries({ queryKey: ["projects"] });
-  };
-
   const handleStop = async () => {
     if (!projectId) return console.error("Project ID is missing");
     if (isRunning) handlePause();
     handleLocalStop();
     handleDBStop(projectId);
-  };
-
-  const handleDBStop = async (projectId: number) => {
-    await setActiveBlock({ projectId, blockId: null });
-    queryClient.invalidateQueries({ queryKey: ["projects"] });
   };
 
   return (

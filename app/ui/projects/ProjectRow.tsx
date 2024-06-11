@@ -3,23 +3,27 @@ import { FaCheck, FaList } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import { MdEdit } from "react-icons/md";
 import { ProjectWithWorkingTimes } from "@/app/lib/db/queries";
-import { computeAcumulatedTimer, formatTime } from "@/app/lib/utils";
 import Link from "next/link";
 import { ProjectColumns } from "@/app/lib/types";
+import TotalTime from "./TotalTime";
+import CurrentTime from "./CurrentTime";
 
-type Props = { project: ProjectWithWorkingTimes; idx: number; columns: ProjectColumns[] };
+type Props = {
+  project: ProjectWithWorkingTimes;
+  idx: number;
+  columns: ProjectColumns[];
+  currentTimersCs: Record<number, number>;
+  totalTimersCs: Record<number, number>;
+};
 
-const ProjectRow: React.FC<Props> = ({ project, idx, columns }) => {
-  const { workingBlocks, activeBlock, id, name } = project;
-  const totalTimer = workingBlocks.reduce((acc, { startTimes }) => {
-    return acc + computeAcumulatedTimer(startTimes);
-  }, 0);
-  const { hours, minutes, seconds } = formatTime(totalTimer);
+const ProjectRow: React.FC<Props> = ({ project, idx, columns, currentTimersCs, totalTimersCs }) => {
+  const { activeBlock, id, name } = project;
 
   const projectCells: Record<ProjectColumns, { content: ReactNode; className?: string }> = {
     index: { content: idx },
     name: { content: name },
-    totalTime: { content: `${hours}:${minutes}:${seconds}` },
+    totalTime: { content: <TotalTime id={project.id} totalTimersCs={totalTimersCs} /> },
+    currentTime: { content: <CurrentTime id={project.id} currentTimersCs={currentTimersCs} /> },
     isActive: { content: activeBlock?.id ? <FaCheck /> : <IoClose />, className: "flex justify-center" },
     edit: {
       content: (
@@ -33,9 +37,9 @@ const ProjectRow: React.FC<Props> = ({ project, idx, columns }) => {
         </div>
       ),
     },
-    controls: { content: <div>Controls</div> },
-    alerts: { content: <div>Alerts</div> },
-    overtimeThreshold: { content: <div>Overtime threshold</div> },
+    controls: { content: <div></div> },
+    alerts: { content: <div></div> },
+    overtimeThreshold: { content: <div></div> },
   };
 
   return (

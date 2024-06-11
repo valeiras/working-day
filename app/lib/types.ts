@@ -10,6 +10,7 @@ export type ProjectColumns =
   | "index"
   | "name"
   | "totalTime"
+  | "currentTime"
   | "isActive"
   | "controls"
   | "edit"

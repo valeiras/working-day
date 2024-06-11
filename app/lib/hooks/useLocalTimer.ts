@@ -1,15 +1,15 @@
 import { useRef, useState } from "react";
 
 const useLocalTimer = () => {
-  const [localTimer, setLocalTimer] = useState<number>(0);
+  const [localTimerCs, setLocalTimerCs] = useState<number>(0);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleConnectedStart = (timer: number) => {
-    const initialTime = Date.now() - timer * 10;
+  const handleConnectedStart = (timerCs: number) => {
+    const initialTimeMs = Date.now() - timerCs * 10;
 
     intervalRef.current = setInterval(() => {
-      setLocalTimer((Date.now() - initialTime) / 10);
+      setLocalTimerCs((Date.now() - initialTimeMs) / 10);
     }, 10);
   };
 
@@ -17,10 +17,10 @@ const useLocalTimer = () => {
     if (isRunning) return;
     setIsRunning(true);
 
-    const initialTime = Date.now() - localTimer * 10;
+    const initialTimeMs = Date.now() - localTimerCs * 10;
 
     intervalRef.current = setInterval(() => {
-      setLocalTimer((Date.now() - initialTime) / 10);
+      setLocalTimerCs((Date.now() - initialTimeMs) / 10);
     }, 10);
   };
 
@@ -33,7 +33,7 @@ const useLocalTimer = () => {
   const handleLocalStop = () => {
     setIsRunning(false);
     if (intervalRef.current) clearInterval(intervalRef.current);
-    setLocalTimer(0);
+    setLocalTimerCs(0);
   };
 
   return {
@@ -41,8 +41,8 @@ const useLocalTimer = () => {
     handleConnectedStart,
     handleLocalPause,
     handleLocalStop,
-    localTimer,
-    setLocalTimer,
+    localTimerCs,
+    setLocalTimerCs,
     isRunning,
     setIsRunning,
     intervalRef,

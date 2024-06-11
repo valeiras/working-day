@@ -63,7 +63,7 @@ export const selectAllProjectsWithWorkingTimes = async (): Promise<{
       .select(
         `name, id,
         activeBlock:working_blocks!projects_active_block_id_fkey(id),
-        workingBlocks:working_blocks!working_blocks_project_id_fkey(startTimes:start_times(id, time, stopTimes:stop_times(time)))`
+        workingBlocks:working_blocks!working_blocks_project_id_fkey(id, startTimes:start_times(id, time, stopTimes:stop_times(time)))`
       )
       .returns<ProjectWithWorkingTimes[]>()
   );

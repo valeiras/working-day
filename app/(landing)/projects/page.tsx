@@ -1,11 +1,31 @@
-import { StartTimes, selectAllProjectsWithWorkingTimes } from "@/app/lib/db/queries";
-import { computeAcumulatedTimer, formatTime } from "@/app/lib/utils";
-import Link from "next/link";
+import { selectAllProjectsWithWorkingTimes } from "@/app/lib/db/queries";
+
 import React from "react";
-import { FaCheck } from "react-icons/fa6";
-import { IoClose } from "react-icons/io5";
-import { MdEdit } from "react-icons/md";
-import { FaList } from "react-icons/fa6";
+
+import { ProjectRow } from "@/app/ui";
+import { ProjectColumns } from "@/app/lib/types";
+
+const columns: ProjectColumns[] = [
+  "index",
+  "name",
+  "totalTime",
+  "controls",
+  "isActive",
+  "alerts",
+  "overtimeThreshold",
+  "edit",
+];
+
+const columnsLabels: Record<ProjectColumns, string> = {
+  index: "#",
+  name: "Name",
+  totalTime: "Total time",
+  isActive: "Is active",
+  controls: "Controls",
+  alerts: "Alerts",
+  overtimeThreshold: "Overtime threshold",
+  edit: "Edit",
+};
 
 const Page: React.FC = async () => {
   const { data: projects, error } = await selectAllProjectsWithWorkingTimes();
@@ -18,35 +38,14 @@ const Page: React.FC = async () => {
         <table className="table">
           <thead>
             <tr>
-              <th></th>
-              <th>Name</th>
-              <th>Total time</th>
-              <th>Is active</th>
-              <th></th>
+              {columns.map((column) => {
+                return <th key={column}>{columnsLabels[column]}</th>;
+              })}
             </tr>
           </thead>
           <tbody>
-            {projects?.map(({ name, id, activeBlock, workingBlocks }, idx) => {
-              const totalTimer = workingBlocks.reduce((acc, { startTimes }) => {
-                return acc + computeAcumulatedTimer(startTimes);
-              }, 0);
-              const { hours, minutes, seconds } = formatTime(totalTimer);
-              return (
-                <tr key={id} className={activeBlock?.id ? "bg-neutral" : ""}>
-                  <th>{idx}</th>
-                  <th>{name}</th>
-                  <th>{`${hours}:${minutes}:${seconds}`}</th>
-                  <th>{activeBlock?.id ? <FaCheck /> : <IoClose />}</th>
-                  <th className="flex gap-2">
-                    <Link href="/">
-                      <MdEdit />
-                    </Link>
-                    <Link href="/">
-                      <FaList />
-                    </Link>
-                  </th>
-                </tr>
-              );
+            {projects?.map((project, idx) => {
+              return <ProjectRow key={project.id} project={project} columns={columns} idx={idx} />;
             })}
           </tbody>
         </table>

@@ -1,11 +1,13 @@
-import { selectAllProjectsWithWorkingTimes } from "@/app/lib/db/queries";
+import { ProjectWithWorkingTimes } from "@/app/lib/db/queries";
 
 import React, { ReactNode } from "react";
 
 import { Info, ProjectRow, ProjectsContextSetter } from "@/app/ui";
 import { ProjectColumns } from "@/app/lib/types";
-import { ProjectsContextProvider } from "./context";
 import { cn } from "@/app/lib/utils";
+import { useProjectsContext } from "@/app/contexts/ProjectsContext";
+import { getAllProjects } from "@/app/lib/actions";
+import { QueryClient } from "@tanstack/react-query";
 
 const columns: ProjectColumns[] = [
   "index",
@@ -47,36 +49,36 @@ const columnsLabels: Record<ProjectColumns, { content: ReactNode; className?: st
 };
 
 const Page: React.FC = async () => {
-  const { data: projects, error } = await selectAllProjectsWithWorkingTimes();
-  if (error) console.error(error);
+  const queryClient = new QueryClient();
+  const { data: projects } = await queryClient.fetchQuery({
+    queryKey: ["projects"],
+    queryFn: getAllProjects,
+  });
 
   return (
-    <ProjectsContextProvider>
-      <ProjectsContextSetter projects={projects} />
-      <div className="flex flex-col items-stretch gap-4 bg-base-300 rounded-xl shadow-lg p-6 -mx-6">
-        <h2 className="text-lg text-center">Projects:</h2>
-        <div className="overflow-x-auto">
-          <table className="table">
-            <thead>
-              <tr>
-                {columns.map((column) => {
-                  return (
-                    <th key={column} className={cn("text-center", columnsLabels[column].className)}>
-                      {columnsLabels[column].content}
-                    </th>
-                  );
-                })}
-              </tr>
-            </thead>
-            <tbody>
-              {projects?.map((project, idx) => {
-                return <ProjectRow key={project.id} project={project} columns={columns} idx={idx} />;
+    <div className="flex flex-col items-stretch gap-4 bg-base-300 rounded-xl shadow-lg p-6 -mx-6">
+      <h2 className="text-lg text-center">Projects:</h2>
+      <div className="overflow-x-auto">
+        <table className="table">
+          <thead>
+            <tr>
+              {columns.map((column) => {
+                return (
+                  <th key={column} className={cn("text-center", columnsLabels[column].className)}>
+                    {columnsLabels[column].content}
+                  </th>
+                );
               })}
-            </tbody>
-          </table>
-        </div>
+            </tr>
+          </thead>
+          <tbody>
+            {projects?.map((project, idx) => {
+              return <ProjectRow key={project.id} project={project} columns={columns} idx={idx} />;
+            })}
+          </tbody>
+        </table>
       </div>
-    </ProjectsContextProvider>
+    </div>
   );
 };
 

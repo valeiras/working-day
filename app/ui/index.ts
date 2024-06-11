@@ -17,5 +17,5 @@ export { default as FirstClickModalContent } from "./modals/FirstClickModalConte
 export { default as ProjectRow } from "./projects/ProjectRow";
 export { default as CurrentTime } from "./projects/CurrentTime";
 export { default as TotalTime } from "./projects/TotalTime";
-export { default as ProjectsContextSetter } from "./projects/ProjectsContextSetter";
+export { default as ProjectsContextSetter } from "../contexts/ProjectsContextSetter";
 export { default as Controls } from "./projects/Controls";

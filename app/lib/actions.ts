@@ -1,6 +1,13 @@
 "use server";
 
-import { insertBlock, insertProject, insertStartTime, insertStopTime, updateProject } from "./db/queries";
+import {
+  insertBlock,
+  insertProject,
+  insertStartTime,
+  insertStopTime,
+  selectAllProjectsWithWorkingTimes,
+  updateProject,
+} from "./db/queries";
 
 export const createNewProject = async ({ name }: { name: string }) => {
   await insertProject({ name });
@@ -23,5 +30,10 @@ export const addStartTime = async ({ blockId }: { blockId: number }) => {
 
 export const addStopTime = async ({ startTimeId }: { startTimeId: number }) => {
   const { data, error } = await insertStopTime({ startTimeId });
+  return { data, error };
+};
+
+export const getAllProjects = async () => {
+  const { data, error } = await selectAllProjectsWithWorkingTimes();
   return { data, error };
 };

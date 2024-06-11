@@ -1,15 +1,19 @@
 "use client";
 
 import { createContext, useState, useContext, useRef, Dispatch, SetStateAction, MutableRefObject } from "react";
+import { ProjectWithWorkingTimes } from "../lib/db/queries";
+
+type ContextObject = {
+  projects: ProjectWithWorkingTimes[] | null;
+  currentTimersCs: Record<number, number>;
+  totalTimersCs: Record<number, number>;
+  isRunning: Record<number, boolean>;
+  intervalRef: MutableRefObject<NodeJS.Timeout | null>;
+};
 
 type ProjectsContextType = {
-  currentTimersCs: Record<number, number>;
-  setCurrentTimersCs: Dispatch<SetStateAction<Record<number, number>>>;
-  totalTimersCs: Record<number, number>;
-  setTotalTimersCs: Dispatch<SetStateAction<Record<number, number>>>;
-  isRunning: Record<number, boolean>;
-  setIsRunning: Dispatch<SetStateAction<Record<number, boolean>>>;
-  intervalRef: MutableRefObject<NodeJS.Timeout | null>;
+  contextObject: ContextObject;
+  setContextObject: Dispatch<SetStateAction<ContextObject>>;
 } | null;
 
 const ProjectsContext = createContext<ProjectsContextType>(null);
@@ -21,21 +25,19 @@ export const useProjectsContext = () => {
 export const ProjectsContextProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
-  const [currentTimersCs, setCurrentTimersCs] = useState<Record<number, number>>({});
-  const [totalTimersCs, setTotalTimersCs] = useState<Record<number, number>>({});
-  const [isRunning, setIsRunning] = useState<Record<number, boolean>>({});
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [contextObject, setContextObject] = useState<ContextObject>({
+    projects: [],
+    currentTimersCs: {},
+    totalTimersCs: {},
+    isRunning: {},
+    intervalRef: useRef<NodeJS.Timeout | null>(null),
+  });
 
   return (
     <ProjectsContext.Provider
       value={{
-        currentTimersCs,
-        setCurrentTimersCs,
-        totalTimersCs,
-        setTotalTimersCs,
-        isRunning,
-        setIsRunning,
-        intervalRef,
+        contextObject,
+        setContextObject,
       }}
     >
       {children}

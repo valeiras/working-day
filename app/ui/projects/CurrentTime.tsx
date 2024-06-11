@@ -1,6 +1,6 @@
 "use client";
 
-import { useProjectsContext } from "@/app/(landing)/projects/context";
+import { useProjectsContext } from "@/app/contexts/ProjectsContext";
 import { formatTime } from "@/app/lib/utils";
 import React from "react";
 
@@ -12,7 +12,9 @@ const CurrentTime: React.FC<Props> = ({ id }) => {
     throw new Error("Projects context is not set");
   }
 
-  const { currentTimersCs } = projectsContext;
+  const {
+    contextObject: { currentTimersCs },
+  } = projectsContext;
 
   const { hours, minutes, seconds } = formatTime(currentTimersCs?.[id] || 0);
   return <>{`${hours}:${minutes}:${seconds}`}</>;

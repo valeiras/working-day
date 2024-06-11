@@ -1,16 +1,28 @@
 "use client";
 
-import { useProjectsContext } from "@/app/(landing)/projects/context";
+import { useProjectsContext } from "@/app/contexts/ProjectsContext";
 import { ProjectWithWorkingTimes } from "@/app/lib/db/queries";
 import { computeAccumulatedTimerCs } from "@/app/lib/utils";
+import { useQuery } from "@tanstack/react-query";
 import React, { useEffect } from "react";
+import { getAllProjects } from "../lib/actions";
 
-type Props = { projects: ProjectWithWorkingTimes[] | null };
+const ProjectsContextSetter: React.FC = () => {
+  const {
+    contextObject: { intervalRef },
+    setContextObject,
+  } = useProjectsContext()!;
 
-const ProjectsContextSetter: React.FC<Props> = ({ projects }) => {
-  const { setCurrentTimersCs, setTotalTimersCs, setIsRunning, intervalRef } = useProjectsContext()!;
+  const { data } = useQuery({
+    queryKey: ["projects"],
+    queryFn: () => getAllProjects(),
+    staleTime: 10 * 1000,
+  });
 
   useEffect(() => {
+    if (data === undefined) return;
+
+    const { data: projects } = data;
     if (intervalRef.current) clearInterval(intervalRef.current);
 
     const currentTimersCs: Record<number, number> = {};
@@ -43,9 +55,13 @@ const ProjectsContextSetter: React.FC<Props> = ({ projects }) => {
       totalInitialMs[id] = Math.round((Date.now() - totalCs * 10) / 1000) * 1000;
     });
 
-    setCurrentTimersCs(currentTimersCs);
-    setTotalTimersCs(totalTimersCs);
-    setIsRunning(isRunning);
+    setContextObject((prev) => ({
+      ...prev,
+      projects,
+      currentTimersCs,
+      totalTimersCs,
+      isRunning,
+    }));
 
     intervalRef.current = setInterval(() => {
       projects?.forEach(({ id }) => {
@@ -54,14 +70,17 @@ const ProjectsContextSetter: React.FC<Props> = ({ projects }) => {
           totalTimersCs[id] = (Date.now() - totalInitialMs[id]) / 10;
         }
       });
-      setCurrentTimersCs({ ...currentTimersCs });
-      setTotalTimersCs({ ...totalTimersCs });
+      setContextObject((prev) => ({
+        ...prev,
+        currentTimersCs,
+        totalTimersCs,
+      }));
     }, 10);
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [intervalRef, projects, setCurrentTimersCs, setIsRunning, setTotalTimersCs]);
+  }, [data, setContextObject, intervalRef]);
 
   return null;
 };

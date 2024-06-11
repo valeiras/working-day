@@ -1,6 +1,10 @@
-import { Navbar, Title } from "@/app/ui";
+import { Navbar, ProjectsContextSetter, Title } from "@/app/ui";
+import { ProjectsContextProvider } from "../contexts/ProjectsContext";
+import { ProjectWithWorkingTimes } from "../lib/db/queries";
+import { getAllProjects } from "../lib/actions";
+import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
 
-export default function Layout({
+export default async function Layout({
   children,
   firstClickModal,
   newProjectModal,
@@ -9,17 +13,27 @@ export default function Layout({
   firstClickModal: React.ReactNode;
   newProjectModal: React.ReactNode;
 }>) {
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: ["projects"],
+    queryFn: getAllProjects,
+  });
+
   return (
-    <>
+    <HydrationBoundary state={dehydrate(queryClient)}>
       <header>
         <Navbar />
       </header>
       <main className="flex flex-1 flex-col items-center justify-start gap-4">
         <Title />
-        {children}
-        {firstClickModal}
-        {newProjectModal}
+        <ProjectsContextProvider>
+          <ProjectsContextSetter />
+          {children}
+          {firstClickModal}
+          {newProjectModal}
+        </ProjectsContextProvider>
       </main>
-    </>
+    </HydrationBoundary>
   );
 }

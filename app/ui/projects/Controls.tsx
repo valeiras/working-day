@@ -1,6 +1,6 @@
 "use client";
 
-import { useProjectsContext } from "@/app/(landing)/projects/context";
+import { useProjectsContext } from "@/app/contexts/ProjectsContext";
 import React from "react";
 import { FaPause, FaStop, FaPlay } from "react-icons/fa6";
 type Props = { id: number };
@@ -11,7 +11,9 @@ const Controls: React.FC<Props> = ({ id }) => {
     throw new Error("Projects context is not set");
   }
 
-  const { isRunning } = projectsContext;
+  const {
+    contextObject: { isRunning },
+  } = projectsContext;
 
   return (
     <div className="flex gap-1">

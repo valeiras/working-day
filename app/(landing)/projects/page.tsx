@@ -5,7 +5,6 @@ import React, { ReactNode } from "react";
 import { Info, ProjectRow, ProjectsContextSetter } from "@/app/ui";
 import { ProjectColumns } from "@/app/lib/types";
 import { ProjectsContextProvider } from "./context";
-import ProjectRows from "@/app/ui/projects/ProjectRows";
 
 const columns: ProjectColumns[] = [
   "index",
@@ -69,7 +68,9 @@ const Page: React.FC = async () => {
               </tr>
             </thead>
             <tbody>
-              <ProjectRows projects={projects} columns={columns} />
+              {projects?.map((project, idx) => {
+                return <ProjectRow key={project.id} project={project} columns={columns} idx={idx} />;
+              })}
             </tbody>
           </table>
         </div>

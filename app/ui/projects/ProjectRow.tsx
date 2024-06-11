@@ -8,22 +8,16 @@ import { ProjectColumns } from "@/app/lib/types";
 import TotalTime from "./TotalTime";
 import CurrentTime from "./CurrentTime";
 
-type Props = {
-  project: ProjectWithWorkingTimes;
-  idx: number;
-  columns: ProjectColumns[];
-  currentTimersCs: Record<number, number>;
-  totalTimersCs: Record<number, number>;
-};
+type Props = { project: ProjectWithWorkingTimes; idx: number; columns: ProjectColumns[] };
 
-const ProjectRow: React.FC<Props> = ({ project, idx, columns, currentTimersCs, totalTimersCs }) => {
+const ProjectRow: React.FC<Props> = ({ project, idx, columns }) => {
   const { activeBlock, id, name } = project;
 
   const projectCells: Record<ProjectColumns, { content: ReactNode; className?: string }> = {
     index: { content: idx },
     name: { content: name },
-    totalTime: { content: <TotalTime id={project.id} totalTimersCs={totalTimersCs} /> },
-    currentTime: { content: <CurrentTime id={project.id} currentTimersCs={currentTimersCs} /> },
+    totalTime: { content: <TotalTime id={project.id} /> },
+    currentTime: { content: <CurrentTime id={project.id} /> },
     isActive: { content: activeBlock?.id ? <FaCheck /> : <IoClose />, className: "flex justify-center" },
     edit: {
       content: (

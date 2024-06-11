@@ -11,10 +11,10 @@ export const fetcher = (url: string) => fetch(url).then((res) => res.json());
 export const computeAccumulatedTimerCs = (startTimes: StartTimes) => {
   if (!startTimes) return 0;
   return startTimes.reduce((acc, curr) => {
-    const stopTime =
-      curr.stopTimes && curr.stopTimes.length !== 0 ? curr.stopTimes.slice(-1)[0].time : new Date().toISOString();
+    const pauseTime =
+      curr.pauseTimes && curr.pauseTimes.length !== 0 ? curr.pauseTimes.slice(-1)[0].time : new Date().toISOString();
     const startTime = curr.time;
-    const diff = new Date(stopTime).getTime() - new Date(startTime).getTime();
+    const diff = new Date(pauseTime).getTime() - new Date(startTime).getTime();
     // The timer cumulates 10 milliseconds intervals (i.e. 1cs time)
     return acc + diff / 10;
   }, 0);

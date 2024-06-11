@@ -9,6 +9,35 @@
 export type Database = {
   public: {
     Tables: {
+      pause_times: {
+        Row: {
+          id: number
+          start_time_id: number
+          time: string
+          user_id: string
+        }
+        Insert: {
+          id?: number
+          start_time_id: number
+          time?: string
+          user_id?: string
+        }
+        Update: {
+          id?: number
+          start_time_id?: number
+          time?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stop_times_start_time_id_fkey"
+            columns: ["start_time_id"]
+            isOneToOne: false
+            referencedRelation: "start_times"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
           active_block_id: number | null
@@ -67,35 +96,6 @@ export type Database = {
           },
         ]
       }
-      stop_times: {
-        Row: {
-          id: number
-          start_time_id: number
-          time: string
-          user_id: string
-        }
-        Insert: {
-          id?: number
-          start_time_id: number
-          time?: string
-          user_id?: string
-        }
-        Update: {
-          id?: number
-          start_time_id?: number
-          time?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "stop_times_start_time_id_fkey"
-            columns: ["start_time_id"]
-            isOneToOne: false
-            referencedRelation: "start_times"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       working_blocks: {
         Row: {
           created_at: string
@@ -107,7 +107,7 @@ export type Database = {
           created_at?: string
           id?: number
           project_id: number
-          user_id: string
+          user_id?: string
         }
         Update: {
           created_at?: string

@@ -2,23 +2,24 @@
 
 import React from "react";
 import { Timer } from "@/app/ui";
-import { FaPause, FaStop } from "react-icons/fa6";
+import { FaPause, FaStop, FaPlay } from "react-icons/fa6";
 
 type Props = {
   timer: number;
   isRunning: boolean;
-  StartButton: React.ReactNode;
+  handleStart: () => void;
   handlePause: () => void;
   handleStop: () => void;
   modalMessage?: string;
   isLoading?: boolean;
 };
-const Watch: React.FC<Props> = ({ timer, isRunning, StartButton, handlePause, handleStop, isLoading = false }) => {
+
+const Watch: React.FC<Props> = ({ timer, isRunning, handleStart, handlePause, handleStop, isLoading = false }) => {
   return (
     <div className="flex flex-col items-stretch gap-4 bg-base-300 rounded-xl shadow-lg p-6 -mx-6">
       <Timer timer={timer} isLoading={isLoading} />
       <div className="join grid grid-cols-2">
-        {isRunning ? <PauseButton handlePause={handlePause} /> : StartButton}
+        {isRunning ? <PauseButton handlePause={handlePause} /> : <StartButton handleStart={handleStart} />}
         <StopButton handleStop={handleStop} timer={timer} />
       </div>
     </div>
@@ -43,6 +44,14 @@ const StopButton: React.FC<{ handleStop: () => void; timer: number }> = ({ handl
     >
       Stop
       <FaStop />
+    </button>
+  );
+};
+
+const StartButton: React.FC<{ handleStart: () => void }> = ({ handleStart }) => {
+  return (
+    <button className="btn btn-success join-item flex gap-1 items-center text-[#1a3224]" onClick={handleStart}>
+      <FaPlay /> Start
     </button>
   );
 };

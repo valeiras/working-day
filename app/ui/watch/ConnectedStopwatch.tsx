@@ -1,19 +1,28 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
+import { addStartTime, addPauseTime, createNewBlock, getAllProjects, setActiveBlock } from "@/app/lib/actions";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Watch from "./Watch";
-import { addStartTime, addStopTime, createNewBlock, setActiveBlock } from "@/app/lib/actions";
-import { FaPlay } from "react-icons/fa";
+import { useProjectsContext } from "@/app/contexts/ProjectsContext";
 import { useLocalTimer } from "@/app/lib/hooks";
-import { ProjectWithActiveBlock, StartTimes } from "@/app/lib/db/queries";
-import { PostgrestError } from "@supabase/postgrest-js";
-import { computeAccumulatedTimerCs } from "./../../lib/utils";
 
 type Props = { projectId: number | null };
 const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
-  const [isFetching, setIsFetching] = useState<boolean>(true);
-  const activeBlockIdRef = useRef<number | null>(null);
-  const startTimeIdRef = useRef<number | null>(null);
+  const queryClient = useQueryClient();
+  const { data, isLoading } = useQuery({
+    queryKey: ["projects"],
+    queryFn: () => getAllProjects(),
+    staleTime: 10 * 1000,
+  });
+
+  const projects = data?.data || [];
+  const currProject = projects.find((project) => project.id === projectId);
+
+  const projectsContext = useProjectsContext();
+  if (!projectsContext) {
+    throw new Error("Projects context is not set");
+  }
 
   const {
     handleLocalStart,
@@ -27,35 +36,20 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
     intervalRef,
   } = useLocalTimer();
 
+  const {
+    contextObject: { currentTimersCs, isRunning: isRunningFromContext },
+  } = projectsContext;
+
   useEffect(() => {
-    const fetchData = async () => {
-      if (!projectId) return;
-      const res = await fetch(`/api/v1/projects/${projectId}`);
-      const { data, error } = (await res.json()) as {
-        data: ProjectWithActiveBlock | null;
-        error?: PostgrestError | null;
-      };
-      if (error || !data) return;
-
-      // The current project is running if it is active and the last start time has no stop time
-      const isProjectRunning =
-        data.activeBlock !== null && data.activeBlock.startTimes?.slice(-1)[0]?.stopTimes?.length === 0;
-      const projectTimerCs = computeAccumulatedTimerCs(data?.activeBlock?.startTimes || null);
-
-      activeBlockIdRef.current = data.activeBlock?.id || null;
-      if (isProjectRunning) {
-        startTimeIdRef.current = data.activeBlock?.startTimes?.slice(-1)[0]?.id || null;
-        handleConnectedStart(projectTimerCs);
-      }
-
-      setIsRunning(isProjectRunning);
-      setLocalTimerCs(projectTimerCs);
-      setIsFetching(false);
-    };
-
-    setIsFetching(true);
+    if (!projectId) return;
     if (intervalRef.current) clearInterval(intervalRef.current);
-    fetchData();
+
+    if (isRunningFromContext[projectId]) {
+      handleConnectedStart(currentTimersCs[projectId]);
+    }
+
+    setIsRunning(isRunningFromContext[projectId]);
+    setLocalTimerCs(currentTimersCs[projectId]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId]);
 
@@ -67,60 +61,59 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
     }
 
     handleLocalStart();
-    handleDBStart();
+    handleDBStart(projectId);
   };
 
-  const handleDBStart = async () => {
-    if (!projectId) return console.error("Project ID is missing");
+  const handleDBStart = async (projectId: number) => {
+    let blockId: number | undefined = currProject?.activeBlock?.id;
 
-    if (!activeBlockIdRef.current) {
+    if (!blockId) {
       const { data, error } = await createNewBlock({ projectId });
       if (error || !data) return console.error(error);
-      activeBlockIdRef.current = data.id;
-      await setActiveBlock({ projectId, blockId: data.id });
+      blockId = data.id;
+      await setActiveBlock({ projectId, blockId });
     }
-    const { data, error } = await addStartTime({ blockId: activeBlockIdRef.current });
+    const { data, error } = await addStartTime({ blockId });
     if (error || !data) return console.error(error);
-    startTimeIdRef.current = data.id;
+    queryClient.invalidateQueries({ queryKey: ["projects"] });
   };
 
-  const handlePause = () => {
-    if (!isRunning) return;
-    if (!startTimeIdRef.current) return console.error("Start time id is missing");
-    handleLocalPause();
-
-    addStopTime({ startTimeId: startTimeIdRef.current });
-    startTimeIdRef.current = null;
-  };
-
-  const handleStop = () => {
+  const handlePause = async () => {
     if (!projectId) return console.error("Project ID is missing");
 
+    const startTimeId = currProject?.activeBlock?.startTimes?.[0]?.id;
+    if (!startTimeId) return console.error("Start time id is missing");
+    handleLocalPause();
+    handleDBPause(startTimeId);
+  };
+
+  const handleDBPause = async (startTimeId: number) => {
+    await addPauseTime({ startTimeId });
+    queryClient.invalidateQueries({ queryKey: ["projects"] });
+  };
+
+  const handleStop = async () => {
+    if (!projectId) return console.error("Project ID is missing");
     if (isRunning) handlePause();
     handleLocalStop();
+    handleDBStop(projectId);
+  };
 
-    setActiveBlock({ projectId, blockId: null });
-    activeBlockIdRef.current = null;
+  const handleDBStop = async (projectId: number) => {
+    await setActiveBlock({ projectId, blockId: null });
+    queryClient.invalidateQueries({ queryKey: ["projects"] });
   };
 
   return (
     <Watch
       timer={localTimerCs}
       isRunning={isRunning}
-      StartButton={<StartButton handleStart={handleStart} />}
+      handleStart={handleStart}
       handlePause={handlePause}
       handleStop={handleStop}
       modalMessage="The current block will be stopped and stored in the database."
-      isLoading={isFetching}
+      isLoading={isLoading}
     />
-  );
-};
-
-const StartButton: React.FC<{ handleStart: () => void }> = ({ handleStart }) => {
-  return (
-    <button className="btn btn-success join-item flex gap-1 items-center text-[#1a3224]" onClick={handleStart}>
-      <FaPlay /> Start
-    </button>
   );
 };
 

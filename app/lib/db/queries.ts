@@ -7,12 +7,15 @@ import { createClerkServerSupabaseClient } from "./serverSupabaseClient";
 import { PostgrestError, PostgrestBuilder } from "@supabase/postgrest-js";
 import { DBError } from "../errors";
 
-export type StartTimes = { id: number; time: string; stopTimes: { time: string }[] | null }[] | null;
+export type StartTimes = { id: number; time: string; pauseTimes: { time: string }[] | null }[] | null;
 
 export type ProjectWithWorkingTimes = {
   name: string;
   id: number;
-  activeBlock: { id: number } | null;
+  activeBlock: {
+    id: number;
+    startTimes: StartTimes;
+  } | null;
   workingBlocks: { id: number; startTimes: StartTimes }[];
 };
 
@@ -62,8 +65,8 @@ export const selectAllProjectsWithWorkingTimes = async (): Promise<{
       .from("projects")
       .select(
         `name, id,
-        activeBlock:working_blocks!projects_active_block_id_fkey(id),
-        workingBlocks:working_blocks!working_blocks_project_id_fkey(id, startTimes:start_times(id, time, stopTimes:stop_times(time)))`
+        activeBlock:working_blocks!projects_active_block_id_fkey(id, startTimes:start_times(id, time, pauseTimes:pause_times(time))),
+        workingBlocks:working_blocks!working_blocks_project_id_fkey(id, startTimes:start_times(id, time, pauseTimes:pause_times(time)))`
       )
       .returns<ProjectWithWorkingTimes[]>()
   );
@@ -95,7 +98,7 @@ export const selectProjectById = async (
       .select(
         `name, id,
         activeBlock:working_blocks!projects_active_block_id_fkey(
-          id, startTimes:start_times(id, time, stopTimes:stop_times(time)))`
+          id, startTimes:start_times(id, time, pauseTimes:pause_times(time)))`
       )
       .eq("id", id)
       .returns<ProjectWithActiveBlock>()
@@ -132,19 +135,19 @@ export const insertStartTime = async ({
   );
 };
 
-export const insertStopTime = async ({
+export const insertPauseTime = async ({
   startTimeId,
 }: {
   startTimeId: number;
-}): Promise<{ data: Tables<"stop_times"> | null; error?: unknown | PostgrestError }> => {
+}): Promise<{ data: Tables<"pause_times"> | null; error?: unknown | PostgrestError }> => {
   const client = await createClerkServerSupabaseClient();
 
   return withErrorHandling(
     client
-      .from("stop_times")
+      .from("pause_times")
       .insert({ start_time_id: startTimeId })
       .select()
-      .returns<Tables<"stop_times">>()
+      .returns<Tables<"pause_times">>()
       .maybeSingle()
   );
 };

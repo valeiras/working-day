@@ -4,7 +4,7 @@ import {
   insertBlock,
   insertProject,
   insertStartTime,
-  insertStopTime,
+  insertPauseTime,
   selectAllProjectsWithWorkingTimes,
   updateProject,
 } from "./db/queries";
@@ -23,13 +23,17 @@ export const setActiveBlock = async ({ projectId, blockId }: { projectId: number
   return { data, error };
 };
 
-export const addStartTime = async ({ blockId }: { blockId: number }) => {
+export const addStartTime = async ({ blockId }: { blockId: number | null }) => {
+  if (!blockId) {
+    console.error("Block ID is missing");
+    return { data: null, error: "Block ID is missing" };
+  }
   const { data, error } = await insertStartTime({ blockId });
   return { data, error };
 };
 
-export const addStopTime = async ({ startTimeId }: { startTimeId: number }) => {
-  const { data, error } = await insertStopTime({ startTimeId });
+export const addPauseTime = async ({ startTimeId }: { startTimeId: number }) => {
+  const { data, error } = await insertPauseTime({ startTimeId });
   return { data, error };
 };
 

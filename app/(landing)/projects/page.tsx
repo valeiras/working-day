@@ -7,7 +7,7 @@ import { ProjectColumns } from "@/app/lib/types";
 import { cn } from "@/app/lib/utils";
 import { useProjectsContext } from "@/app/contexts/ProjectsContext";
 import { getAllProjects } from "@/app/lib/actions";
-import { QueryClient } from "@tanstack/react-query";
+import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
 
 const columns: ProjectColumns[] = [
   "index",
@@ -56,29 +56,31 @@ const Page: React.FC = async () => {
   });
 
   return (
-    <div className="flex flex-col items-stretch gap-4 bg-base-300 rounded-xl shadow-lg p-6 -mx-6">
-      <h2 className="text-lg text-center">Projects:</h2>
-      <div className="overflow-x-auto">
-        <table className="table">
-          <thead>
-            <tr>
-              {columns.map((column) => {
-                return (
-                  <th key={column} className={cn("text-center", columnsLabels[column].className)}>
-                    {columnsLabels[column].content}
-                  </th>
-                );
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <div className="flex flex-col items-stretch gap-4 bg-base-300 rounded-xl shadow-lg p-6 -mx-6">
+        <h2 className="text-lg text-center">Projects:</h2>
+        <div className="overflow-x-auto">
+          <table className="table">
+            <thead>
+              <tr>
+                {columns.map((column) => {
+                  return (
+                    <th key={column} className={cn("text-center", columnsLabels[column].className)}>
+                      {columnsLabels[column].content}
+                    </th>
+                  );
+                })}
+              </tr>
+            </thead>
+            <tbody>
+              {projects?.map((project, idx) => {
+                return <ProjectRow key={project.id} project={project} columns={columns} idx={idx} />;
               })}
-            </tr>
-          </thead>
-          <tbody>
-            {projects?.map((project, idx) => {
-              return <ProjectRow key={project.id} project={project} columns={columns} idx={idx} />;
-            })}
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+    </HydrationBoundary>
   );
 };
 

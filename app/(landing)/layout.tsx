@@ -1,6 +1,5 @@
 import { Navbar, ProjectsContextSetter, Title } from "@/app/ui";
 import { ProjectsContextProvider } from "../contexts/ProjectsContext";
-import { ProjectWithWorkingTimes } from "../lib/db/queries";
 import { getAllProjects } from "../lib/actions";
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
 

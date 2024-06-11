@@ -40,7 +40,7 @@ const ProjectsContextSetter: React.FC = () => {
       const activeBlockWithWorkingTimes = workingBlocks.find((block) => block.id === activeBlock?.id) || null;
       const isProjectRunning =
         activeBlockWithWorkingTimes !== null &&
-        activeBlockWithWorkingTimes.startTimes?.slice(-1)[0]?.stopTimes?.length === 0;
+        activeBlockWithWorkingTimes.startTimes?.slice(-1)[0]?.pauseTimes?.length === 0;
 
       const currentCs = computeAccumulatedTimerCs(activeBlockWithWorkingTimes?.startTimes || null);
 

@@ -2,7 +2,7 @@ import { ProjectWithWorkingTimes } from "@/app/lib/db/queries";
 
 import React, { ReactNode } from "react";
 
-import { Info, ProjectRow, ProjectsContextSetter } from "@/app/ui";
+import { Info, ProjectRow, ProjectsContextSetter, ProjectsList } from "@/app/ui";
 import { ProjectColumns } from "@/app/lib/types";
 import { cn } from "@/app/lib/utils";
 import { useProjectsContext } from "@/app/contexts/ProjectsContext";
@@ -50,7 +50,7 @@ const columnsLabels: Record<ProjectColumns, { content: ReactNode; className?: st
 
 const Page: React.FC = async () => {
   const queryClient = new QueryClient();
-  const { data: projects } = await queryClient.fetchQuery({
+  await queryClient.prefetchQuery({
     queryKey: ["projects"],
     queryFn: getAllProjects,
   });
@@ -73,9 +73,7 @@ const Page: React.FC = async () => {
               </tr>
             </thead>
             <tbody>
-              {projects?.map((project, idx) => {
-                return <ProjectRow key={project.id} project={project} columns={columns} idx={idx} />;
-              })}
+              <ProjectsList columns={columns} />
             </tbody>
           </table>
         </div>

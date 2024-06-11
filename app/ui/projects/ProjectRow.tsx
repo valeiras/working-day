@@ -5,8 +5,8 @@ import { MdEdit } from "react-icons/md";
 import { ProjectWithWorkingTimes } from "@/app/lib/db/queries";
 import Link from "next/link";
 import { ProjectColumns } from "@/app/lib/types";
-import TotalTime from "./TotalTime";
-import CurrentTime from "./CurrentTime";
+import { TotalTime, CurrentTime, Controls } from "@/app/ui";
+import { cn } from "@/app/lib/utils";
 
 type Props = { project: ProjectWithWorkingTimes; idx: number; columns: ProjectColumns[] };
 
@@ -14,11 +14,14 @@ const ProjectRow: React.FC<Props> = ({ project, idx, columns }) => {
   const { activeBlock, id, name } = project;
 
   const projectCells: Record<ProjectColumns, { content: ReactNode; className?: string }> = {
-    index: { content: idx },
-    name: { content: name },
+    index: { content: idx, className: "text-left" },
+    name: { content: name, className: "text-left" },
     totalTime: { content: <TotalTime id={project.id} /> },
     currentTime: { content: <CurrentTime id={project.id} /> },
-    isActive: { content: activeBlock?.id ? <FaCheck /> : <IoClose />, className: "flex justify-center" },
+    isActive: { content: activeBlock?.id ? <FaCheck /> : <IoClose /> },
+    controls: { content: <Controls id={project.id} /> },
+    alerts: { content: <div>Mail(8h)</div> },
+    overtimeThreshold: { content: <div>8h/day</div> },
     edit: {
       content: (
         <div className="flex gap-2">
@@ -30,17 +33,15 @@ const ProjectRow: React.FC<Props> = ({ project, idx, columns }) => {
           </Link>
         </div>
       ),
+      className: "text-right",
     },
-    controls: { content: <div></div> },
-    alerts: { content: <div></div> },
-    overtimeThreshold: { content: <div></div> },
   };
 
   return (
     <tr key={id} className={activeBlock?.id ? "bg-neutral" : ""}>
       {columns.map((column) => {
         return (
-          <td key={column} className={projectCells[column].className}>
+          <td key={column} className={cn("text-center", projectCells[column].className)}>
             {projectCells[column].content}
           </td>
         );

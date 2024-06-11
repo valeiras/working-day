@@ -5,6 +5,7 @@ import React, { ReactNode } from "react";
 import { Info, ProjectRow, ProjectsContextSetter } from "@/app/ui";
 import { ProjectColumns } from "@/app/lib/types";
 import { ProjectsContextProvider } from "./context";
+import { cn } from "@/app/lib/utils";
 
 const columns: ProjectColumns[] = [
   "index",
@@ -18,8 +19,8 @@ const columns: ProjectColumns[] = [
 ];
 
 const columnsLabels: Record<ProjectColumns, { content: ReactNode; className?: string }> = {
-  index: { content: "#" },
-  name: { content: "Name" },
+  index: { content: "#", className: "text-left" },
+  name: { content: "Name", className: "text-left" },
   totalTime: {
     content: (
       <>
@@ -42,7 +43,7 @@ const columnsLabels: Record<ProjectColumns, { content: ReactNode; className?: st
   controls: { content: "Controls" },
   alerts: { content: "Alerts" },
   overtimeThreshold: { content: "Overtime threshold" },
-  edit: { content: "Edit" },
+  edit: { content: "Edit", className: "text-right" },
 };
 
 const Page: React.FC = async () => {
@@ -60,7 +61,7 @@ const Page: React.FC = async () => {
               <tr>
                 {columns.map((column) => {
                   return (
-                    <th key={column} className={columnsLabels[column].className}>
+                    <th key={column} className={cn("text-center", columnsLabels[column].className)}>
                       {columnsLabels[column].content}
                     </th>
                   );

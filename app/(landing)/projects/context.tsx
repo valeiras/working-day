@@ -7,6 +7,8 @@ type ProjectsContextType = {
   setCurrentTimersCs: Dispatch<SetStateAction<Record<number, number>>>;
   totalTimersCs: Record<number, number>;
   setTotalTimersCs: Dispatch<SetStateAction<Record<number, number>>>;
+  isRunning: Record<number, boolean>;
+  setIsRunning: Dispatch<SetStateAction<Record<number, boolean>>>;
   intervalRef: MutableRefObject<NodeJS.Timeout | null>;
 } | null;
 
@@ -21,6 +23,7 @@ export const ProjectsContextProvider: React.FC<{
 }> = ({ children }) => {
   const [currentTimersCs, setCurrentTimersCs] = useState<Record<number, number>>({});
   const [totalTimersCs, setTotalTimersCs] = useState<Record<number, number>>({});
+  const [isRunning, setIsRunning] = useState<Record<number, boolean>>({});
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   return (
@@ -30,6 +33,8 @@ export const ProjectsContextProvider: React.FC<{
         setCurrentTimersCs,
         totalTimersCs,
         setTotalTimersCs,
+        isRunning,
+        setIsRunning,
         intervalRef,
       }}
     >

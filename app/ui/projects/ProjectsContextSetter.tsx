@@ -8,7 +8,7 @@ import React, { useEffect } from "react";
 type Props = { projects: ProjectWithWorkingTimes[] | null };
 
 const ProjectsContextSetter: React.FC<Props> = ({ projects }) => {
-  const { setCurrentTimersCs, setTotalTimersCs, intervalRef } = useProjectsContext()!;
+  const { setCurrentTimersCs, setTotalTimersCs, setIsRunning, intervalRef } = useProjectsContext()!;
 
   useEffect(() => {
     if (intervalRef.current) clearInterval(intervalRef.current);
@@ -45,6 +45,7 @@ const ProjectsContextSetter: React.FC<Props> = ({ projects }) => {
 
     setCurrentTimersCs(currentTimersCs);
     setTotalTimersCs(totalTimersCs);
+    setIsRunning(isRunning);
 
     intervalRef.current = setInterval(() => {
       projects?.forEach(({ id }) => {
@@ -60,7 +61,7 @@ const ProjectsContextSetter: React.FC<Props> = ({ projects }) => {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [intervalRef, projects, setCurrentTimersCs, setTotalTimersCs]);
+  }, [intervalRef, projects, setCurrentTimersCs, setIsRunning, setTotalTimersCs]);
 
   return null;
 };

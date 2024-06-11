@@ -2,12 +2,12 @@
 
 import { createNewProject } from "@/app/lib/actions";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { newProjectFormSchema, NewProjectFormSchemaType } from "../lib/types";
+import { newProjectFormSchema, NewProjectFormSchemaType } from "../../lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSWRConfig } from "swr";
 import { useRouter } from "next/navigation";
 
-const NewProjectForm = () => {
+const NewProjectModalContent: React.FC = () => {
   const { mutate } = useSWRConfig();
   const router = useRouter();
 
@@ -47,4 +47,4 @@ const NewProjectForm = () => {
   );
 };
 
-export default NewProjectForm;
+export default NewProjectModalContent;

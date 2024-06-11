@@ -1,10 +1,10 @@
-import { FirstClick, Modal } from "@/app/ui";
+import { FirstClickModalContent, Modal } from "@/app/ui";
 import React from "react";
 
 const Page: React.FC = () => {
   return (
     <Modal>
-      <FirstClick />
+      <FirstClickModalContent />
     </Modal>
   );
 };

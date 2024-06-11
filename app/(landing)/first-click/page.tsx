@@ -1,8 +1,8 @@
-import { FirstClick } from "@/app/ui";
+import { FirstClickModalContent } from "@/app/ui";
 import React from "react";
 
 const Page: React.FC = () => {
-  return <FirstClick />;
+  return <FirstClickModalContent />;
 };
 
 export default Page;

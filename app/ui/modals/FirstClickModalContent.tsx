@@ -4,7 +4,7 @@ import { SignInButton } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-const FirstClick: React.FC = () => {
+const FirstClickModalContent: React.FC = () => {
   const router = useRouter();
 
   return (
@@ -30,4 +30,4 @@ const FirstClick: React.FC = () => {
   );
 };
 
-export default FirstClick;
+export default FirstClickModalContent;

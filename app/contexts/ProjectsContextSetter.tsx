@@ -1,7 +1,6 @@
 "use client";
 
 import { useProjectsContext } from "@/app/contexts/ProjectsContext";
-import { ProjectWithWorkingTimes } from "@/app/lib/db/queries";
 import { computeAccumulatedTimerCs } from "@/app/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect } from "react";

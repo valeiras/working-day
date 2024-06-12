@@ -1,17 +1,18 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { addStartTime, addPauseTime, createNewBlock, getAllProjects, setActiveBlock } from "@/app/lib/actions";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getAllProjects } from "@/app/lib/actions";
+import { useQuery } from "@tanstack/react-query";
 import Watch from "./Watch";
-import { useProjectsContext } from "@/app/contexts/ProjectsContext";
 import { useLocalTimer } from "@/app/lib/hooks";
 import { useDBTimer } from "@/app/lib/hooks/useDBTimer";
+import { getSingleTimer } from "@/app/lib/getTimers";
 
 type Props = { projectId: number | null };
 const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
-  const queryClient = useQueryClient();
-  const { data, isLoading } = useQuery({
+  const [isStale, setIsStale] = React.useState<boolean>(false);
+
+  const { data, isFetching } = useQuery({
     queryKey: ["projects"],
     queryFn: () => getAllProjects(),
     staleTime: 10 * 1000,
@@ -19,11 +20,6 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
 
   const projects = data?.data || [];
   const currProject = projects.find((project) => project.id === projectId);
-
-  const projectsContext = useProjectsContext();
-  if (!projectsContext) {
-    throw new Error("Projects context is not set");
-  }
 
   const {
     handleLocalStart,
@@ -39,48 +35,52 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
 
   const { handleDBStart, handleDBPause, handleDBStop } = useDBTimer();
 
-  const {
-    contextObject: { currentTimersCs, isRunning: isRunningFromContext },
-  } = projectsContext;
-
   useEffect(() => {
     if (!projectId) return;
+    const { currentTimerCs, isRunning: isRunningDB } = getSingleTimer({ projects, projectId })!;
+
     if (intervalRef.current) clearInterval(intervalRef.current);
 
-    if (isRunningFromContext[projectId]) {
-      handleConnectedStart(currentTimersCs[projectId]);
+    if (isRunningDB) {
+      handleConnectedStart(currentTimerCs);
     }
 
-    setIsRunning(isRunningFromContext[projectId]);
-    setLocalTimerCs(currentTimersCs[projectId]);
+    setIsRunning(isRunningDB);
+    setLocalTimerCs(currentTimerCs);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId]);
 
-  const handleStart = () => {
-    if (isRunning) return;
+  const handleStart = async () => {
     if (!projectId || !currProject) {
       alert("Select a project first");
       return console.error("Project ID is missing");
     }
 
+    setIsStale(true);
     handleLocalStart();
-    handleDBStart(currProject);
+    await handleDBStart(currProject);
+    setIsStale(false);
   };
 
   const handlePause = async () => {
     if (!projectId) return console.error("Project ID is missing");
 
+    setIsStale(true);
     const startTimeId = currProject?.activeBlock?.startTimes?.[0]?.id;
     if (!startTimeId) return console.error("Start time id is missing");
+
     handleLocalPause();
-    handleDBPause(startTimeId);
+    await handleDBPause(startTimeId);
+    setIsStale(false);
   };
 
   const handleStop = async () => {
     if (!projectId) return console.error("Project ID is missing");
+    setIsStale(true);
     if (isRunning) handlePause();
     handleLocalStop();
-    handleDBStop(projectId);
+    await handleDBStop(projectId);
+    setIsStale(false);
   };
 
   return (
@@ -91,7 +91,7 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
       handlePause={handlePause}
       handleStop={handleStop}
       modalMessage="The current block will be stopped and stored in the database."
-      isLoading={isLoading}
+      isLoading={isFetching || isStale}
     />
   );
 };

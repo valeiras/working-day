@@ -66,7 +66,7 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
     if (!projectId) return console.error("Project ID is missing");
 
     setIsStale(true);
-    const startTimeId = currProject?.activeBlock?.startTimes?.[0]?.id;
+    const startTimeId = currProject?.activeBlock?.startTimes?.slice(-1)[0]?.id;
     if (!startTimeId) return console.error("Start time id is missing");
 
     handleLocalPause();

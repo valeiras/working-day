@@ -40,7 +40,6 @@ const ProjectsList: React.FC<Props> = ({ columns }) => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projects]);
 

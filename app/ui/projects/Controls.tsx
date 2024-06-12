@@ -35,7 +35,9 @@ const Controls: React.FC<Props> = ({ id, isActive, project, isFetching }) => {
 
   const handlePause = async () => {
     setIsSubmitting(true);
-    const startTimeId = project.activeBlock?.startTimes?.[0]?.id;
+    const startTimeId = project.activeBlock?.startTimes?.slice(-1)[0]?.id;
+    console.log(project.activeBlock?.startTimes);
+    console.log(startTimeId);
     if (!startTimeId) return console.error("No start time found");
     await handleDBPause(startTimeId);
     setIsSubmitting(false);

@@ -2,16 +2,18 @@
 
 import { createContext, useState, useContext, useRef, Dispatch, SetStateAction, MutableRefObject } from "react";
 
-type ContextObject = {
+export type ProjectsContextObject = {
   currentTimersCs: Record<number, number>;
   totalTimersCs: Record<number, number>;
   isRunning: Record<number, boolean>;
+  isActive: Record<number, boolean>;
+  isFetching: boolean;
   intervalRef: MutableRefObject<NodeJS.Timeout | null>;
 };
 
 type ProjectsContextType = {
-  contextObject: ContextObject;
-  setContextObject: Dispatch<SetStateAction<ContextObject>>;
+  contextObject: ProjectsContextObject;
+  setContextObject: Dispatch<SetStateAction<ProjectsContextObject>>;
 } | null;
 
 const ProjectsContext = createContext<ProjectsContextType>(null);
@@ -23,10 +25,12 @@ export const useProjectsContext = () => {
 export const ProjectsContextProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
-  const [contextObject, setContextObject] = useState<ContextObject>({
+  const [contextObject, setContextObject] = useState<ProjectsContextObject>({
     currentTimersCs: {},
     totalTimersCs: {},
     isRunning: {},
+    isActive: {},
+    isFetching: false,
     intervalRef: useRef<NodeJS.Timeout | null>(null),
   });
 

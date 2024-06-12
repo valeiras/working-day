@@ -1,13 +1,18 @@
 "use client";
 
 import { useProjectsContext } from "@/app/contexts/ProjectsContext";
-import { createNewBlock } from "@/app/lib/actions";
 import { ProjectWithWorkingTimes } from "@/app/lib/db/queries";
 import { useDBTimer } from "@/app/lib/hooks/useDBTimer";
+import { LocalTimerArray } from "@/app/lib/hooks/useLocalTimerArray";
 import React, { useState } from "react";
 import { FaPause, FaStop, FaPlay } from "react-icons/fa6";
 
-type Props = { id: number; isActive: boolean; project: ProjectWithWorkingTimes; isFetching?: boolean };
+type Props = {
+  id: number;
+  isActive: boolean;
+  project: ProjectWithWorkingTimes;
+  isFetching?: boolean;
+};
 
 const Controls: React.FC<Props> = ({ id, isActive, project, isFetching }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);

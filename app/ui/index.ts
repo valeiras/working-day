@@ -1,5 +1,4 @@
 export { default as Navbar } from "./Navbar";
-import ProjectRow from "./projects/ProjectRow";
 export { default as ProjectSelector } from "./ProjectSelector";
 export { default as Title } from "./Title";
 export { default as Info } from "./Info";
@@ -19,5 +18,4 @@ export { default as ProjectRow } from "./projects/ProjectRow";
 export { default as ProjectsList } from "./projects/ProjectsList";
 export { default as CurrentTime } from "./projects/CurrentTime";
 export { default as TotalTime } from "./projects/TotalTime";
-export { default as ProjectsContextSetter } from "../contexts/ProjectsContextSetter";
 export { default as Controls } from "./projects/Controls";

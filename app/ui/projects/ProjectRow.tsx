@@ -7,8 +7,14 @@ import Link from "next/link";
 import { ProjectColumns } from "@/app/lib/types";
 import { TotalTime, CurrentTime, Controls } from "@/app/ui";
 import { cn } from "@/app/lib/utils";
+import { LocalTimerArray } from "@/app/lib/hooks/useLocalTimerArray";
 
-type Props = { project: ProjectWithWorkingTimes; idx: number; columns: ProjectColumns[]; isFetching?: boolean };
+type Props = {
+  project: ProjectWithWorkingTimes;
+  idx: number;
+  columns: ProjectColumns[];
+  isFetching?: boolean;
+};
 
 const ProjectRow: React.FC<Props> = ({ project, idx, columns, isFetching }) => {
   const { activeBlock, id, name } = project;

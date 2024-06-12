@@ -1,6 +1,5 @@
 import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import { LocalStopwatch, ConnectedStopwatchAndProjectSelector } from "../ui";
-import { ProjectWithWorkingTimes } from "../lib/db/queries";
 
 export default async function Home() {
   return (

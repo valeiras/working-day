@@ -46,7 +46,7 @@ const Page: React.FC = async () => {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div className="flex flex-col items-stretch gap-4 bg-base-300 rounded-xl shadow-lg p-6 -mx-6">
-        <h2 className="text-lg text-center">Projects:</h2>
+        <h2 className="text-lg text-center font-medium">Projects:</h2>
         <div className="overflow-x-auto">
           <table className="table">
             <thead>

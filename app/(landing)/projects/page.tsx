@@ -5,7 +5,6 @@ import { ProjectColumns } from "@/app/lib/types";
 import { cn } from "@/app/lib/utils";
 import { getAllProjects } from "@/app/lib/actions";
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
-import { ProjectsContextProvider } from "@/app/contexts/ProjectsContext";
 
 const columns: ProjectColumns[] = ["index", "name", "totalTime", "currentTime", "controls", "edit"];
 
@@ -62,9 +61,7 @@ const Page: React.FC = async () => {
               </tr>
             </thead>
             <tbody>
-              <ProjectsContextProvider>
-                <ProjectsList columns={columns} />
-              </ProjectsContextProvider>
+              <ProjectsList columns={columns} />
             </tbody>
           </table>
         </div>

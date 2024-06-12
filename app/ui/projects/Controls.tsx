@@ -1,6 +1,5 @@
 "use client";
 
-import { useProjectsContext } from "@/app/contexts/ProjectsContext";
 import { ProjectWithWorkingTimes } from "@/app/lib/db/queries";
 import { useDBTimer } from "@/app/lib/hooks/useDBTimer";
 import { LocalTimerArray } from "@/app/lib/hooks/useLocalTimerArray";
@@ -12,23 +11,19 @@ type Props = {
   isActive: boolean;
   project: ProjectWithWorkingTimes;
   isFetching?: boolean;
+  localTimerArray: LocalTimerArray;
 };
 
-const Controls: React.FC<Props> = ({ id, isActive, project, isFetching }) => {
+const Controls: React.FC<Props> = ({ id, isActive, project, isFetching, localTimerArray }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const projectsContext = useProjectsContext();
-  if (!projectsContext) {
-    throw new Error("Projects context is not set");
-  }
 
-  const {
-    contextObject: { isRunning },
-  } = projectsContext;
+  const { isRunning, handleLocalStart, handleLocalPause, handleLocalStop } = localTimerArray;
 
   const { handleDBStart, handleDBPause, handleDBStop } = useDBTimer();
 
   const handleStart = async () => {
     setIsSubmitting(true);
+    handleLocalStart(id);
     await handleDBStart(project);
     setIsSubmitting(false);
   };
@@ -36,8 +31,7 @@ const Controls: React.FC<Props> = ({ id, isActive, project, isFetching }) => {
   const handlePause = async () => {
     setIsSubmitting(true);
     const startTimeId = project.activeBlock?.startTimes?.slice(-1)[0]?.id;
-    console.log(project.activeBlock?.startTimes);
-    console.log(startTimeId);
+    handleLocalPause(id);
     if (!startTimeId) return console.error("No start time found");
     await handleDBPause(startTimeId);
     setIsSubmitting(false);
@@ -45,6 +39,7 @@ const Controls: React.FC<Props> = ({ id, isActive, project, isFetching }) => {
 
   const handleStop = async () => {
     setIsSubmitting(true);
+    handleLocalStop(id);
     await handleDBStop(project.id);
     setIsSubmitting(false);
   };

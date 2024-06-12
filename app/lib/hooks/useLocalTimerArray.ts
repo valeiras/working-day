@@ -2,7 +2,6 @@ import { useRef, useState } from "react";
 
 export type LocalTimerArray = {
   handleLocalStart: (projectId: number) => void;
-  handleConnectedStart: (timerCs: number, projectId: number) => void;
   handleLocalPause: (projectId: number) => void;
   handleLocalStop: (projectId: number) => void;
   localTimersCs: Record<number, number>;
@@ -25,17 +24,6 @@ const useLocalTimerArray = () => {
   const [isRunning, setIsRunning] = useState<Record<number, boolean>>({});
   const [isActive, setIsActive] = useState<Record<number, boolean>>({});
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-
-  const handleConnectedStart = (timerCs: number, projectId: number) => {
-    const newIsRunning = { ...isRunning, [projectId]: true };
-    setIsRunning(newIsRunning);
-    setIsActive({ ...isActive, [projectId]: true });
-
-    const newInitialTimesMs = { ...initialTimesMs, [projectId]: Date.now() - timerCs * 10 };
-    setInitialTimesMs(newInitialTimesMs);
-
-    createInterval({ currInitialTimes: newInitialTimesMs, currIsRunning: newIsRunning });
-  };
 
   const handleLocalStart = (projectId: number) => {
     if (isRunning[projectId]) return;
@@ -77,23 +65,21 @@ const useLocalTimerArray = () => {
     currInitialTimes: Record<number, number>;
     currIsRunning: Record<number, boolean>;
   }) => {
-    const newLocalTimersCs = { ...localTimersCs };
-
-    Object.entries(currInitialTimes).forEach(([id, time]) => {
-      if (currIsRunning[parseInt(id)]) {
-        newLocalTimersCs[parseInt(id)] = (Date.now() - time) / 10;
-      }
-    });
-
     if (intervalRef.current) clearInterval(intervalRef.current);
+
     intervalRef.current = setInterval(() => {
+      const newLocalTimersCs = { ...localTimersCs };
+      Object.entries(currInitialTimes).forEach(([id, time]) => {
+        if (currIsRunning[parseInt(id)]) {
+          newLocalTimersCs[parseInt(id)] = (Date.now() - time) / 10;
+        }
+      });
       setLocalTimersCs(newLocalTimersCs);
     }, 10);
   };
 
   return {
     handleLocalStart,
-    handleConnectedStart,
     handleLocalPause,
     handleLocalStop,
     localTimersCs,

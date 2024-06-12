@@ -5,8 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useEffect } from "react";
 import ProjectRow from "./ProjectRow";
 import { ProjectColumns } from "@/app/lib/types";
-import { useProjectsContext } from "@/app/contexts/ProjectsContext";
-import setProjectContext from "@/app/lib/setProjectContext";
+import useLocalTimerArray from "@/app/lib/hooks/useLocalTimerArray";
+import { getAllTimers } from "@/app/lib/getTimers";
 
 type Props = { columns: ProjectColumns[] };
 
@@ -15,26 +15,34 @@ const ProjectsList: React.FC<Props> = ({ columns }) => {
     queryKey: ["projects"],
     queryFn: () => getAllProjects(),
     staleTime: 10 * 1000,
+    refetchOnWindowFocus: false,
   });
 
   const projects = data?.data;
-  const projectsContext = useProjectsContext();
-  if (!projectsContext) {
-    throw new Error("Projects context is not set");
-  }
+
+  const localTimerArray = useLocalTimerArray();
   const {
-    setContextObject,
-    contextObject: { intervalRef },
-  } = projectsContext;
+    setLocalTimersCs,
+    setTotalTimersCs,
+    setInitialTimesMs,
+    setTotalInitialTimesMs,
+    setIsRunning,
+    intervalRef,
+    createInterval,
+  } = localTimerArray;
 
   useEffect(() => {
     if (!projects) return;
+    const { currentTimersCs, totalTimersCs, currentInitialMs, totalInitialMs, isRunning } = getAllTimers({ projects });
+    setLocalTimersCs(currentTimersCs);
+    setTotalTimersCs(totalTimersCs);
+    setInitialTimesMs(currentInitialMs);
+    setTotalInitialTimesMs(totalInitialMs);
+    setIsRunning(isRunning);
 
-    setProjectContext({
-      projects,
-      intervalRef,
-      setContextObject,
-    });
+    intervalRef.current = setInterval(() => {
+      createInterval({ currInitialTimes: currentInitialMs, currIsRunning: isRunning });
+    }, 10);
 
     return () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -52,7 +60,16 @@ const ProjectsList: React.FC<Props> = ({ columns }) => {
         </div>
       ) : (
         projects?.map((project, idx) => {
-          return <ProjectRow key={project.id} project={project} columns={columns} idx={idx} isFetching={isFetching} />;
+          return (
+            <ProjectRow
+              key={project.id}
+              project={project}
+              columns={columns}
+              idx={idx}
+              isFetching={isFetching}
+              localTimerArray={localTimerArray}
+            />
+          );
         })
       )}
     </>

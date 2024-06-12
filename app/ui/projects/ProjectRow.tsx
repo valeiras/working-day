@@ -14,20 +14,27 @@ type Props = {
   idx: number;
   columns: ProjectColumns[];
   isFetching?: boolean;
+  localTimerArray: LocalTimerArray;
 };
 
-const ProjectRow: React.FC<Props> = ({ project, idx, columns, isFetching }) => {
+const ProjectRow: React.FC<Props> = ({ project, idx, columns, isFetching, localTimerArray }) => {
   const { activeBlock, id, name } = project;
 
   const projectCells: Record<ProjectColumns, { content: ReactNode; className?: string }> = {
     index: { content: idx, className: "text-left" },
     name: { content: name, className: "text-left" },
-    totalTime: { content: <TotalTime id={project.id} /> },
-    currentTime: { content: <CurrentTime id={project.id} /> },
+    totalTime: { content: <TotalTime id={project.id} totalTimersCs={localTimerArray.totalTimersCs} /> },
+    currentTime: { content: <CurrentTime id={project.id} currentTimersCs={localTimerArray.localTimersCs} /> },
     isActive: { content: activeBlock?.id ? <FaCheck /> : <IoClose /> },
     controls: {
       content: (
-        <Controls id={project.id} isActive={activeBlock?.id !== undefined} project={project} isFetching={isFetching} />
+        <Controls
+          id={project.id}
+          isActive={activeBlock?.id !== undefined}
+          project={project}
+          isFetching={isFetching}
+          localTimerArray={localTimerArray}
+        />
       ),
     },
     alerts: { content: <div>Mail(8h)</div> },

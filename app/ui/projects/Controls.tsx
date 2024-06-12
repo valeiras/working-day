@@ -6,9 +6,10 @@ import { ProjectWithWorkingTimes } from "@/app/lib/db/queries";
 import { useDBTimer } from "@/app/lib/hooks/useDBTimer";
 import React, { useState } from "react";
 import { FaPause, FaStop, FaPlay } from "react-icons/fa6";
-type Props = { id: number; isActive: boolean; project: ProjectWithWorkingTimes };
 
-const Controls: React.FC<Props> = ({ id, isActive, project }) => {
+type Props = { id: number; isActive: boolean; project: ProjectWithWorkingTimes; isFetching?: boolean };
+
+const Controls: React.FC<Props> = ({ id, isActive, project, isFetching }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const projectsContext = useProjectsContext();
   if (!projectsContext) {
@@ -44,21 +45,21 @@ const Controls: React.FC<Props> = ({ id, isActive, project }) => {
   return (
     <div className="flex gap-1">
       <button
-        disabled={isRunning[id] || isSubmitting}
+        disabled={isRunning[id] || isSubmitting || isFetching}
         onClick={handleStart}
         className={"text-success cursor-pointer disabled:opacity-20 disabled:cursor-auto"}
       >
         <FaPlay />
       </button>
       <button
-        disabled={!isRunning[id] || isSubmitting}
+        disabled={!isRunning[id] || isSubmitting || isFetching}
         onClick={handlePause}
         className={"text-warning cursor-pointer disabled:opacity-20 disabled:cursor-auto"}
       >
         <FaPause />
       </button>
       <button
-        disabled={!isActive || isSubmitting}
+        disabled={!isActive || isSubmitting || isFetching}
         onClick={handleStop}
         className={"text-accent cursor-pointer disabled:opacity-20 disabled:cursor-auto"}
       >

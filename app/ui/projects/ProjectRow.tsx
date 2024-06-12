@@ -8,9 +8,9 @@ import { ProjectColumns } from "@/app/lib/types";
 import { TotalTime, CurrentTime, Controls } from "@/app/ui";
 import { cn } from "@/app/lib/utils";
 
-type Props = { project: ProjectWithWorkingTimes; idx: number; columns: ProjectColumns[] };
+type Props = { project: ProjectWithWorkingTimes; idx: number; columns: ProjectColumns[]; isFetching?: boolean };
 
-const ProjectRow: React.FC<Props> = ({ project, idx, columns }) => {
+const ProjectRow: React.FC<Props> = ({ project, idx, columns, isFetching }) => {
   const { activeBlock, id, name } = project;
 
   const projectCells: Record<ProjectColumns, { content: ReactNode; className?: string }> = {
@@ -19,7 +19,11 @@ const ProjectRow: React.FC<Props> = ({ project, idx, columns }) => {
     totalTime: { content: <TotalTime id={project.id} /> },
     currentTime: { content: <CurrentTime id={project.id} /> },
     isActive: { content: activeBlock?.id ? <FaCheck /> : <IoClose /> },
-    controls: { content: <Controls id={project.id} isActive={activeBlock?.id !== undefined} project={project} /> },
+    controls: {
+      content: (
+        <Controls id={project.id} isActive={activeBlock?.id !== undefined} project={project} isFetching={isFetching} />
+      ),
+    },
     alerts: { content: <div>Mail(8h)</div> },
     overtimeThreshold: { content: <div>8h/day</div> },
     edit: {

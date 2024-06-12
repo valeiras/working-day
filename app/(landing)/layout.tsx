@@ -1,5 +1,4 @@
-import { Navbar, ProjectsContextSetter, Title } from "@/app/ui";
-import { ProjectsContextProvider } from "../contexts/ProjectsContext";
+import { Navbar, Title } from "@/app/ui";
 import { getAllProjects } from "../lib/actions";
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
 
@@ -26,12 +25,9 @@ export default async function Layout({
       </header>
       <main className="flex flex-1 flex-col items-center justify-start gap-4">
         <Title />
-        <ProjectsContextProvider>
-          <ProjectsContextSetter />
-          {children}
-          {firstClickModal}
-          {newProjectModal}
-        </ProjectsContextProvider>
+        {children}
+        {firstClickModal}
+        {newProjectModal}
       </main>
     </HydrationBoundary>
   );

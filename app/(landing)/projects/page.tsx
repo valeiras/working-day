@@ -6,16 +6,7 @@ import { cn } from "@/app/lib/utils";
 import { getAllProjects } from "@/app/lib/actions";
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
 
-const columns: ProjectColumns[] = [
-  "index",
-  "name",
-  "totalTime",
-  "currentTime",
-  "controls",
-  "alerts",
-  "overtimeThreshold",
-  "edit",
-];
+const columns: ProjectColumns[] = ["index", "name", "totalTime", "currentTime", "controls", "edit"];
 
 const columnsLabels: Record<ProjectColumns, { content: ReactNode; className?: string }> = {
   index: { content: "#", className: "text-left" },

@@ -41,22 +41,12 @@ const useLocalTimerArray: () => LocalTimerArray = () => {
     const currTimer = currentTimersCs[projectId] || 0;
     const newInitialTimesMs = { ...currentInitialTimesMs, [projectId]: Date.now() - currTimer * 10 };
     setCurrentInitialTimesMs(newInitialTimesMs);
-
-    createInterval({
-      currentInitialTimes: newInitialTimesMs,
-      currentTimers: { ...currentTimersCs, [projectId]: currTimer },
-      isRunning: newIsRunning,
-    });
   };
 
   const handleLocalPause = (projectId: number) => {
     if (!isRunning[projectId]) return;
     const newIsRunning = { ...isRunning, [projectId]: false };
     setIsRunning(newIsRunning);
-
-    createInterval({
-      isRunning: newIsRunning,
-    });
   };
 
   const handleLocalStop = (projectId: number) => {
@@ -69,11 +59,6 @@ const useLocalTimerArray: () => LocalTimerArray = () => {
 
     const newCurrentTimersCs = { ...currentTimersCs, [projectId]: 0 };
     setCurrentTimersCs(newCurrentTimersCs);
-
-    createInterval({
-      currentTimers: newCurrentTimersCs,
-      isRunning: newIsRunning,
-    });
   };
 
   const createInterval = (params: {

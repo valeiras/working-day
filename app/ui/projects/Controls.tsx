@@ -57,21 +57,21 @@ const Controls: React.FC<Props> = ({ id, project, isFetching, localTimerArray })
       <button
         disabled={isRunning[id] || isSubmitting || isFetching}
         onClick={handleStart}
-        className={"text-success cursor-pointer disabled:opacity-20 disabled:cursor-auto transition-all"}
+        className={"text-success cursor-pointer disabled:opacity-20 disabled:cursor-auto transition-all duration-500"}
       >
         <FaPlay />
       </button>
       <button
         disabled={!isRunning[id] || isSubmitting || isFetching}
         onClick={handlePause}
-        className={"text-warning cursor-pointer disabled:opacity-20 disabled:cursor-auto transition-all"}
+        className={"text-warning cursor-pointer disabled:opacity-20 disabled:cursor-auto transition-all duration-500"}
       >
         <FaPause />
       </button>
       <button
         disabled={!isActive[id] || isSubmitting || isFetching}
         onClick={handleStop}
-        className={"text-accent cursor-pointer disabled:opacity-20 disabled:cursor-auto transition-all"}
+        className={"text-accent cursor-pointer disabled:opacity-20 disabled:cursor-auto transition-all duration-500"}
       >
         <FaStop />
       </button>

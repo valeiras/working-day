@@ -40,7 +40,6 @@ const ProjectsList: React.FC<Props> = ({ columns }) => {
     });
     if (intervalRef.current) clearInterval(intervalRef.current);
 
-    console.log(projects);
     setCurrentTimersCs(currentTimersCs);
     setTotalTimersCs(totalTimersCs);
     setCurrentInitialTimesMs(currentInitialMs);

@@ -57,7 +57,7 @@ const ProjectRow: React.FC<Props> = ({ project, idx, columns, isFetching, localT
     <tr key={id} className={isActive ? "bg-neutral" : ""}>
       {columns.map((column) => {
         return (
-          <td key={column} className={cn("text-center", projectCells[column].className)}>
+          <td key={column} className={cn("text-center px-8", projectCells[column].className)}>
             {projectCells[column].content}
           </td>
         );

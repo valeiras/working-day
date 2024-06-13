@@ -44,7 +44,7 @@ const ProjectsTable: React.FC<Props> = ({ className }) => {
             <tr>
               {columns.map((column) => {
                 return (
-                  <th key={column} className={cn("text-center", columnLabels[column].className)}>
+                  <th key={column} className={cn("text-center px-8", columnLabels[column].className)}>
                     {columnLabels[column].content}
                   </th>
                 );

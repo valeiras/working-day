@@ -1,6 +1,7 @@
 "use client";
 
 import { getAllProjects } from "@/app/lib/actions";
+import { useDBSynchronizer, useLocalTimerArray } from "@/app/lib/hooks";
 import { cn } from "@/app/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
@@ -15,6 +16,9 @@ const ProjectsList: React.FC<Props> = ({ className }) => {
   });
 
   const projects = data?.data;
+  const localTimerArray = useLocalTimerArray();
+  useDBSynchronizer({ projects, localTimerArray });
+
   return (
     <div className={cn("flex flex-col items-stretch gap-1 bg-accent px-4 w-full mx-2", className)}>ProjectsList</div>
   );

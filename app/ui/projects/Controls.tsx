@@ -2,7 +2,7 @@
 
 import { useProjectsContext } from "@/app/contexts/ProjectsContext";
 import { ProjectWithWorkingTimes } from "@/app/lib/db/queries";
-import { useDBTimer } from "@/app/lib/hooks/useDBTimer";
+import { useDBTimer } from "@/app/lib/hooks";
 import { LocalTimerArray } from "@/app/lib/hooks/useLocalTimerArray";
 import React from "react";
 import { FaPause, FaStop, FaPlay } from "react-icons/fa6";

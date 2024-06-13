@@ -4,8 +4,7 @@ import React, { useEffect } from "react";
 import { getAllProjects } from "@/app/lib/actions";
 import { useQuery } from "@tanstack/react-query";
 import Watch from "./Watch";
-import { useLocalTimer } from "@/app/lib/hooks";
-import { useDBTimer } from "@/app/lib/hooks/useDBTimer";
+import { useDBTimer, useLocalTimer } from "@/app/lib/hooks";
 import { getSingleTimer } from "@/app/lib/getTimers";
 
 type Props = { projectId: number | null };

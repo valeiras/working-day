@@ -2,7 +2,7 @@ import { addPauseTime, addStartTime, createNewBlock, setActiveBlock } from "../a
 import { ProjectWithWorkingTimes } from "../db/queries";
 import { useQueryClient } from "@tanstack/react-query";
 
-export const useDBTimer = () => {
+const useDBTimer = () => {
   const queryClient = useQueryClient();
 
   const handleDBStart = async (project: ProjectWithWorkingTimes, invalidateQueries: boolean = true) => {
@@ -33,3 +33,5 @@ export const useDBTimer = () => {
 
   return { handleDBStart, handleDBPause, handleDBStop };
 };
+
+export default useDBTimer;

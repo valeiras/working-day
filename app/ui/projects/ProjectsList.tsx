@@ -5,6 +5,7 @@ import { useDBSynchronizer, useLocalTimerArray } from "@/app/lib/hooks";
 import { cn } from "@/app/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
+import ProjectCard from "./ProjectCard";
 
 type Props = { className: string };
 const ProjectsList: React.FC<Props> = ({ className }) => {
@@ -20,7 +21,20 @@ const ProjectsList: React.FC<Props> = ({ className }) => {
   useDBSynchronizer({ projects, localTimerArray });
 
   return (
-    <div className={cn("flex flex-col items-stretch gap-1 bg-accent px-4 w-full mx-2", className)}>ProjectsList</div>
+    <>
+      {isLoading ? (
+        <div className="flex flex-col gap-4 w-3/4">
+          <div className="skeleton h-4 w-64"></div>
+          <div className="skeleton h-4 w-60"></div>
+        </div>
+      ) : (
+        <div className={cn("flex flex-col items-stretch gap-4 px-2 w-full mx-2", className)}>
+          {projects?.map((project) => (
+            <ProjectCard key={project.id} project={project} localTimerArray={localTimerArray} isFetching={isFetching} />
+          ))}
+        </div>
+      )}
+    </>
   );
 };
 

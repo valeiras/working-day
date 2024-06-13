@@ -15,9 +15,11 @@ export { default as Modal } from "./modals/Modal";
 export { default as FirstClickModalContent } from "./modals/FirstClickModalContent";
 
 export { default as ProjectRow } from "./projects/ProjectRow";
+export { default as ProjectCard } from "./projects/ProjectCard";
 export { default as ProjectsTableRows } from "./projects/ProjectsTableRows";
 export { default as ProjectsTable } from "./projects/ProjectsTable";
 export { default as ProjectsList } from "./projects/ProjectsList";
+export { default as EditButtons } from "./projects/EditButtons";
 export { default as CurrentTime } from "./projects/CurrentTime";
 export { default as TotalTime } from "./projects/TotalTime";
 export { default as Controls } from "./projects/Controls";

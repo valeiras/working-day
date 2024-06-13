@@ -11,7 +11,7 @@ const CurrentTime: React.FC<Props> = ({ id, currentTimersCs, isFetching }) => {
   const { hours, minutes, seconds } = formatTime(currentTimersCs?.[id] || 0);
   return (
     <span
-      className={`transition-all duration-500 ${
+      className={`transition-all duration-500${
         (isSubmitting || isFetching) && lastSubmittedProjectId === id && "opacity-0"
       }`}
     >{`${hours}:${minutes}:${seconds}`}</span>

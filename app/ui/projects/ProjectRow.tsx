@@ -3,9 +3,8 @@ import { FaCheck, FaList } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import { MdEdit } from "react-icons/md";
 import { ProjectWithWorkingTimes } from "@/app/lib/db/queries";
-import Link from "next/link";
 import { ProjectColumns } from "@/app/lib/types";
-import { TotalTime, CurrentTime, Controls } from "@/app/ui";
+import { TotalTime, CurrentTime, Controls, EditButtons } from "@/app/ui";
 import { cn } from "@/app/lib/utils";
 import { LocalTimerArray } from "@/app/lib/hooks/useLocalTimerArray";
 
@@ -39,16 +38,7 @@ const ProjectRow: React.FC<Props> = ({ project, idx, columns, isFetching, localT
     alerts: { content: <div>Mail(8h)</div> },
     overtimeThreshold: { content: <div>8h/day</div> },
     edit: {
-      content: (
-        <div className="flex gap-2">
-          <Link href="/">
-            <MdEdit />
-          </Link>
-          <Link href="/">
-            <FaList />
-          </Link>
-        </div>
-      ),
+      content: <EditButtons />,
       className: "text-right",
     },
   };

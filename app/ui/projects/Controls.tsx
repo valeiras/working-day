@@ -4,6 +4,7 @@ import { useProjectsContext } from "@/app/contexts/ProjectsContext";
 import { ProjectWithWorkingTimes } from "@/app/lib/db/queries";
 import { useDBTimer } from "@/app/lib/hooks";
 import { LocalTimerArray } from "@/app/lib/hooks/useLocalTimerArray";
+import { cn } from "@/app/lib/utils";
 import React from "react";
 import { FaPause, FaStop, FaPlay } from "react-icons/fa6";
 
@@ -12,9 +13,10 @@ type Props = {
   project: ProjectWithWorkingTimes;
   isFetching?: boolean;
   localTimerArray: LocalTimerArray;
+  className?: string;
 };
 
-const Controls: React.FC<Props> = ({ id, project, isFetching, localTimerArray }) => {
+const Controls: React.FC<Props> = ({ id, project, isFetching, localTimerArray, className }) => {
   const { isSubmitting, setIsSubmitting, setLastSubmittedProjectId } = useProjectsContext()!;
 
   const { isRunning, handleLocalStart, handleLocalPause, handleLocalStop, isActive } = localTimerArray;
@@ -53,7 +55,7 @@ const Controls: React.FC<Props> = ({ id, project, isFetching, localTimerArray })
   };
 
   return (
-    <div className="flex gap-1">
+    <div className={cn("flex gap-1", className)}>
       <button
         disabled={isRunning[id] || isSubmitting || isFetching}
         onClick={handleStart}

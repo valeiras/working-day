@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 export const useDBTimer = () => {
   const queryClient = useQueryClient();
 
-  const handleDBStart = async (project: ProjectWithWorkingTimes) => {
+  const handleDBStart = async (project: ProjectWithWorkingTimes, invalidateQueries: boolean = true) => {
     let blockId: number | undefined = project.activeBlock?.id;
 
     if (!blockId) {
@@ -18,17 +18,17 @@ export const useDBTimer = () => {
 
     const { data, error } = await addStartTime({ blockId });
     if (error || !data) return console.error(error);
-    queryClient.invalidateQueries({ queryKey: ["projects"] });
+    if (invalidateQueries) queryClient.invalidateQueries({ queryKey: ["projects"] });
   };
 
-  const handleDBPause = async (startTimeId: number) => {
+  const handleDBPause = async (startTimeId: number, invalidateQueries: boolean = true) => {
     await addPauseTime({ startTimeId });
-    queryClient.invalidateQueries({ queryKey: ["projects"] });
+    if (invalidateQueries) queryClient.invalidateQueries({ queryKey: ["projects"] });
   };
 
-  const handleDBStop = async (projectId: number) => {
+  const handleDBStop = async (projectId: number, invalidateQueries: boolean = true) => {
     await setActiveBlock({ projectId, blockId: null });
-    queryClient.invalidateQueries({ queryKey: ["projects"] });
+    if (invalidateQueries) queryClient.invalidateQueries({ queryKey: ["projects"] });
   };
 
   return { handleDBStart, handleDBPause, handleDBStop };

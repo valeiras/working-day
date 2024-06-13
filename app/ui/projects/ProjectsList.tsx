@@ -25,13 +25,12 @@ const ProjectsList: React.FC<Props> = ({ columns }) => {
   const {
     setCurrentTimersCs,
     setTotalTimersCs,
-    setInitialTimesMs,
+    setCurrentInitialTimesMs,
     setTotalInitialTimesMs,
     setIsRunning,
     setIsActive,
     intervalRef,
     createInterval,
-    isRunning: isRunningLocal,
   } = localTimerArray;
 
   useEffect(() => {
@@ -41,17 +40,18 @@ const ProjectsList: React.FC<Props> = ({ columns }) => {
     });
     if (intervalRef.current) clearInterval(intervalRef.current);
 
+    console.log(projects);
     setCurrentTimersCs(currentTimersCs);
     setTotalTimersCs(totalTimersCs);
-    setInitialTimesMs(currentInitialMs);
+    setCurrentInitialTimesMs(currentInitialMs);
     setTotalInitialTimesMs(totalInitialMs);
     setIsRunning(isRunning);
     setIsActive(isActive);
 
     intervalRef.current = setInterval(() => {
       createInterval({
-        currInitialTimes: currentInitialMs,
-        currIsRunning: isRunning,
+        currentInitialTimes: currentInitialMs,
+        isRunning: isRunning,
         totalInitialTimes: totalInitialMs,
         totalTimers: totalTimersCs,
         currentTimers: currentTimersCs,

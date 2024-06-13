@@ -4,7 +4,7 @@ import { useProjectsContext } from "@/app/contexts/ProjectsContext";
 import { ProjectWithWorkingTimes } from "@/app/lib/db/queries";
 import { useDBTimer } from "@/app/lib/hooks/useDBTimer";
 import { LocalTimerArray } from "@/app/lib/hooks/useLocalTimerArray";
-import React, { useState } from "react";
+import React from "react";
 import { FaPause, FaStop, FaPlay } from "react-icons/fa6";
 
 type Props = {
@@ -15,7 +15,7 @@ type Props = {
 };
 
 const Controls: React.FC<Props> = ({ id, project, isFetching, localTimerArray }) => {
-  const { isSubmitting, setIsSubmitting } = useProjectsContext()!;
+  const { isSubmitting, setIsSubmitting, setLastSubmittedProjectId } = useProjectsContext()!;
 
   const { isRunning, handleLocalStart, handleLocalPause, handleLocalStop, isActive } = localTimerArray;
 
@@ -23,6 +23,7 @@ const Controls: React.FC<Props> = ({ id, project, isFetching, localTimerArray })
 
   const handleStart = async () => {
     setIsSubmitting(true);
+    setLastSubmittedProjectId(id);
     handleLocalStart(id);
     await handleDBStart(project);
     setIsSubmitting(false);
@@ -30,9 +31,10 @@ const Controls: React.FC<Props> = ({ id, project, isFetching, localTimerArray })
 
   const handlePause = async () => {
     setIsSubmitting(true);
+    setLastSubmittedProjectId(id);
+    handleLocalPause(id);
     // Start times do not come ordered from the DB: the greatest one is guaranteed to be the most recent
     const startTimeId = project.activeBlock?.startTimes?.reduce((acc, { id }) => (id > acc ? id : acc), 0);
-    handleLocalPause(id);
     if (!startTimeId) return console.error("No start time found");
     await handleDBPause(startTimeId);
     setIsSubmitting(false);
@@ -40,7 +42,12 @@ const Controls: React.FC<Props> = ({ id, project, isFetching, localTimerArray })
 
   const handleStop = async () => {
     setIsSubmitting(true);
+    setLastSubmittedProjectId(id);
     handleLocalStop(id);
+    // Start times do not come ordered from the DB: the greatest one is guaranteed to be the most recent
+    const startTimeId = project.activeBlock?.startTimes?.reduce((acc, { id }) => (id > acc ? id : acc), 0);
+    if (!startTimeId) return console.error("No start time found");
+    if (isRunning[id]) await handleDBPause(startTimeId, false);
     await handleDBStop(project.id);
     setIsSubmitting(false);
   };

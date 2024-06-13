@@ -13,6 +13,7 @@ const ProjectSelector: React.FC<Props> = ({ setProjectId }) => {
     queryKey: ["projects"],
     queryFn: () => getAllProjects(),
     staleTime: 10 * 1000,
+    refetchOnWindowFocus: false,
   });
 
   const projects = data?.data || [];

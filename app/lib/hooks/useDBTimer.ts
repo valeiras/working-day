@@ -9,6 +9,7 @@ export const useDBTimer = () => {
     let blockId: number | undefined = project.activeBlock?.id;
 
     if (!blockId) {
+      if (!project.id) return console.error("No project id");
       const { data, error } = await createNewBlock({ projectId: project.id });
       if (error || !data) return console.error(error);
       blockId = data.id;

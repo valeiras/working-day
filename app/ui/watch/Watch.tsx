@@ -16,9 +16,9 @@ type Props = {
 
 const Watch: React.FC<Props> = ({ timer, isRunning, handleStart, handlePause, handleStop, isLoading = false }) => {
   return (
-    <div className="flex flex-col items-stretch gap-4 bg-base-300 rounded-xl shadow-lg p-6 -mx-6">
+    <div className="flex flex-col items-stretch gap-4 bg-base-300 rounded-xl shadow-lg p-8 -mx-8">
       <Timer timer={timer} />
-      <div className="join grid grid-cols-2">
+      <div className="join grid grid-cols-2 w-64 m-auto">
         {isRunning ? (
           <PauseButton handlePause={handlePause} isLoading={isLoading} />
         ) : (

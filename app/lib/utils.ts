@@ -12,7 +12,7 @@ export const computeAccumulatedTimerCs = (startTimes: StartTimes) => {
   if (!startTimes) return 0;
   return startTimes.reduce((acc, curr) => {
     const pauseTime =
-      curr.pauseTimes && curr.pauseTimes.length !== 0 ? curr.pauseTimes.slice(-1)[0].time : new Date().toISOString();
+      curr.pauseTimes && curr.pauseTimes.length !== 0 ? curr.pauseTimes[0].time : new Date().toISOString();
     const startTime = curr.time;
     const diff = new Date(pauseTime).getTime() - new Date(startTime).getTime();
     // The timer cumulates 10 milliseconds intervals (i.e. 1cs time)

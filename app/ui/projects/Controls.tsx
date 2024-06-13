@@ -1,5 +1,6 @@
 "use client";
 
+import { useProjectsContext } from "@/app/contexts/ProjectsContext";
 import { ProjectWithWorkingTimes } from "@/app/lib/db/queries";
 import { useDBTimer } from "@/app/lib/hooks/useDBTimer";
 import { LocalTimerArray } from "@/app/lib/hooks/useLocalTimerArray";
@@ -8,16 +9,15 @@ import { FaPause, FaStop, FaPlay } from "react-icons/fa6";
 
 type Props = {
   id: number;
-  isActive: boolean;
   project: ProjectWithWorkingTimes;
   isFetching?: boolean;
   localTimerArray: LocalTimerArray;
 };
 
-const Controls: React.FC<Props> = ({ id, isActive, project, isFetching, localTimerArray }) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+const Controls: React.FC<Props> = ({ id, project, isFetching, localTimerArray }) => {
+  const { isSubmitting, setIsSubmitting } = useProjectsContext()!;
 
-  const { isRunning, handleLocalStart, handleLocalPause, handleLocalStop } = localTimerArray;
+  const { isRunning, handleLocalStart, handleLocalPause, handleLocalStop, isActive } = localTimerArray;
 
   const { handleDBStart, handleDBPause, handleDBStop } = useDBTimer();
 
@@ -30,7 +30,8 @@ const Controls: React.FC<Props> = ({ id, isActive, project, isFetching, localTim
 
   const handlePause = async () => {
     setIsSubmitting(true);
-    const startTimeId = project.activeBlock?.startTimes?.slice(-1)[0]?.id;
+    // Start times do not come ordered from the DB: the greatest one is guaranteed to be the most recent
+    const startTimeId = project.activeBlock?.startTimes?.reduce((acc, { id }) => (id > acc ? id : acc), 0);
     handleLocalPause(id);
     if (!startTimeId) return console.error("No start time found");
     await handleDBPause(startTimeId);
@@ -49,21 +50,21 @@ const Controls: React.FC<Props> = ({ id, isActive, project, isFetching, localTim
       <button
         disabled={isRunning[id] || isSubmitting || isFetching}
         onClick={handleStart}
-        className={"text-success cursor-pointer disabled:opacity-20 disabled:cursor-auto"}
+        className={"text-success cursor-pointer disabled:opacity-20 disabled:cursor-auto transition-all"}
       >
         <FaPlay />
       </button>
       <button
         disabled={!isRunning[id] || isSubmitting || isFetching}
         onClick={handlePause}
-        className={"text-warning cursor-pointer disabled:opacity-20 disabled:cursor-auto"}
+        className={"text-warning cursor-pointer disabled:opacity-20 disabled:cursor-auto transition-all"}
       >
         <FaPause />
       </button>
       <button
-        disabled={!isActive || isSubmitting || isFetching}
+        disabled={!isActive[id] || isSubmitting || isFetching}
         onClick={handleStop}
-        className={"text-accent cursor-pointer disabled:opacity-20 disabled:cursor-auto"}
+        className={"text-accent cursor-pointer disabled:opacity-20 disabled:cursor-auto transition-all"}
       >
         <FaStop />
       </button>

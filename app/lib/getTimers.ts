@@ -7,6 +7,7 @@ export const getAllTimers = ({ projects }: { projects: ProjectWithWorkingTimes[]
   const currentInitialMs: Record<number, number> = {};
   const totalInitialMs: Record<number, number> = {};
   const isRunning: Record<number, boolean> = {};
+  const isActive: Record<number, boolean> = {};
 
   projects?.forEach((project) => {
     const { workingBlocks, activeBlock, id } = project;
@@ -15,15 +16,22 @@ export const getAllTimers = ({ projects }: { projects: ProjectWithWorkingTimes[]
     }, 0);
 
     const activeBlockWithWorkingTimes = workingBlocks.find((block) => block.id === activeBlock?.id) || null;
-    const isProjectRunning =
-      activeBlockWithWorkingTimes !== null &&
-      activeBlockWithWorkingTimes.startTimes?.slice(-1)[0]?.pauseTimes?.length === 0;
+    // Start times do not come ordered from the DB: the greatest one is guaranteed to be the most recent
+    const latestTimes = project.activeBlock?.startTimes?.reduce(
+      (acc, { id, pauseTimes }) => (id > acc.id ? { id, pauseTimes } : acc),
+      {
+        id: 0,
+        pauseTimes: [] as { time: string }[] | null,
+      }
+    );
+    const isProjectRunning = activeBlockWithWorkingTimes !== null && latestTimes?.pauseTimes?.length === 0;
 
     const currentCs = computeAccumulatedTimerCs(activeBlockWithWorkingTimes?.startTimes || null);
 
     currentTimersCs[id] = currentCs;
     totalTimersCs[id] = totalCs;
     isRunning[id] = isProjectRunning;
+    isActive[id] = activeBlock?.id !== undefined;
 
     currentTimersCs[id] = currentCs;
     totalTimersCs[id] = totalCs;
@@ -38,6 +46,7 @@ export const getAllTimers = ({ projects }: { projects: ProjectWithWorkingTimes[]
     currentInitialMs,
     totalInitialMs,
     isRunning,
+    isActive,
   };
 };
 
@@ -52,9 +61,14 @@ export const getSingleTimer = ({ projects, projectId }: { projects: ProjectWithW
   }, 0);
 
   const activeBlockWithWorkingTimes = workingBlocks.find((block) => block.id === activeBlock?.id) || null;
-  const isRunning =
-    activeBlockWithWorkingTimes !== null &&
-    activeBlockWithWorkingTimes.startTimes?.slice(-1)[0]?.pauseTimes?.length === 0;
+  const latestTimes = activeBlock?.startTimes?.reduce(
+    (acc, { id, pauseTimes }) => (id > acc.id ? { id, pauseTimes } : acc),
+    {
+      id: 0,
+      pauseTimes: [] as { time: string }[] | null,
+    }
+  );
+  const isRunning = activeBlockWithWorkingTimes !== null && latestTimes?.pauseTimes?.length === 0;
 
   const currentTimerCs = computeAccumulatedTimerCs(activeBlockWithWorkingTimes?.startTimes || null);
 

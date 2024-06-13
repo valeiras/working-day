@@ -7,6 +7,7 @@ import ProjectRow from "./ProjectRow";
 import { ProjectColumns } from "@/app/lib/types";
 import useLocalTimerArray from "@/app/lib/hooks/useLocalTimerArray";
 import { getAllTimers } from "@/app/lib/getTimers";
+import { ProjectsContextProvider } from "@/app/contexts/ProjectsContext";
 
 type Props = { columns: ProjectColumns[] };
 
@@ -22,26 +23,45 @@ const ProjectsList: React.FC<Props> = ({ columns }) => {
 
   const localTimerArray = useLocalTimerArray();
   const {
-    setLocalTimersCs,
+    setCurrentTimersCs,
     setTotalTimersCs,
     setInitialTimesMs,
     setTotalInitialTimesMs,
     setIsRunning,
+    setIsActive,
     intervalRef,
     createInterval,
+    isRunning: isRunningLocal,
   } = localTimerArray;
 
   useEffect(() => {
     if (!projects) return;
-    const { currentTimersCs, totalTimersCs, currentInitialMs, totalInitialMs, isRunning } = getAllTimers({ projects });
-    setLocalTimersCs(currentTimersCs);
+    const { currentTimersCs, totalTimersCs, currentInitialMs, totalInitialMs, isRunning, isActive } = getAllTimers({
+      projects,
+    });
+    if (intervalRef.current) clearInterval(intervalRef.current);
+
+    // console.log({ currentTimersCs });
+    // console.log({ totalTimersCs });
+    // console.log({ currentInitialMs });
+    // console.log({ totalInitialMs });
+    console.log({ isRunningLocal });
+    console.log({ isRunning });
+    setCurrentTimersCs(currentTimersCs);
     setTotalTimersCs(totalTimersCs);
     setInitialTimesMs(currentInitialMs);
     setTotalInitialTimesMs(totalInitialMs);
     setIsRunning(isRunning);
+    setIsActive(isActive);
 
     intervalRef.current = setInterval(() => {
-      createInterval({ currInitialTimes: currentInitialMs, currIsRunning: isRunning });
+      createInterval({
+        currInitialTimes: currentInitialMs,
+        currIsRunning: isRunning,
+        totalInitialTimes: totalInitialMs,
+        totalTimers: totalTimersCs,
+        currentTimers: currentTimersCs,
+      });
     }, 10);
 
     return () => {
@@ -52,7 +72,7 @@ const ProjectsList: React.FC<Props> = ({ columns }) => {
   }, [projects]);
 
   return (
-    <>
+    <ProjectsContextProvider>
       {isLoading ? (
         <div className="flex flex-col gap-4">
           <div className="skeleton h-4 w-64"></div>
@@ -72,7 +92,7 @@ const ProjectsList: React.FC<Props> = ({ columns }) => {
           );
         })
       )}
-    </>
+    </ProjectsContextProvider>
   );
 };
 

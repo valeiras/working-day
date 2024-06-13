@@ -18,24 +18,23 @@ type Props = {
 };
 
 const ProjectRow: React.FC<Props> = ({ project, idx, columns, isFetching, localTimerArray }) => {
-  const { activeBlock, id, name } = project;
+  const { id, name } = project;
+  const isActive = localTimerArray.isActive[project.id];
 
   const projectCells: Record<ProjectColumns, { content: ReactNode; className?: string }> = {
     index: { content: idx, className: "text-left" },
     name: { content: name, className: "text-left" },
-    totalTime: { content: <TotalTime id={project.id} totalTimersCs={localTimerArray.totalTimersCs} /> },
-    currentTime: { content: <CurrentTime id={project.id} currentTimersCs={localTimerArray.localTimersCs} /> },
-    isActive: { content: activeBlock?.id ? <FaCheck /> : <IoClose /> },
-    controls: {
+    totalTime: {
+      content: <TotalTime id={project.id} totalTimersCs={localTimerArray.totalTimersCs} isFetching={isFetching} />,
+    },
+    currentTime: {
       content: (
-        <Controls
-          id={project.id}
-          isActive={activeBlock?.id !== undefined}
-          project={project}
-          isFetching={isFetching}
-          localTimerArray={localTimerArray}
-        />
+        <CurrentTime id={project.id} currentTimersCs={localTimerArray.currentTimersCs} isFetching={isFetching} />
       ),
+    },
+    isActive: { content: isActive ? <FaCheck /> : <IoClose /> },
+    controls: {
+      content: <Controls id={project.id} project={project} isFetching={isFetching} localTimerArray={localTimerArray} />,
     },
     alerts: { content: <div>Mail(8h)</div> },
     overtimeThreshold: { content: <div>8h/day</div> },
@@ -55,7 +54,7 @@ const ProjectRow: React.FC<Props> = ({ project, idx, columns, isFetching, localT
   };
 
   return (
-    <tr key={id} className={activeBlock?.id ? "bg-neutral" : ""}>
+    <tr key={id} className={isActive ? "bg-neutral" : ""}>
       {columns.map((column) => {
         return (
           <td key={column} className={cn("text-center", projectCells[column].className)}>

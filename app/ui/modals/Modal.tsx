@@ -1,5 +1,8 @@
 "use client";
 
+// There seems to be an issue with DaisyUI's modal:
+// https://github.com/saadeghi/daisyui/issues/3040
+
 import { useRouter } from "next/navigation";
 import React, { PropsWithChildren, useCallback, useEffect, useRef } from "react";
 

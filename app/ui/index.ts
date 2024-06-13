@@ -23,3 +23,5 @@ export { default as EditButtons } from "./projects/EditButtons";
 export { default as CurrentTime } from "./projects/CurrentTime";
 export { default as TotalTime } from "./projects/TotalTime";
 export { default as Controls } from "./projects/Controls";
+
+export { default as TimePerProject } from "./stats/TimePerProject";

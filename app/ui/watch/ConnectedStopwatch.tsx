@@ -14,7 +14,6 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
   const { data, isFetching } = useQuery({
     queryKey: ["projects"],
     queryFn: () => getAllProjects(),
-    staleTime: 10 * 1000,
     refetchOnWindowFocus: false,
   });
 

@@ -12,7 +12,6 @@ const ProjectsList: React.FC<Props> = ({ className }) => {
   const { data, isLoading, isFetching } = useQuery({
     queryKey: ["projects"],
     queryFn: () => getAllProjects(),
-    staleTime: 10 * 1000,
     refetchOnWindowFocus: false,
   });
 
@@ -28,7 +27,7 @@ const ProjectsList: React.FC<Props> = ({ className }) => {
           <div className="skeleton h-4 w-60"></div>
         </div>
       ) : (
-        <div className={cn("flex flex-col items-stretch gap-4 px-2 w-full mx-2", className)}>
+        <div className={cn("flex flex-col items-stretch gap-4 px-2 w-full", className)}>
           {projects?.map((project) => (
             <ProjectCard key={project.id} project={project} localTimerArray={localTimerArray} isFetching={isFetching} />
           ))}

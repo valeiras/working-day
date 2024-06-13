@@ -8,7 +8,7 @@ import { PropsWithChildren } from "react";
 
 const Providers: React.FC<PropsWithChildren> = ({ children }) => {
   const [queryClient] = useState(() => {
-    return new QueryClient({ defaultOptions: { queries: { staleTime: 60 * 5 * 1000 } } });
+    return new QueryClient({ defaultOptions: { queries: { staleTime: 60 * 10 * 1000 } } });
   });
 
   return (

@@ -13,7 +13,7 @@ const ProjectCard: React.FC<Props> = ({ project, localTimerArray, isFetching }) 
     <div className="flex flex-col bg-base-300 rounded-lg p-6 pb-4 text-sm w-full max-w-[420px] m-auto ">
       <div className="flex flex-row justify-between items-center font-bold text-base">
         <div>{project.name}</div>
-        <div>
+        <div className="text-xl">
           <EditButtons />
         </div>
       </div>
@@ -36,7 +36,7 @@ const ProjectCard: React.FC<Props> = ({ project, localTimerArray, isFetching }) 
           project={project}
           isFetching={isFetching}
           localTimerArray={localTimerArray}
-          className="text-3xl gap-2"
+          className="text-2xl gap-2"
         />
       </div>
     </div>

@@ -13,7 +13,6 @@ const ProjectsTableRows: React.FC<Props> = ({ columns }) => {
   const { data, isLoading, isFetching } = useQuery({
     queryKey: ["projects"],
     queryFn: () => getAllProjects(),
-    staleTime: 10 * 1000,
     refetchOnWindowFocus: false,
   });
 

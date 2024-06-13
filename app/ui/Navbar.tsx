@@ -17,9 +17,11 @@ const Navbar: React.FC = () => {
           <Link href={"/projects"} className="tooltip tooltip-bottom" data-tip="Projects">
             <IoMdList />
           </Link>
+          {/*
+          TODO: 
           <Link href={"/settings"} className="tooltip tooltip-bottom" data-tip="Settings">
             <IoMdSettings />
-          </Link>
+          </Link> */}
           <UserButton afterSignOutUrl="/" appearance={{ elements: { userButtonAvatarBox: "w-10 h-10" } }} />
         </div>
       </SignedIn>

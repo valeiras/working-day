@@ -12,7 +12,6 @@ const ProjectSelector: React.FC<Props> = ({ setProjectId }) => {
   const { data, isLoading } = useQuery({
     queryKey: ["projects"],
     queryFn: () => getAllProjects(),
-    staleTime: 10 * 1000,
     refetchOnWindowFocus: false,
   });
 

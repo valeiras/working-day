@@ -1,7 +1,7 @@
 import { ProjectWithWorkingTimes } from "./db/queries";
 import { computeAccumulatedTimerCs } from "./utils";
 
-export const getAllTimers = ({ projects }: { projects: ProjectWithWorkingTimes[] }) => {
+export const getAllTimers = ({ projects }: { projects: ProjectWithWorkingTimes[] | null | undefined }) => {
   const currentTimersCs: Record<number, number> = {};
   const totalTimersCs: Record<number, number> = {};
   const currentInitialMs: Record<number, number> = {};

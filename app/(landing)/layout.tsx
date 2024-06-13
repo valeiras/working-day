@@ -12,7 +12,6 @@ export default async function Layout({
   newProjectModal: React.ReactNode;
 }>) {
   const queryClient = new QueryClient();
-
   await queryClient.prefetchQuery({
     queryKey: ["projects"],
     queryFn: getAllProjects,
@@ -23,7 +22,7 @@ export default async function Layout({
       <header>
         <Navbar />
       </header>
-      <main className="flex flex-1 flex-col items-center justify-start gap-4">
+      <main className="flex flex-1 flex-col items-center justify-start gap-4 px-2">
         <Title />
         {children}
         {firstClickModal}

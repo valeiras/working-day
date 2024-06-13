@@ -10,6 +10,6 @@ This project is a full-stack application created using Next. Data is persisted i
 
 ### TODO:
 
-- Use the useLocalTimerArray hook to improve response times of the timer array. Maybe use zustand and a store!
 - Add alerts.
 - Add overtime thresholds.
+- Make the skeletons match the cards

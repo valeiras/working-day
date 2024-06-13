@@ -3,7 +3,7 @@ import React from "react";
 import { ProjectsList, ProjectsTable } from "@/app/ui";
 import { ProjectsContextProvider } from "@/app/contexts/ProjectsContext";
 
-const Page: React.FC = async () => {
+const Projects: React.FC = () => {
   return (
     <ProjectsContextProvider>
       <ProjectsTable className="hidden md:flex" />
@@ -12,4 +12,4 @@ const Page: React.FC = async () => {
   );
 };
 
-export default Page;
+export default Projects;

@@ -20,29 +20,18 @@ const ProjectsTableRows: React.FC<Props> = ({ columns }) => {
   const localTimerArray = useLocalTimerArray();
   useDBSynchronizer({ projects, localTimerArray });
 
-  return (
-    <>
-      {isLoading ? (
-        <div className="flex flex-col gap-4 w-3/4">
-          <div className="skeleton h-4 w-64"></div>
-          <div className="skeleton h-4 w-60"></div>
-        </div>
-      ) : (
-        projects?.map((project, idx) => {
-          return (
-            <ProjectRow
-              key={project.id}
-              project={project}
-              columns={columns}
-              idx={idx}
-              isFetching={isFetching}
-              localTimerArray={localTimerArray}
-            />
-          );
-        })
-      )}
-    </>
-  );
+  return projects?.map((project, idx) => {
+    return (
+      <ProjectRow
+        key={project.id}
+        project={project}
+        columns={columns}
+        idx={idx}
+        isFetching={isFetching}
+        localTimerArray={localTimerArray}
+      />
+    );
+  });
 };
 
 export default ProjectsTableRows;

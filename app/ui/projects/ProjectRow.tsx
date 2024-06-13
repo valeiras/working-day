@@ -35,8 +35,8 @@ const ProjectRow: React.FC<Props> = ({ project, idx, columns, isFetching, localT
     controls: {
       content: <Controls id={project.id} project={project} isFetching={isFetching} localTimerArray={localTimerArray} />,
     },
-    alerts: { content: <div>Mail(8h)</div> },
-    overtimeThreshold: { content: <div>8h/day</div> },
+    alerts: { content: <>Mail(8h)</> },
+    overtimeThreshold: { content: <>8h/day</> },
     edit: {
       content: <EditButtons />,
       className: "text-right",

@@ -1,7 +1,7 @@
 import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import { LocalStopwatch, ConnectedStopwatchAndProjectSelector } from "../ui";
 
-export default async function Home() {
+export default function Home() {
   return (
     <div className="flex flex-1 justify-center flex-col gap-6 md:pb-24">
       <SignedIn>

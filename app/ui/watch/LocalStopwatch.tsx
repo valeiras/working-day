@@ -1,9 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { FaPlay } from "react-icons/fa";
 import Watch from "./Watch";
-import Link from "next/link";
 import { useLocalTimer } from "@/app/lib/hooks";
 import { useRouter } from "next/navigation";
 

@@ -55,7 +55,7 @@ const Controls: React.FC<Props> = ({ id, project, isFetching, localTimerArray, c
   };
 
   return (
-    <div className={cn("flex gap-1", className)}>
+    <span className={cn("flex gap-1", className)}>
       <button
         disabled={isRunning[id] || isSubmitting || isFetching}
         onClick={handleStart}
@@ -77,7 +77,7 @@ const Controls: React.FC<Props> = ({ id, project, isFetching, localTimerArray, c
       >
         <FaStop />
       </button>
-    </div>
+    </span>
   );
 };
 

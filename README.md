@@ -13,3 +13,4 @@ This project is a full-stack application created using Next. Data is persisted i
 - Add alerts.
 - Add overtime thresholds.
 - Make the skeletons match the cards
+- Use tanstack table for the table

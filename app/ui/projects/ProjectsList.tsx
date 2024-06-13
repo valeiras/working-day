@@ -41,12 +41,6 @@ const ProjectsList: React.FC<Props> = ({ columns }) => {
     });
     if (intervalRef.current) clearInterval(intervalRef.current);
 
-    // console.log({ currentTimersCs });
-    // console.log({ totalTimersCs });
-    // console.log({ currentInitialMs });
-    // console.log({ totalInitialMs });
-    console.log({ isRunningLocal });
-    console.log({ isRunning });
     setCurrentTimersCs(currentTimersCs);
     setTotalTimersCs(totalTimersCs);
     setInitialTimesMs(currentInitialMs);
@@ -65,7 +59,6 @@ const ProjectsList: React.FC<Props> = ({ columns }) => {
     }, 10);
 
     return () => {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

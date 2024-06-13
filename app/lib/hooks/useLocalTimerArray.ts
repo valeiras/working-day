@@ -34,9 +34,7 @@ const useLocalTimerArray: () => LocalTimerArray = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleLocalStart = (projectId: number) => {
-    // if (isRunning[projectId]) return;
     const newIsRunning = { ...isRunning, [projectId]: true };
-    console.log({ newIsRunning });
     setIsRunning(newIsRunning);
     setIsActive({ ...isActive, [projectId]: true });
 

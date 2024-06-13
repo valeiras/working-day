@@ -29,8 +29,9 @@ const TimePerProject: React.FC = () => {
   return (
     <div className="flex flex-col items-center gap-2 bg-base-300 rounded-lg py-4">
       <h2>Total hours per project:</h2>
-      <div className="h-64 w-full">
-        <ResponsiveContainer width="90%" height="100%">
+      {/* This is a hack: for some reason, the Responsive container does not fill the whole width of the parent */}
+      <div className="w-full h-64 relative right-5">
+        <ResponsiveContainer width="100%" debounce={1}>
           <BarChart data={chartData}>
             <XAxis dataKey="name" tickFormatter={shortenTick} />
             <YAxis />

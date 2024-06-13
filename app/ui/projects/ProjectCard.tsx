@@ -36,7 +36,7 @@ const ProjectCard: React.FC<Props> = ({ project, localTimerArray, isFetching }) 
           project={project}
           isFetching={isFetching}
           localTimerArray={localTimerArray}
-          className="text-xl"
+          className="text-3xl gap-2"
         />
       </div>
     </div>

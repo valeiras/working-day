@@ -10,7 +10,7 @@ const Navbar: React.FC = () => {
         <h1 className="text-3xl md:text-5xl font-bold">W</h1>
       </Link>
       <SignedIn>
-        <div className="flex items-center gap-2 text-2xl md:text-3xl">
+        <div className="flex items-center gap-2 text-3xl">
           <Link href={"/stats"} className="tooltip tooltip-bottom" data-tip="Stats">
             <IoMdStats />
           </Link>

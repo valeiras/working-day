@@ -10,34 +10,21 @@ export const getAllTimers = ({ projects }: { projects: ProjectWithWorkingTimes[]
   const isActive: Record<number, boolean> = {};
 
   projects?.forEach((project) => {
-    const { workingBlocks, activeBlock, id } = project;
-    const totalCs = project.workingBlocks.reduce((acc, { startTimes }) => {
-      return acc + computeAccumulatedTimerCs(startTimes);
-    }, 0);
-
-    const activeBlockWithWorkingTimes = workingBlocks.find((block) => block.id === activeBlock?.id) || null;
-    // Start times do not come ordered from the DB: the greatest one is guaranteed to be the most recent
-    const latestTimes = project.activeBlock?.startTimes?.reduce(
-      (acc, { id, pauseTimes }) => (id > acc.id ? { id, pauseTimes } : acc),
-      {
-        id: 0,
-        pauseTimes: [] as { time: string }[] | null,
-      }
-    );
-    const isProjectRunning = activeBlockWithWorkingTimes !== null && latestTimes?.pauseTimes?.length === 0;
-
-    const currentCs = computeAccumulatedTimerCs(activeBlockWithWorkingTimes?.startTimes || null);
+    const { id, activeBlock } = project;
+    const {
+      currentTimerCs: currentCs,
+      totalTimerCs: totalCs,
+      currentInitialMs: currentMs,
+      totalInitialMs: totalMs,
+      isRunning: isProjectRunning,
+    } = computeTimers(project);
 
     currentTimersCs[id] = currentCs;
     totalTimersCs[id] = totalCs;
     isRunning[id] = isProjectRunning;
     isActive[id] = activeBlock?.id !== undefined;
-
-    currentTimersCs[id] = currentCs;
-    totalTimersCs[id] = totalCs;
-    // We divide and multiply by 1000 to round to the nearest second, and synchronize all clocks
-    currentInitialMs[id] = Math.round((Date.now() - currentCs * 10) / 1000) * 1000;
-    totalInitialMs[id] = Math.round((Date.now() - totalCs * 10) / 1000) * 1000;
+    currentInitialMs[id] = currentMs;
+    totalInitialMs[id] = totalMs;
   });
 
   return {
@@ -54,9 +41,12 @@ export const getSingleTimer = ({ projects, projectId }: { projects: ProjectWithW
   const currProject = projects.find((project) => project.id === projectId);
 
   if (!currProject) return null;
+  return computeTimers(currProject);
+};
 
-  const { workingBlocks, activeBlock } = currProject;
-  const totalTimerCs = currProject.workingBlocks.reduce((acc, { startTimes }) => {
+const computeTimers = (project: ProjectWithWorkingTimes) => {
+  const { workingBlocks, activeBlock } = project;
+  const totalTimerCs = project.workingBlocks.reduce((acc, { startTimes }) => {
     return acc + computeAccumulatedTimerCs(startTimes);
   }, 0);
 

@@ -4,12 +4,12 @@ import { createNewProject } from "@/app/lib/actions";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { newProjectFormSchema, NewProjectFormSchemaType } from "../../lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSWRConfig } from "swr";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 const NewProjectModalContent: React.FC = () => {
-  const { mutate } = useSWRConfig();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -22,7 +22,7 @@ const NewProjectModalContent: React.FC = () => {
     await createNewProject({ name: data.name });
     reset();
     router.back();
-    mutate("/api/v1/projects");
+    queryClient.invalidateQueries({ queryKey: ["projects"] });
   };
 
   const onCancel = () => {

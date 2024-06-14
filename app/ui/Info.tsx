@@ -5,9 +5,9 @@ type Props = { text: string; className?: string };
 
 const Info: React.FC<Props> = ({ text, className }) => {
   return (
-    <span className={cn("tooltip", className)} data-tip={text}>
+    <sup className={cn("tooltip", className)} data-tip={text}>
       <button className="badge badge-outline rounded-full w-4 h-4 p-1 text-xs">?</button>
-    </span>
+    </sup>
   );
 };
 

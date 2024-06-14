@@ -1,6 +1,4 @@
 import { Navbar, Title } from "@/app/ui";
-import { getAllProjects } from "../lib/actions";
-import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
 
 export default async function Layout({
   children,
@@ -11,14 +9,8 @@ export default async function Layout({
   firstClickModal: React.ReactNode;
   newProjectModal: React.ReactNode;
 }>) {
-  const queryClient = new QueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ["projects"],
-    queryFn: getAllProjects,
-  });
-
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <>
       <header>
         <Navbar />
       </header>
@@ -28,6 +20,6 @@ export default async function Layout({
         {firstClickModal}
         {newProjectModal}
       </main>
-    </HydrationBoundary>
+    </>
   );
 }

@@ -1,3 +1,5 @@
+"use server";
+
 import React, { ReactNode } from "react";
 import { Info, ProjectsTableRows } from "@/app/ui";
 import { ProjectColumns } from "@/app/lib/types";

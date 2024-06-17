@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { StartTimes } from "./db/queries";
+import { StartAndPauseTimes } from "./db/queries";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -8,13 +8,11 @@ export function cn(...inputs: ClassValue[]) {
 
 export const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-export const computeAccumulatedTimerCs = (startTimes: StartTimes) => {
-  if (!startTimes) return 0;
-  return startTimes.reduce((acc, curr) => {
-    const pauseTime =
-      curr.pauseTimes && curr.pauseTimes.length !== 0 ? curr.pauseTimes[0].time : new Date().toISOString();
-    const startTime = curr.time;
-    const diff = new Date(pauseTime).getTime() - new Date(startTime).getTime();
+export const computeAccumulatedTimerCs = (startAndPauseTimes: StartAndPauseTimes) => {
+  if (!startAndPauseTimes) return 0;
+  return startAndPauseTimes.reduce((acc, curr) => {
+    const pauseTime = curr.pauseTime || new Date().toISOString();
+    const diff = new Date(pauseTime).getTime() - new Date(curr.startTime).getTime();
     // The timer cumulates 10 milliseconds intervals (i.e. 1cs time)
     return acc + diff / 10;
   }, 0);

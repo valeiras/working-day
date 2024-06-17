@@ -17,6 +17,7 @@ const ProjectSelector: React.FC<Props> = ({ setProjectId }) => {
 
   const projects = data?.data || [];
 
+  console.log(projects);
   return (
     <div className="flex flex-col gap-4">
       <select

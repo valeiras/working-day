@@ -6,10 +6,12 @@ import { useQuery } from "@tanstack/react-query";
 import Watch from "./Watch";
 import { useDBTimer, useLocalTimer } from "@/app/lib/hooks";
 import { getSingleTimer } from "@/app/lib/getTimers";
+import { useRouter } from "next/navigation";
 
 type Props = { projectId: number | null };
 const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
   const [isStale, setIsStale] = React.useState<boolean>(false);
+  const router = useRouter();
 
   const { data, isFetching } = useQuery({
     queryKey: ["projects"],
@@ -66,7 +68,7 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
 
     setIsStale(true);
     // Start times do not come ordered from the DB: the greatest one is guaranteed to be the most recent
-    const startTimeId = currProject?.activeBlock?.startTimes?.reduce((acc, { id }) => (id > acc ? id : acc), 0);
+    const startTimeId = currProject?.activeBlock?.times?.reduce((acc, { id }) => (id > acc ? id : acc), 0);
     if (!startTimeId) return console.error("Start time id is missing");
 
     handleLocalPause();
@@ -79,8 +81,7 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
     setIsStale(true);
     if (isRunning) handlePause();
     handleLocalStop();
-    await handleDBStop(projectId);
-    setIsStale(false);
+    router.push(`/save-block/${currProject?.activeBlock?.id}?t=${localTimerCs}`);
   };
 
   return (

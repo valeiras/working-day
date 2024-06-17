@@ -1,7 +1,6 @@
 import React, { ReactNode } from "react";
 import { FaCheck, FaList } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
-import { MdEdit } from "react-icons/md";
 import { ProjectWithWorkingTimes } from "@/app/lib/db/queries";
 import { ProjectColumns } from "@/app/lib/types";
 import { TotalTime, CurrentTime, Controls, EditButtons } from "@/app/ui";

@@ -46,21 +46,14 @@ export const getSingleTimer = ({ projects, projectId }: { projects: ProjectWithW
 
 const computeTimers = (project: ProjectWithWorkingTimes) => {
   const { workingBlocks, activeBlock } = project;
-  const totalTimerCs = project.workingBlocks.reduce((acc, { startTimes }) => {
-    return acc + computeAccumulatedTimerCs(startTimes);
+  const totalTimeSeconds = workingBlocks.reduce((acc, { workingTimeSeconds }) => {
+    return acc + (workingTimeSeconds || 0);
   }, 0);
 
-  const activeBlockWithWorkingTimes = workingBlocks.find((block) => block.id === activeBlock?.id) || null;
-  const latestTimes = activeBlock?.startTimes?.reduce(
-    (acc, { id, pauseTimes }) => (id > acc.id ? { id, pauseTimes } : acc),
-    {
-      id: 0,
-      pauseTimes: [] as { time: string }[] | null,
-    }
-  );
-  const isRunning = activeBlockWithWorkingTimes !== null && latestTimes?.pauseTimes?.length === 0;
+  const currentTimerCs = computeAccumulatedTimerCs(activeBlock?.times || null);
+  const totalTimerCs = currentTimerCs + totalTimeSeconds * 100;
 
-  const currentTimerCs = computeAccumulatedTimerCs(activeBlockWithWorkingTimes?.startTimes || null);
+  const isRunning = activeBlock !== null && !activeBlock.times?.[0].pauseTime;
 
   // We divide and multiply by 1000 to round to the nearest second, and synchronize all clocks
   const currentInitialMs = Math.round((Date.now() - currentTimerCs * 10) / 1000) * 1000;

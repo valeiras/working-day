@@ -36,7 +36,7 @@ const Controls: React.FC<Props> = ({ id, project, isFetching, localTimerArray, c
     setLastSubmittedProjectId(id);
     handleLocalPause(id);
     // Start times do not come ordered from the DB: the greatest one is guaranteed to be the most recent
-    const startTimeId = project.activeBlock?.startTimes?.reduce((acc, { id }) => (id > acc ? id : acc), 0);
+    const startTimeId = project.activeBlock?.times?.reduce((acc, { id }) => (id > acc ? id : acc), 0);
     if (!startTimeId) return console.error("No start time found");
     await handleDBPause(startTimeId);
     setIsSubmitting(false);
@@ -47,7 +47,7 @@ const Controls: React.FC<Props> = ({ id, project, isFetching, localTimerArray, c
     setLastSubmittedProjectId(id);
     handleLocalStop(id);
     // Start times do not come ordered from the DB: the greatest one is guaranteed to be the most recent
-    const startTimeId = project.activeBlock?.startTimes?.reduce((acc, { id }) => (id > acc ? id : acc), 0);
+    const startTimeId = project.activeBlock?.times?.reduce((acc, { id }) => (id > acc ? id : acc), 0);
     if (!startTimeId) return console.error("No start time found");
     if (isRunning[id]) await handleDBPause(startTimeId, false);
     await handleDBStop(project.id);

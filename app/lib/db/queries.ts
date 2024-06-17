@@ -7,16 +7,16 @@ import { createClerkServerSupabaseClient } from "./serverSupabaseClient";
 import { PostgrestError, PostgrestBuilder } from "@supabase/postgrest-js";
 import { DBError } from "../errors";
 
-export type StartTimes = { id: number; time: string; pauseTimes: { time: string }[] | null }[] | null;
+export type StartAndPauseTimes = { id: number; startTime: string; pauseTime: string }[] | null;
 
 export type ProjectWithWorkingTimes = {
   name: string;
   id: number;
   activeBlock: {
     id: number;
-    startTimes: StartTimes;
+    times: StartAndPauseTimes;
   } | null;
-  workingBlocks: { id: number; startTimes: StartTimes }[];
+  workingBlocks: { id: number; workingTimeSeconds: number }[];
 };
 
 export type ProjectWithActiveBlock = {
@@ -24,7 +24,7 @@ export type ProjectWithActiveBlock = {
   id: number;
   activeBlock: {
     id: number;
-    startTimes: StartTimes;
+    times: StartAndPauseTimes;
   } | null;
 };
 
@@ -65,10 +65,11 @@ export const selectAllProjectsWithWorkingTimes = async (): Promise<{
       .from("projects")
       .select(
         `name, id,
-        activeBlock:working_blocks!projects_active_block_id_fkey(id, startTimes:start_times(id, time, pauseTimes:pause_times(time))),
-        workingBlocks:working_blocks!working_blocks_project_id_fkey(id, startTimes:start_times(id, time, pauseTimes:pause_times(time)))`
+        activeBlock:working_blocks!projects_active_block_id_fkey(id, times:active_block_times(id, startTime:start_time, pauseTime:pause_time, createdAt:created_at)),
+        workingBlocks:working_blocks!working_blocks_project_id_fkey(id, workingTimeSeconds:working_time_seconds)`
       )
       .order("name", { ascending: true })
+      .order("created_at", { referencedTable: "working_blocks.active_block_times", ascending: false })
       .returns<ProjectWithWorkingTimes[]>()
   );
 };
@@ -99,7 +100,7 @@ export const selectProjectById = async (
       .select(
         `name, id,
         activeBlock:working_blocks!projects_active_block_id_fkey(
-          id, startTimes:start_times(id, time, pauseTimes:pause_times(time)))`
+          id, times:active_block_times(id, startTime:start_time, pauseTime:pause_times))`
       )
       .eq("id", id)
       .returns<ProjectWithActiveBlock>()
@@ -126,29 +127,40 @@ export const insertBlock = async ({
 
 export const insertStartTime = async ({
   blockId,
+  date,
 }: {
   blockId: number;
-}): Promise<{ data: Tables<"start_times"> | null; error?: unknown | PostgrestError }> => {
+  date?: Date;
+}): Promise<{ data: Tables<"active_block_times"> | null; error?: unknown | PostgrestError }> => {
   const client = await createClerkServerSupabaseClient();
 
   return withErrorHandling(
-    client.from("start_times").insert({ block_id: blockId }).select().returns<Tables<"start_times">>().maybeSingle()
+    client
+      .from("active_block_times")
+      .insert({ block_id: blockId, time: date?.toISOString() })
+      .select()
+      .returns<Tables<"active_block_times">>()
+      .maybeSingle()
   );
 };
 
 export const insertPauseTime = async ({
   startTimeId,
+  date,
 }: {
   startTimeId: number;
-}): Promise<{ data: Tables<"pause_times"> | null; error?: unknown | PostgrestError }> => {
+  date?: Date;
+}): Promise<{ data: Tables<"active_block_times"> | null; error?: unknown | PostgrestError }> => {
   const client = await createClerkServerSupabaseClient();
 
+  // If the date is not provided, use the current date
   return withErrorHandling(
     client
-      .from("pause_times")
-      .insert({ start_time_id: startTimeId })
+      .from("active_block_times")
+      .update({ pause_time: date?.toISOString() || new Date().toISOString() })
+      .eq("id", startTimeId)
       .select()
-      .returns<Tables<"pause_times">>()
+      .returns<Tables<"active_block_times">>()
       .maybeSingle()
   );
 };
@@ -169,6 +181,7 @@ const withErrorHandling = async <T>(
       console.error("Something went wrong");
     }
   } finally {
+    console.log(data);
     return { data, error };
   }
 };

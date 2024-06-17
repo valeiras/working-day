@@ -9,31 +9,34 @@
 export type Database = {
   public: {
     Tables: {
-      pause_times: {
+      active_block_times: {
         Row: {
+          block_id: number
           id: number
-          start_time_id: number
-          time: string
+          pause_time: string | null
+          start_time: string
           user_id: string
         }
         Insert: {
+          block_id: number
           id?: number
-          start_time_id: number
-          time?: string
+          pause_time?: string | null
+          start_time?: string
           user_id?: string
         }
         Update: {
+          block_id?: number
           id?: number
-          start_time_id?: number
-          time?: string
+          pause_time?: string | null
+          start_time?: string
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "stop_times_start_time_id_fkey"
-            columns: ["start_time_id"]
+            foreignKeyName: "start_times_block_id_fkey"
+            columns: ["block_id"]
             isOneToOne: false
-            referencedRelation: "start_times"
+            referencedRelation: "working_blocks"
             referencedColumns: ["id"]
           },
         ]
@@ -41,18 +44,21 @@ export type Database = {
       projects: {
         Row: {
           active_block_id: number | null
+          created_at: string
           id: number
           name: string
           user_id: string
         }
         Insert: {
           active_block_id?: number | null
+          created_at?: string
           id?: number
           name: string
           user_id?: string
         }
         Update: {
           active_block_id?: number | null
+          created_at?: string
           id?: number
           name?: string
           user_id?: string
@@ -67,53 +73,27 @@ export type Database = {
           },
         ]
       }
-      start_times: {
-        Row: {
-          block_id: number
-          id: number
-          time: string
-          user_id: string
-        }
-        Insert: {
-          block_id: number
-          id?: number
-          time?: string
-          user_id?: string
-        }
-        Update: {
-          block_id?: number
-          id?: number
-          time?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "start_times_block_id_fkey"
-            columns: ["block_id"]
-            isOneToOne: false
-            referencedRelation: "working_blocks"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       working_blocks: {
         Row: {
           created_at: string
           id: number
           project_id: number
           user_id: string
+          working_time_seconds: number | null
         }
         Insert: {
           created_at?: string
           id?: number
           project_id: number
           user_id?: string
+          working_time_seconds?: number | null
         }
         Update: {
           created_at?: string
           id?: number
           project_id?: number
           user_id?: string
+          working_time_seconds?: number | null
         }
         Relationships: [
           {

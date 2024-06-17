@@ -4,10 +4,12 @@ export default async function Layout({
   children,
   firstClickModal,
   newProjectModal,
+  saveBlockModal,
 }: Readonly<{
   children: React.ReactNode;
   firstClickModal: React.ReactNode;
   newProjectModal: React.ReactNode;
+  saveBlockModal: React.ReactNode;
 }>) {
   return (
     <>
@@ -19,6 +21,7 @@ export default async function Layout({
         {children}
         {firstClickModal}
         {newProjectModal}
+        {saveBlockModal}
       </main>
     </>
   );

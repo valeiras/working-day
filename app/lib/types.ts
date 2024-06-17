@@ -6,6 +6,14 @@ export const newProjectFormSchema = z.object({
 
 export type NewProjectFormSchemaType = z.infer<typeof newProjectFormSchema>;
 
+export const saveBlockFormSchema = z.object({
+  hours: z.number(),
+  minutes: z.number(),
+  seconds: z.number(),
+});
+
+export type SaveBlockFormSchemaType = z.infer<typeof saveBlockFormSchema>;
+
 export type ProjectColumns =
   | "index"
   | "name"

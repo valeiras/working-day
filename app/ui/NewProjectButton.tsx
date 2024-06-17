@@ -1,17 +1,14 @@
 "use client";
 
-import React, { useRef } from "react";
-import NewProjectModal from "./modals/NewProjectModal";
+import React from "react";
 
-const NewProjectButton: React.FC = () => {
-  const modalRef = useRef<HTMLDialogElement>(null);
-  const closeModal = () => modalRef.current?.close();
+type Props = { showModal: () => void };
+const NewProjectButton: React.FC<Props> = ({ showModal }) => {
   return (
     <>
-      <button className="btn btn-primary" onClick={() => modalRef.current?.showModal()}>
+      <button className="btn btn-primary" onClick={showModal}>
         Create new project
       </button>
-      <NewProjectModal ref={modalRef} closeModal={closeModal} />
     </>
   );
 };

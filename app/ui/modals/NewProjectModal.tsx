@@ -36,7 +36,7 @@ const NewProjectModal = forwardRef<HTMLDialogElement, Props>(function NewProject
       <form className="modal-box flex flex-col gap-2" onSubmit={handleSubmit(onSubmit)}>
         <h3 className="font-bold text-lg">{"Create new project"}</h3>
         <input {...register("name")} type="text" placeholder="Project's name" className="input input-bordered w-full" />
-        <span className="text-sm text-error h-2">{errors.name ? errors.name.message : ` `}</span>
+        <span className="text-sm text-error h-1">{errors.name ? errors.name.message : ` `}</span>
         <div className="modal-action grid grid-cols-2">
           <button className="btn btn-primary" type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Creting project..." : "Create project"}

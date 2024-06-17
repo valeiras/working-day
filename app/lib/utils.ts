@@ -11,7 +11,7 @@ export const fetcher = (url: string) => fetch(url).then((res) => res.json());
 export const computeAccumulatedTimerCs = (startAndPauseTimes: StartAndPauseTimes) => {
   if (!startAndPauseTimes) return 0;
   return startAndPauseTimes.reduce((acc, curr) => {
-    const pauseTime = curr.pauseTime || new Date().toISOString();
+    const pauseTime = curr?.pauseTime || new Date().toISOString();
     const diff = new Date(pauseTime).getTime() - new Date(curr.startTime).getTime();
     // The timer cumulates 10 milliseconds intervals (i.e. 1cs time)
     return acc + diff / 10;

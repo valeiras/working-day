@@ -7,6 +7,9 @@ import {
   insertPauseTime,
   selectAllProjectsWithWorkingTimes,
   updateProject,
+  updateBlock,
+  deleteWorkingTimesByBlockId,
+  makeWorkingBlockInactive,
 } from "./db/queries";
 
 export const createNewProject = async ({ name }: { name: string }) => {
@@ -36,6 +39,12 @@ export const addPauseTime = async ({ startTimeId }: { startTimeId: number }) => 
 
 export const getAllProjects = async () => {
   return selectAllProjectsWithWorkingTimes();
+};
+
+export const stopBlock = async ({ blockId, totalTimeSeconds }: { blockId: number; totalTimeSeconds: number }) => {
+  updateBlock({ blockId, blockData: { working_time_seconds: totalTimeSeconds } });
+  deleteWorkingTimesByBlockId({ blockId });
+  makeWorkingBlockInactive({ blockId });
 };
 
 export const populateDB = async () => {

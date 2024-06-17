@@ -9,38 +9,6 @@
 export type Database = {
   public: {
     Tables: {
-      active_block_times: {
-        Row: {
-          block_id: number
-          id: number
-          pause_time: string | null
-          start_time: string
-          user_id: string
-        }
-        Insert: {
-          block_id: number
-          id?: number
-          pause_time?: string | null
-          start_time?: string
-          user_id?: string
-        }
-        Update: {
-          block_id?: number
-          id?: number
-          pause_time?: string | null
-          start_time?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "start_times_block_id_fkey"
-            columns: ["block_id"]
-            isOneToOne: false
-            referencedRelation: "working_blocks"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       projects: {
         Row: {
           active_block_id: number | null
@@ -101,6 +69,41 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      working_times: {
+        Row: {
+          block_id: number
+          created_at: string
+          id: number
+          pause_time: string | null
+          start_time: string
+          user_id: string
+        }
+        Insert: {
+          block_id: number
+          created_at?: string
+          id?: number
+          pause_time?: string | null
+          start_time?: string
+          user_id?: string
+        }
+        Update: {
+          block_id?: number
+          created_at?: string
+          id?: number
+          pause_time?: string | null
+          start_time?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "active_block_times_block_id_fkey"
+            columns: ["block_id"]
+            isOneToOne: false
+            referencedRelation: "working_blocks"
             referencedColumns: ["id"]
           },
         ]

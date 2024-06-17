@@ -5,6 +5,7 @@ import { ProjectWithWorkingTimes } from "@/app/lib/db/queries";
 import { useDBTimer } from "@/app/lib/hooks";
 import { LocalTimerArray } from "@/app/lib/hooks/useLocalTimerArray";
 import { cn } from "@/app/lib/utils";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { FaPause, FaStop, FaPlay } from "react-icons/fa6";
 
@@ -17,11 +18,11 @@ type Props = {
 };
 
 const Controls: React.FC<Props> = ({ id, project, isFetching, localTimerArray, className }) => {
+  const router = useRouter();
   const { isSubmitting, setIsSubmitting, setLastSubmittedProjectId } = useProjectsContext()!;
+  const { isRunning, handleLocalStart, handleLocalPause, isActive, currentTimersCs } = localTimerArray;
 
-  const { isRunning, handleLocalStart, handleLocalPause, handleLocalStop, isActive } = localTimerArray;
-
-  const { handleDBStart, handleDBPause, handleDBStop } = useDBTimer();
+  const { handleDBStart, handleDBPause } = useDBTimer();
 
   const handleStart = async () => {
     setIsSubmitting(true);
@@ -36,22 +37,18 @@ const Controls: React.FC<Props> = ({ id, project, isFetching, localTimerArray, c
     setLastSubmittedProjectId(id);
     handleLocalPause(id);
     // Start times do not come ordered from the DB: the greatest one is guaranteed to be the most recent
-    const startTimeId = project.activeBlock?.times?.reduce((acc, { id }) => (id > acc ? id : acc), 0);
+    const startTimeId = project.activeBlock?.times?.[0].id;
     if (!startTimeId) return console.error("No start time found");
     await handleDBPause(startTimeId);
     setIsSubmitting(false);
   };
 
   const handleStop = async () => {
-    setIsSubmitting(true);
-    setLastSubmittedProjectId(id);
-    handleLocalStop(id);
     // Start times do not come ordered from the DB: the greatest one is guaranteed to be the most recent
-    const startTimeId = project.activeBlock?.times?.reduce((acc, { id }) => (id > acc ? id : acc), 0);
+    const startTimeId = project.activeBlock?.times?.[0].id;
     if (!startTimeId) return console.error("No start time found");
     if (isRunning[id]) await handleDBPause(startTimeId, false);
-    await handleDBStop(project.id);
-    setIsSubmitting(false);
+    router.push(`/save-block/${project.activeBlock?.id}?t=${currentTimersCs[id]}`);
   };
 
   return (

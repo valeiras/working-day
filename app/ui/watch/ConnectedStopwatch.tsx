@@ -26,7 +26,6 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
     handleLocalStart,
     handleConnectedStart,
     handleLocalPause,
-    handleLocalStop,
     localTimerCs,
     setLocalTimerCs,
     isRunning,
@@ -34,7 +33,7 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
     intervalRef,
   } = useLocalTimer();
 
-  const { handleDBStart, handleDBPause, handleDBStop } = useDBTimer();
+  const { handleDBStart, handleDBPause } = useDBTimer();
 
   useEffect(() => {
     if (!projectId) return;
@@ -78,9 +77,7 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
 
   const handleStop = async () => {
     if (!projectId) return console.error("Project ID is missing");
-    setIsStale(true);
     if (isRunning) handlePause();
-    handleLocalStop();
     router.push(`/save-block/${currProject?.activeBlock?.id}?t=${localTimerCs}`);
   };
 

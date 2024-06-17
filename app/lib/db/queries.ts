@@ -65,11 +65,11 @@ export const selectAllProjectsWithWorkingTimes = async (): Promise<{
       .from("projects")
       .select(
         `name, id,
-        activeBlock:working_blocks!projects_active_block_id_fkey(id, times:active_block_times(id, startTime:start_time, pauseTime:pause_time, createdAt:created_at)),
+        activeBlock:working_blocks!projects_active_block_id_fkey(id, times:working_times(id, startTime:start_time, pauseTime:pause_time, createdAt:created_at)),
         workingBlocks:working_blocks!working_blocks_project_id_fkey(id, workingTimeSeconds:working_time_seconds)`
       )
       .order("name", { ascending: true })
-      .order("created_at", { referencedTable: "working_blocks.active_block_times", ascending: false })
+      .order("created_at", { referencedTable: "working_blocks.working_times", ascending: false })
       .returns<ProjectWithWorkingTimes[]>()
   );
 };
@@ -89,6 +89,25 @@ export const updateProject = async ({
   return withErrorHandling(client.from("projects").update(projectData).eq("id", projectId).select().maybeSingle());
 };
 
+export const updateBlock = async ({
+  blockId,
+  blockData,
+}: {
+  blockId: number;
+  blockData: Partial<Tables<"working_blocks">>;
+}): Promise<{
+  data: Tables<"projects"> | null;
+  error?: PostgrestError | null;
+}> => {
+  const client = await createClerkServerSupabaseClient();
+  return withErrorHandling(client.from("working_blocks").update(blockData).eq("id", blockId).select().maybeSingle());
+};
+
+export const deleteWorkingTimesByBlockId = async ({ blockId }: { blockId: number }) => {
+  const client = await createClerkServerSupabaseClient();
+  return withErrorHandling(client.from("working_times").delete().in("block_id", [blockId]));
+};
+
 export const selectProjectById = async (
   id: number
 ): Promise<{ data: ProjectWithActiveBlock | null; error?: PostgrestError | null }> => {
@@ -99,11 +118,24 @@ export const selectProjectById = async (
       .from("projects")
       .select(
         `name, id,
-        activeBlock:working_blocks!projects_active_block_id_fkey(
-          id, times:active_block_times(id, startTime:start_time, pauseTime:pause_times))`
+      activeBlock:working_blocks!projects_active_block_id_fkey(
+        id, times:working_times(id, startTime:start_time, pauseTime:pause_times))`
       )
       .eq("id", id)
       .returns<ProjectWithActiveBlock>()
+      .maybeSingle()
+  );
+};
+
+export const makeWorkingBlockInactive = async ({ blockId }: { blockId: number }) => {
+  const client = await createClerkServerSupabaseClient();
+  return withErrorHandling(
+    client
+      .from("projects")
+      .update({ active_block_id: null })
+      .eq("active_block_id", blockId)
+      .select()
+      .returns<Tables<"projects">>()
       .maybeSingle()
   );
 };
@@ -131,15 +163,15 @@ export const insertStartTime = async ({
 }: {
   blockId: number;
   date?: Date;
-}): Promise<{ data: Tables<"active_block_times"> | null; error?: unknown | PostgrestError }> => {
+}): Promise<{ data: Tables<"working_times"> | null; error?: unknown | PostgrestError }> => {
   const client = await createClerkServerSupabaseClient();
 
   return withErrorHandling(
     client
-      .from("active_block_times")
+      .from("working_times")
       .insert({ block_id: blockId, time: date?.toISOString() })
       .select()
-      .returns<Tables<"active_block_times">>()
+      .returns<Tables<"working_times">>()
       .maybeSingle()
   );
 };
@@ -150,17 +182,17 @@ export const insertPauseTime = async ({
 }: {
   startTimeId: number;
   date?: Date;
-}): Promise<{ data: Tables<"active_block_times"> | null; error?: unknown | PostgrestError }> => {
+}): Promise<{ data: Tables<"working_times"> | null; error?: unknown | PostgrestError }> => {
   const client = await createClerkServerSupabaseClient();
 
   // If the date is not provided, use the current date
   return withErrorHandling(
     client
-      .from("active_block_times")
+      .from("working_times")
       .update({ pause_time: date?.toISOString() || new Date().toISOString() })
       .eq("id", startTimeId)
       .select()
-      .returns<Tables<"active_block_times">>()
+      .returns<Tables<"working_times">>()
       .maybeSingle()
   );
 };
@@ -181,7 +213,6 @@ const withErrorHandling = async <T>(
       console.error("Something went wrong");
     }
   } finally {
-    console.log(data);
     return { data, error };
   }
 };

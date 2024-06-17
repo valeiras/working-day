@@ -7,9 +7,9 @@ export const newProjectFormSchema = z.object({
 export type NewProjectFormSchemaType = z.infer<typeof newProjectFormSchema>;
 
 export const saveBlockFormSchema = z.object({
-  hours: z.number(),
-  minutes: z.number(),
-  seconds: z.number(),
+  hours: z.coerce.number(),
+  minutes: z.coerce.number(),
+  seconds: z.coerce.number(),
 });
 
 export type SaveBlockFormSchemaType = z.infer<typeof saveBlockFormSchema>;

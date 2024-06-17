@@ -10,6 +10,7 @@ This project is a full-stack application created using Next. Data is persisted i
 
 ### TODO:
 
+- Simplify the actions
 - Add alerts.
 - Add overtime thresholds.
 - Make the skeletons match the cards

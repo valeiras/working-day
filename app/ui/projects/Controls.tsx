@@ -47,8 +47,8 @@ const Controls: React.FC<Props> = ({ id, project, isFetching, localTimerArray, c
     // Start times do not come ordered from the DB: the greatest one is guaranteed to be the most recent
     const startTimeId = project.activeBlock?.times?.[0].id;
     if (!startTimeId) return console.error("No start time found");
-    if (isRunning[id]) await handleDBPause(startTimeId, false);
     router.push(`/save-block/${project.activeBlock?.id}?t=${currentTimersCs[id]}`);
+    router.refresh();
   };
 
   return (

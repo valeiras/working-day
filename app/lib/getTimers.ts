@@ -53,7 +53,7 @@ const computeTimers = (project: ProjectWithWorkingTimes) => {
   const currentTimerCs = computeAccumulatedTimerCs(activeBlock?.times || null);
   const totalTimerCs = currentTimerCs + totalTimeSeconds * 100;
 
-  const isRunning = activeBlock !== null && !activeBlock.times?.[0].pauseTime;
+  const isRunning = activeBlock !== null && !activeBlock.times?.[0]?.pauseTime;
 
   // We divide and multiply by 1000 to round to the nearest second, and synchronize all clocks
   const currentInitialMs = Math.round((Date.now() - currentTimerCs * 10) / 1000) * 1000;

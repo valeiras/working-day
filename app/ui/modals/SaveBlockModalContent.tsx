@@ -43,6 +43,7 @@ const SaveBlockModalContent: React.FC = () => {
       <h3 className="font-bold text-lg">Save the current working block</h3>
       <p>You can adjust the worked time</p>
       <div className="flex flex-row items-center justify-stretch">
+        <input type="text" className="absolute top-[-1000px]" autoFocus={true} />
         <TimeInput name="hours" register={register} errors={errors} />
         <TimeInput name="minutes" register={register} errors={errors} />
         <TimeInput name="seconds" register={register} errors={errors} hasColon={false} />
@@ -76,15 +77,7 @@ const TimeInput = ({
         {name}
       </label>
       <div className="flex items-center">
-        <input
-          {...register(name)}
-          type="number"
-          min={0}
-          max={60}
-          id={name}
-          className="flex-1 input input-bordered"
-          autoFocus={false}
-        />
+        <input {...register(name)} type="number" min={0} max={60} id={name} className="flex-1 input input-bordered" />
         {hasColon && <span className="mx-1">:</span>}
       </div>
       <span className="text-sm text-error h-1 -mt-2 mb-1">{errors[name] ? errors[name]?.message : " "}</span>

@@ -77,8 +77,9 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
 
   const handleStop = async () => {
     if (!projectId) return console.error("Project ID is missing");
-    if (isRunning) handlePause();
+    // if (isRunning) handlePause();
     router.push(`/save-block/${currProject?.activeBlock?.id}?t=${localTimerCs}`);
+    router.refresh();
   };
 
   return (

@@ -3,7 +3,7 @@
 import React from "react";
 import ConnectedStopwatch from "./watch/ConnectedStopwatch";
 import ProjectSelector from "./ProjectSelector";
-import Link from "next/link";
+import NewProjectButton from "./NewProjectButton";
 
 const ConnectedStopwatchAndProjectSelector: React.FC = () => {
   const [projectId, setProjectId] = React.useState<number | null>(null);
@@ -11,9 +11,7 @@ const ConnectedStopwatchAndProjectSelector: React.FC = () => {
     <>
       <ConnectedStopwatch projectId={projectId} />
       <ProjectSelector setProjectId={setProjectId} />
-      <Link className="btn btn-primary" href={"/new-project"}>
-        Create new project
-      </Link>
+      <NewProjectButton />
     </>
   );
 };

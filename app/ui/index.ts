@@ -10,7 +10,7 @@ export { default as Watch } from "./watch/Watch";
 export { default as ConnectedStopwatch } from "./watch/ConnectedStopwatch";
 export { default as Timer } from "./watch/Timer";
 
-export { default as NewProjectModalContent } from "./modals/NewProjectModalContent";
+export { default as NewProjectModal } from "./modals/NewProjectModal";
 export { default as Modal } from "./modals/Modal";
 export { default as FirstClickModal } from "./modals/FirstClickModal";
 export { default as SaveBlockModalContent } from "./modals/SaveBlockModalContent";

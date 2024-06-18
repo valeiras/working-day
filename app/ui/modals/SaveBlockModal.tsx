@@ -8,19 +8,20 @@ import { formatTime } from "@/app/lib/utils";
 import { stopBlock } from "@/app/lib/actions";
 import { forwardRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useProjectsContext } from "@/app/contexts/ProjectsContext";
 
 type Props = {
   closeModal: () => void;
   handleLocalStop: () => void;
-  blockId: number | undefined;
-  currentTimerCs: number;
 };
 
 const SaveBlockModal = forwardRef<HTMLDialogElement, Props>(function SaveBlockModal(
-  { closeModal, handleLocalStop, currentTimerCs, blockId },
+  { closeModal, handleLocalStop },
   modalRef
 ) {
   const queryClient = useQueryClient();
+
+  const { saveBlockModalBlockId: blockId, modalTimerCs } = useProjectsContext()!;
 
   const {
     register,
@@ -33,11 +34,11 @@ const SaveBlockModal = forwardRef<HTMLDialogElement, Props>(function SaveBlockMo
   });
 
   useEffect(() => {
-    const { hours, minutes, seconds } = formatTime(currentTimerCs);
+    const { hours, minutes, seconds } = formatTime(modalTimerCs);
     setValue("hours", parseInt(hours));
     setValue("minutes", parseInt(minutes));
     setValue("seconds", parseInt(seconds));
-  }, [currentTimerCs, setValue]);
+  }, [modalTimerCs, setValue]);
 
   const onCancel = () => {
     closeModal();

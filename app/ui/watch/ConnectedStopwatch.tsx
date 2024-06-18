@@ -7,12 +7,13 @@ import Watch from "./Watch";
 import { useDBTimer, useLocalTimer } from "@/app/lib/hooks";
 import { getSingleTimer } from "@/app/lib/getTimers";
 import SaveBlockModal from "../modals/SaveBlockModal";
+import { useProjectsContext } from "@/app/contexts/ProjectsContext";
 
 type Props = { projectId: number | null };
 const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
   const [isStale, setIsStale] = React.useState<boolean>(false);
-  const [modalTimerCs, setModalTimerCs] = React.useState<number>(0);
   const modalRef = useRef<HTMLDialogElement>(null);
+  const { setSaveBlockModalBlockId, setModalTimerCs } = useProjectsContext()!;
 
   const { data, isFetching } = useQuery({
     queryKey: ["projects"],
@@ -77,7 +78,11 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
   };
 
   const showModal = async () => {
+    if (!currProject?.activeBlock?.id) {
+      return console.error("Block ID is missing");
+    }
     setModalTimerCs(localTimerCs);
+    setSaveBlockModalBlockId(currProject?.activeBlock?.id);
     modalRef.current?.showModal();
   };
 
@@ -96,13 +101,7 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
         modalMessage="The current block will be stopped and stored in the database."
         isLoading={isFetching || isStale || !projectId}
       />
-      <SaveBlockModal
-        blockId={currProject?.activeBlock?.id}
-        ref={modalRef}
-        currentTimerCs={modalTimerCs}
-        closeModal={closeModal}
-        handleLocalStop={handleLocalStop}
-      />
+      <SaveBlockModal ref={modalRef} closeModal={closeModal} handleLocalStop={handleLocalStop} />
     </>
   );
 };

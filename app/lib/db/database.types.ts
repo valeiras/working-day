@@ -76,7 +76,6 @@ export type Database = {
       working_times: {
         Row: {
           block_id: number
-          created_at: string
           id: number
           pause_time: string | null
           start_time: string
@@ -84,7 +83,6 @@ export type Database = {
         }
         Insert: {
           block_id: number
-          created_at?: string
           id?: number
           pause_time?: string | null
           start_time?: string
@@ -92,7 +90,6 @@ export type Database = {
         }
         Update: {
           block_id?: number
-          created_at?: string
           id?: number
           pause_time?: string | null
           start_time?: string

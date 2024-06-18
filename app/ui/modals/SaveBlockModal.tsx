@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { FieldErrors, Path, SubmitHandler, UseFormRegister, useForm } from "react-hook-form";
 import { SaveBlockFormSchemaType, saveBlockFormSchema } from "@/app/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,10 +29,12 @@ const SaveBlockModal = forwardRef<HTMLDialogElement, Props>(function SaveBlockMo
     defaultValues: { hours: 0, minutes: 0, seconds: 0 },
   });
 
-  const { hours, minutes, seconds } = formatTime(currentTimerCs);
-  setValue("hours", parseInt(hours));
-  setValue("minutes", parseInt(minutes));
-  setValue("seconds", parseInt(seconds));
+  useEffect(() => {
+    const { hours, minutes, seconds } = formatTime(currentTimerCs);
+    setValue("hours", parseInt(hours));
+    setValue("minutes", parseInt(minutes));
+    setValue("seconds", parseInt(seconds));
+  }, [currentTimerCs, setValue]);
 
   const onCancel = () => {
     closeModal();

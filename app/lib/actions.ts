@@ -78,7 +78,7 @@ export const populateDB = async () => {
       const { data: block } = await insertBlock({
         projectId,
         createdAt: day,
-        workingTimeSeconds: workingTimeHours * 60 * 60,
+        workingTimeSeconds: Math.round(workingTimeHours * 60 * 60),
       });
       if (!block) return;
     }

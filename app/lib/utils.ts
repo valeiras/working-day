@@ -18,6 +18,29 @@ export const computeAccumulatedTimerCs = (startAndPauseTimes: StartAndPauseTimes
   }, 0);
 };
 
+export const computeAccumulatedTimerSeconds = (startAndPauseTimes: StartAndPauseTimes) => {
+  if (!startAndPauseTimes) return 0;
+  return startAndPauseTimes.reduce((acc, curr) => {
+    const pauseTime = curr?.pauseTime || new Date().toISOString();
+    const diff = new Date(pauseTime).getSeconds() - new Date(curr.startTime).getSeconds();
+    return acc + diff;
+  }, 0);
+};
+
+export const formatDate = (date: Date) => {
+  return `${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}/${date.getFullYear()}`;
+};
+
+export const shortenDate = (value: string) => {
+  return value.substring(0, 5);
+};
+
+export const shortenTick = (value: string) => {
+  return value.substring(0, 7) + (value.length > 8 ? "..." : "");
+};
+
 export const formatTime = (timerCs: number) => {
   const hours = Math.floor(timerCs / 360000)
     .toString()

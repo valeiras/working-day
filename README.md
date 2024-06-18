@@ -10,8 +10,6 @@ This project is a full-stack application created using Next. Data is persisted i
 
 ### TODO:
 
-- Find the bug in the array
-- Simplify the actions
 - Switch to a different charting library
 - Make the skeletons match the cards
 - Add alerts.

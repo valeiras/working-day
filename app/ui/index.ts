@@ -28,3 +28,4 @@ export { default as TotalTime } from "./projects/TotalTime";
 export { default as Controls } from "./projects/Controls";
 
 export { default as TimePerProject } from "./stats/TimePerProject";
+export { default as TimePerDayAndProject } from "./stats/TimePerDayAndProject";

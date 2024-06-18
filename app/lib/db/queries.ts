@@ -16,7 +16,7 @@ export type ProjectWithWorkingTimes = {
     id: number;
     times: StartAndPauseTimes;
   } | null;
-  workingBlocks: { id: number; workingTimeSeconds: number }[];
+  workingBlocks: { id: number; workingTimeSeconds: number; createdAt: string }[];
 };
 
 export type ProjectWithActiveBlock = {
@@ -66,7 +66,7 @@ export const selectAllProjectsWithWorkingTimes = async (): Promise<{
       .select(
         `name, id,
         activeBlock:working_blocks!projects_active_block_id_fkey(id, times:working_times(id, startTime:start_time, pauseTime:pause_time)),
-        workingBlocks:working_blocks!working_blocks_project_id_fkey(id, workingTimeSeconds:working_time_seconds)`
+        workingBlocks:working_blocks!working_blocks_project_id_fkey(id, workingTimeSeconds:working_time_seconds, createdAt: created_at)`
       )
       .order("name", { ascending: true })
       .order("id", { referencedTable: "working_blocks.working_times", ascending: false })

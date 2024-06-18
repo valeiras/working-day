@@ -42,8 +42,8 @@ const SaveBlockModal = () => {
   const onSubmit: SubmitHandler<SaveBlockFormSchemaType> = async (data) => {
     const totalTimeSeconds = data.hours * 3600 + data.minutes * 60 + data.seconds;
     if (blockId) await stopBlock({ blockId, totalTimeSeconds });
-    queryClient.invalidateQueries({ queryKey: ["projects"] });
     handleStopRef.current();
+    queryClient.invalidateQueries({ queryKey: ["projects"] });
     closeModal();
   };
 

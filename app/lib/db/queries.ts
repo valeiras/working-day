@@ -118,7 +118,7 @@ export const selectProjectById = async (
       .from("projects")
       .select(
         `name, id,
-      activeBlock:working_blocks!projects_active_block_id_fkey(
+        activeBlock:working_blocks!projects_active_block_id_fkey(
         id, times:working_times(id, startTime:start_time, pauseTime:pause_times))`
       )
       .eq("id", id)
@@ -142,15 +142,19 @@ export const makeWorkingBlockInactive = async ({ blockId }: { blockId: number })
 
 export const insertBlock = async ({
   projectId,
+  createdAt,
+  workingTimeSeconds,
 }: {
   projectId: number;
+  createdAt?: Date;
+  workingTimeSeconds?: number;
 }): Promise<{ data: Tables<"working_blocks"> | null; error?: unknown | PostgrestError }> => {
   const client = await createClerkServerSupabaseClient();
 
   return withErrorHandling(
     client
       .from("working_blocks")
-      .insert({ project_id: projectId })
+      .insert({ project_id: projectId, created_at: createdAt?.toISOString(), working_time_seconds: workingTimeSeconds })
       .select()
       .returns<Tables<"working_blocks">>()
       .maybeSingle()
@@ -202,13 +206,14 @@ const withErrorHandling = async <T>(
 ): Promise<{ data: T | null; error?: PostgrestError | null }> => {
   let error: PostgrestError | null = null;
   let data: T | null = null;
-
   try {
-    ({ data, error } = await fn);
-    if (error) throw new DBError(error.message);
+    const { data: dbData, error: dbError } = await fn;
+    if (dbError) throw new DBError(dbError?.message || "Something went wrong");
+    data = dbData;
+    error = dbError;
   } catch (e) {
-    if (error instanceof DBError) {
-      console.error(error.message);
+    if (e instanceof DBError) {
+      console.error(e.message);
     } else {
       console.error("Something went wrong");
     }

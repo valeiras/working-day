@@ -69,25 +69,18 @@ export const populateDB = async () => {
       const hasWorkingTime = Math.random() > 0.5;
       if (!hasWorkingTime) continue;
 
-      const totalWorkingHours = Math.random() * 8;
-      const startWorkingHour = Math.random() * (24 - totalWorkingHours);
-      const endWorkingHour = startWorkingHour + totalWorkingHours;
-
-      const { data: block } = await createNewBlock({ projectId });
-      if (!block) return;
-
+      // We work a maximum of 8 working hours per day
+      const workingTimeHours = Math.random() * 8;
+      // We start working between 8am and 12pm
+      const startWorkingHour = 8 + Math.random() * 4;
       day.setMinutes(startWorkingHour * 60);
-      const { data: startTime } = await insertStartTime({
-        blockId: block.id,
-        date: day,
-      });
-      if (!startTime) return;
 
-      day.setMinutes(endWorkingHour * 60);
-      await insertPauseTime({
-        startTimeId: startTime.id,
-        date: day,
+      const { data: block } = await insertBlock({
+        projectId,
+        createdAt: day,
+        workingTimeSeconds: workingTimeHours * 60 * 60,
       });
+      if (!block) return;
     }
   }
 };

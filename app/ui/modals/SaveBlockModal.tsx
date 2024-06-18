@@ -6,22 +6,17 @@ import { SaveBlockFormSchemaType, saveBlockFormSchema } from "@/app/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formatTime } from "@/app/lib/utils";
 import { stopBlock } from "@/app/lib/actions";
-import { forwardRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useProjectsContext } from "@/app/contexts/ProjectsContext";
+import { useSaveBlockModalContext } from "@/app/contexts/SaveBlockModalContext";
 
-type Props = {
-  closeModal: () => void;
-  handleLocalStop: () => void;
-};
-
-const SaveBlockModal = forwardRef<HTMLDialogElement, Props>(function SaveBlockModal(
-  { closeModal, handleLocalStop },
-  modalRef
-) {
+const SaveBlockModal = () => {
   const queryClient = useQueryClient();
 
-  const { saveBlockModalBlockId: blockId, modalTimerCs } = useProjectsContext()!;
+  const { modalBlockId: blockId, modalTimerCs, modalRef, handleStopRef } = useSaveBlockModalContext()!;
+
+  const closeModal = () => {
+    modalRef.current?.close();
+  };
 
   const {
     register,
@@ -48,7 +43,7 @@ const SaveBlockModal = forwardRef<HTMLDialogElement, Props>(function SaveBlockMo
     const totalTimeSeconds = data.hours * 3600 + data.minutes * 60 + data.seconds;
     if (blockId) await stopBlock({ blockId, totalTimeSeconds });
     queryClient.invalidateQueries({ queryKey: ["projects"] });
-    handleLocalStop();
+    handleStopRef.current();
     closeModal();
   };
 
@@ -74,7 +69,7 @@ const SaveBlockModal = forwardRef<HTMLDialogElement, Props>(function SaveBlockMo
       </form>
     </dialog>
   );
-});
+};
 
 const TimeInput = ({
   name,

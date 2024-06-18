@@ -32,7 +32,7 @@ const ProjectRow: React.FC<Props> = ({ project, idx, columns, isFetching, localT
     },
     isActive: { content: isActive ? <FaCheck /> : <IoClose /> },
     controls: {
-      content: <Controls id={project.id} project={project} isFetching={isFetching} localTimerArray={localTimerArray} />,
+      content: <Controls project={project} isFetching={isFetching} localTimerArray={localTimerArray} />,
     },
     alerts: { content: <>Mail(8h)</> },
     overtimeThreshold: { content: <>8h/day</> },

@@ -32,7 +32,6 @@ const ProjectCard: React.FC<Props> = ({ project, localTimerArray, isFetching }) 
       </div>
       <div className="flex justify-center mt-4">
         <Controls
-          id={project.id}
           project={project}
           isFetching={isFetching}
           localTimerArray={localTimerArray}

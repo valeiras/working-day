@@ -1,42 +1,42 @@
 "use client";
 
 import { useProjectsContext } from "@/app/contexts/ProjectsContext";
+import { useSaveBlockModalContext } from "@/app/contexts/SaveBlockModalContext";
 import { ProjectWithWorkingTimes } from "@/app/lib/db/queries";
 import { useDBTimer } from "@/app/lib/hooks";
 import { LocalTimerArray } from "@/app/lib/hooks/useLocalTimerArray";
 import { cn } from "@/app/lib/utils";
-import { useRouter } from "next/navigation";
 import React from "react";
 import { FaPause, FaStop, FaPlay } from "react-icons/fa6";
 
 type Props = {
-  id: number;
   project: ProjectWithWorkingTimes;
   isFetching?: boolean;
   localTimerArray: LocalTimerArray;
   className?: string;
 };
 
-const Controls: React.FC<Props> = ({ id, project, isFetching, localTimerArray, className }) => {
-  const router = useRouter();
+const Controls: React.FC<Props> = ({ project, isFetching, localTimerArray, className }) => {
+  const projectId = project.id;
   const { isSubmitting, setIsSubmitting, setLastSubmittedProjectId } = useProjectsContext()!;
-  const { isRunning, handleLocalStart, handleLocalPause, isActive, currentTimersCs } = localTimerArray;
+  const { setModalTimerCs, setModalBlockId, modalRef, handleStopRef } = useSaveBlockModalContext()!;
+
+  const { isRunning, handleLocalStart, handleLocalPause, handleLocalStop, isActive, currentTimersCs } = localTimerArray;
 
   const { handleDBStart, handleDBPause } = useDBTimer();
 
   const handleStart = async () => {
     setIsSubmitting(true);
-    setLastSubmittedProjectId(id);
-    handleLocalStart(id);
+    setLastSubmittedProjectId(projectId);
+    handleLocalStart(projectId);
     await handleDBStart(project);
     setIsSubmitting(false);
   };
 
   const handlePause = async () => {
     setIsSubmitting(true);
-    setLastSubmittedProjectId(id);
-    handleLocalPause(id);
-    // Start times do not come ordered from the DB: the greatest one is guaranteed to be the most recent
+    setLastSubmittedProjectId(projectId);
+    handleLocalPause(projectId);
     const startTimeId = project.activeBlock?.times?.[0].id;
     if (!startTimeId) return console.error("No start time found");
     await handleDBPause(startTimeId);
@@ -44,31 +44,33 @@ const Controls: React.FC<Props> = ({ id, project, isFetching, localTimerArray, c
   };
 
   const handleStop = async () => {
-    // Start times do not come ordered from the DB: the greatest one is guaranteed to be the most recent
-    const startTimeId = project.activeBlock?.times?.[0].id;
-    if (!startTimeId) return console.error("No start time found");
-    router.push(`/save-block/${project.activeBlock?.id}?t=${currentTimersCs[id]}`);
-    router.refresh();
+    const blockId = project.activeBlock?.id;
+    if (!blockId) return console.error("No block id found");
+
+    handleStopRef.current = () => handleLocalStop(projectId);
+    setModalTimerCs(currentTimersCs[projectId]);
+    setModalBlockId(blockId);
+    modalRef.current?.showModal();
   };
 
   return (
     <span className={cn("flex gap-1", className)}>
       <button
-        disabled={isRunning[id] || isSubmitting || isFetching}
+        disabled={isRunning[projectId] || isSubmitting || isFetching}
         onClick={handleStart}
         className={"text-success cursor-pointer disabled:opacity-20 disabled:cursor-auto transition-all duration-500"}
       >
         <FaPlay />
       </button>
       <button
-        disabled={!isRunning[id] || isSubmitting || isFetching}
+        disabled={!isRunning[projectId] || isSubmitting || isFetching}
         onClick={handlePause}
         className={"text-warning cursor-pointer disabled:opacity-20 disabled:cursor-auto transition-all duration-500"}
       >
         <FaPause />
       </button>
       <button
-        disabled={!isActive[id] || isSubmitting || isFetching}
+        disabled={!isActive[projectId] || isSubmitting || isFetching}
         onClick={handleStop}
         className={"text-accent cursor-pointer disabled:opacity-20 disabled:cursor-auto transition-all duration-500"}
       >

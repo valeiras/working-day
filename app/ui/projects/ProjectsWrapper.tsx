@@ -6,6 +6,7 @@ import { LoadingSkeleton } from "@/app/ui";
 import { ProjectsContextProvider } from "@/app/contexts/ProjectsContext";
 import { useQuery } from "@tanstack/react-query";
 import { getAllProjects } from "@/app/lib/actions";
+import { SaveBlockModalContextProvider } from "@/app/contexts/SaveBlockModalContext";
 
 const ProjectsWrapper: React.FC<PropsWithChildren> = ({ children }) => {
   const { isLoading } = useQuery({
@@ -14,7 +15,13 @@ const ProjectsWrapper: React.FC<PropsWithChildren> = ({ children }) => {
     refetchOnWindowFocus: false,
   });
 
-  return isLoading ? <LoadingSkeleton /> : <ProjectsContextProvider>{children}</ProjectsContextProvider>;
+  return isLoading ? (
+    <LoadingSkeleton />
+  ) : (
+    <ProjectsContextProvider>
+      <SaveBlockModalContextProvider>{children}</SaveBlockModalContextProvider>
+    </ProjectsContextProvider>
+  );
 };
 
 export default ProjectsWrapper;

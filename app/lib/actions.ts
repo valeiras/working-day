@@ -42,9 +42,11 @@ export const getAllProjects = async () => {
 };
 
 export const stopBlock = async ({ blockId, totalTimeSeconds }: { blockId: number; totalTimeSeconds: number }) => {
-  updateBlock({ blockId, blockData: { working_time_seconds: totalTimeSeconds } });
-  deleteWorkingTimesByBlockId({ blockId });
-  makeWorkingBlockInactive({ blockId });
+  await Promise.all([
+    updateBlock({ blockId, blockData: { working_time_seconds: totalTimeSeconds } }),
+    deleteWorkingTimesByBlockId({ blockId }),
+    makeWorkingBlockInactive({ blockId }),
+  ]);
 };
 
 export const populateDB = async () => {

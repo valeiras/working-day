@@ -44,6 +44,7 @@ const Controls: React.FC<Props> = ({ project, isFetching, localTimerArray, class
   };
 
   const handleStop = async () => {
+    setLastSubmittedProjectId(null);
     const blockId = project.activeBlock?.id;
     if (!blockId) return console.error("No block id found");
 

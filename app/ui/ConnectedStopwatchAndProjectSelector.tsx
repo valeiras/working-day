@@ -11,6 +11,7 @@ const ConnectedStopwatchAndProjectSelector: React.FC = () => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const closeModal = () => modalRef.current?.close();
   const openModal = () => modalRef.current?.showModal();
+
   return (
     <>
       <ConnectedStopwatch projectId={projectId} />

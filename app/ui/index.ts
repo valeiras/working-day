@@ -13,7 +13,7 @@ export { default as Timer } from "./watch/Timer";
 export { default as NewProjectModal } from "./modals/NewProjectModal";
 export { default as Modal } from "./modals/Modal";
 export { default as FirstClickModal } from "./modals/FirstClickModal";
-export { default as SaveBlockModalContent } from "./modals/SaveBlockModalContent";
+export { default as SaveBlockModal } from "./modals/SaveBlockModal";
 
 export { default as ProjectRow } from "./projects/ProjectRow";
 export { default as ProjectCard } from "./projects/ProjectCard";

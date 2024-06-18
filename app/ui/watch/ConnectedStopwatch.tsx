@@ -1,17 +1,18 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { getAllProjects } from "@/app/lib/actions";
 import { useQuery } from "@tanstack/react-query";
 import Watch from "./Watch";
 import { useDBTimer, useLocalTimer } from "@/app/lib/hooks";
 import { getSingleTimer } from "@/app/lib/getTimers";
-import { useRouter } from "next/navigation";
+import SaveBlockModal from "../modals/SaveBlockModal";
 
 type Props = { projectId: number | null };
 const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
   const [isStale, setIsStale] = React.useState<boolean>(false);
-  const router = useRouter();
+  const [currentTimerCs, setCurrentTimerCs] = React.useState<number>(0);
+  const modalRef = useRef<HTMLDialogElement>(null);
 
   const { data, isFetching } = useQuery({
     queryKey: ["projects"],
@@ -24,8 +25,8 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
 
   const {
     handleLocalStart,
-    handleConnectedStart,
     handleLocalPause,
+    handleLocalStop,
     localTimerCs,
     setLocalTimerCs,
     isRunning,
@@ -33,7 +34,7 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
     intervalRef,
   } = useLocalTimer();
 
-  const { handleDBStart, handleDBPause } = useDBTimer();
+  const { handleDBStart, handleDBPause, handleDBStop } = useDBTimer();
 
   useEffect(() => {
     if (!projectId) return;
@@ -42,7 +43,7 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
     if (intervalRef.current) clearInterval(intervalRef.current);
 
     if (isRunningDB) {
-      handleConnectedStart(currentTimerCs);
+      handleLocalStart(currentTimerCs);
     }
 
     setIsRunning(isRunningDB);
@@ -75,22 +76,35 @@ const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
     setIsStale(false);
   };
 
-  const handleStop = async () => {
+  const showModal = async () => {
     if (!projectId) return console.error("Project ID is missing");
-    router.push(`/save-block/${currProject?.activeBlock?.id}?t=${localTimerCs}`);
-    router.refresh();
+    setCurrentTimerCs(localTimerCs);
+    modalRef.current?.showModal();
+  };
+
+  const closeModal = () => {
+    modalRef.current?.close();
   };
 
   return (
-    <Watch
-      timer={localTimerCs}
-      isRunning={isRunning}
-      handleStart={handleStart}
-      handlePause={handlePause}
-      handleStop={handleStop}
-      modalMessage="The current block will be stopped and stored in the database."
-      isLoading={isFetching || isStale}
-    />
+    <>
+      <Watch
+        timer={localTimerCs}
+        isRunning={isRunning}
+        handleStart={handleStart}
+        handlePause={handlePause}
+        handleStop={showModal}
+        modalMessage="The current block will be stopped and stored in the database."
+        isLoading={isFetching || isStale}
+      />
+      <SaveBlockModal
+        blockId={currProject?.activeBlock?.id}
+        ref={modalRef}
+        currentTimerCs={currentTimerCs}
+        closeModal={closeModal}
+        handleLocalStop={handleLocalStop}
+      />
+    </>
   );
 };
 

@@ -10,7 +10,7 @@ import { useLocalTimerArray, useDBSynchronizer } from "@/app/lib/hooks";
 type Props = { columns: ProjectColumns[] };
 
 const ProjectsTableRows: React.FC<Props> = ({ columns }) => {
-  const { data, isLoading, isFetching } = useQuery({
+  const { data, isFetching } = useQuery({
     queryKey: ["projects"],
     queryFn: () => getAllProjects(),
     refetchOnWindowFocus: false,

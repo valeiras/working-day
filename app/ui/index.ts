@@ -18,6 +18,7 @@ export { default as SaveBlockModal } from "./modals/SaveBlockModal";
 export { default as ProjectRow } from "./projects/ProjectRow";
 export { default as ProjectCard } from "./projects/ProjectCard";
 export { default as ProjectsTableRows } from "./projects/ProjectsTableRows";
+export { default as ProjectsTableHeader } from "./projects/ProjectsTableHeader";
 export { default as ProjectsTable } from "./projects/ProjectsTable";
 export { default as ProjectsWrapper } from "./projects/ProjectsWrapper";
 export { default as ProjectsList } from "./projects/ProjectsList";

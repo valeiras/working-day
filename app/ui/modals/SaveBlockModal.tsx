@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { formatTime } from "@/app/lib/utils";
 import { stopBlock } from "@/app/lib/actions";
 import { forwardRef } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   closeModal: () => void;
@@ -19,6 +20,8 @@ const SaveBlockModal = forwardRef<HTMLDialogElement, Props>(function SaveBlockMo
   { closeModal, handleLocalStop, currentTimerCs, blockId },
   modalRef
 ) {
+  const queryClient = useQueryClient();
+
   const {
     register,
     handleSubmit,
@@ -43,6 +46,7 @@ const SaveBlockModal = forwardRef<HTMLDialogElement, Props>(function SaveBlockMo
   const onSubmit: SubmitHandler<SaveBlockFormSchemaType> = async (data) => {
     const totalTimeSeconds = data.hours * 3600 + data.minutes * 60 + data.seconds;
     if (blockId) await stopBlock({ blockId, totalTimeSeconds });
+    queryClient.invalidateQueries({ queryKey: ["projects"] });
     handleLocalStop();
     closeModal();
   };
@@ -62,7 +66,7 @@ const SaveBlockModal = forwardRef<HTMLDialogElement, Props>(function SaveBlockMo
           <button className="btn btn-primary " type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Saving..." : "Save"}
           </button>
-          <button className="btn btn-secondary" type="reset" onClick={onCancel} disabled={isSubmitting}>
+          <button className="btn btn-secondary" type="button" onClick={onCancel} disabled={isSubmitting}>
             {isSubmitting ? "Saving..." : "Cancel"}
           </button>
         </div>

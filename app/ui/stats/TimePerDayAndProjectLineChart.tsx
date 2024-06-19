@@ -17,9 +17,6 @@ import { ProjectWithWorkingTimes } from "@/app/lib/db/queries";
 type Props = { chartData: Record<string, string>[]; projects: ProjectWithWorkingTimes[] | null | undefined };
 
 const TimePerDayAndProjectLineChart: React.FC<Props> = ({ chartData, projects }) => {
-  // const selectedProjects = projects?.slice(1, 4).map(({ name }) => name);
-  // console.log(selectedProjects);
-  console.log(chartData);
   return (
     <ResponsiveContainer width={RESPONSIVE_CONTAINER_WIDTH} height={RESPONSIVE_CONTAINER_HEIGHT} debounce={1}>
       <LineChart data={chartData} margin={CHART_MARGIN}>

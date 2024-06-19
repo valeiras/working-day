@@ -10,7 +10,10 @@ This project is a full-stack application created using Next. Data is persisted i
 
 ### TODO:
 
-- Switch to a different charting library
+- Add a project selector for the chart
+- Add a chart type selector
+- Add date selectors to the chart
+- Correct the modals in mobile apps
 - Make the skeletons match the cards
 - Add alerts.
 - Add overtime thresholds.

@@ -1,1 +1,3 @@
-export const SAVE_BLOCK_MODAL_ID = "save-block-modal";
+export const LEGEND_HEIGHT = 25;
+export const RESPONSIVE_CONTAINER_WIDTH = "95%";
+export const RESPONSIVE_CONTAINER_HEIGHT = 250;

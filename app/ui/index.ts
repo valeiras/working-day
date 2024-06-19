@@ -29,3 +29,5 @@ export { default as Controls } from "./projects/Controls";
 
 export { default as TimePerProject } from "./stats/TimePerProject";
 export { default as TimePerDayAndProject } from "./stats/TimePerDayAndProject";
+export { default as TimePerDayAndProjectBarChart } from "./stats/TimePerDayAndProjectBarChart";
+export { default as StatsContainer } from "./stats/StatsContainer";

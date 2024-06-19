@@ -8,9 +8,12 @@ import React from "react";
 
 import { CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, BarChart, Bar, Legend } from "recharts";
 import Color from "color";
+import StatsContainer from "./StatsContainer";
+import { LEGEND_HEIGHT, RESPONSIVE_CONTAINER_HEIGHT, RESPONSIVE_CONTAINER_WIDTH } from "@/app/lib/constants";
+import ChartSkeleton from "./ChartSkeleton";
 
 const TimePerProject: React.FC = () => {
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["projects"],
     queryFn: () => getAllProjects(),
     refetchOnWindowFocus: false,
@@ -23,22 +26,27 @@ const TimePerProject: React.FC = () => {
   });
 
   return (
-    <div className="flex flex-col items-center gap-2 bg-base-300 rounded-lg py-6">
-      <h2>Total hours per project:</h2>
-      {/* This is a hack: for some reason, the Responsive container does not fill the whole width of the parent */}
-      <div className="w-full h-64 relative right-3 text-sm">
-        <ResponsiveContainer width="95%" debounce={1}>
+    <StatsContainer title="Total hours per project">
+      <ResponsiveContainer width={RESPONSIVE_CONTAINER_WIDTH} height={RESPONSIVE_CONTAINER_HEIGHT} debounce={1}>
+        {isLoading ? (
+          <ChartSkeleton />
+        ) : (
           <BarChart data={chartData}>
             <XAxis dataKey="name" tickFormatter={shortenTick} />
             <YAxis />
             <CartesianGrid strokeDasharray="3 3" />
             <Tooltip />
-            <Legend />
-            <Bar dataKey="hours" fill={Color(primary).alpha(0.9).string()} barSize={30} />
+            <Legend height={LEGEND_HEIGHT} />
+            <Bar
+              dataKey="hours"
+              fill={Color(primary).alpha(0.9).string()}
+              barSize={30}
+              name="Total hours per project"
+            />
           </BarChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
+        )}
+      </ResponsiveContainer>
+    </StatsContainer>
   );
 };
 

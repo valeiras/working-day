@@ -18,6 +18,7 @@ const ConnectedStopwatchAndProjectSelector: React.FC = () => {
       <ConnectedStopwatch projectId={projectId} />
       <ProjectSelector setProjectId={setProjectId} />
       <NewProjectModal ref={modalRef} closeModal={closeModal} />
+
       <NewProjectButton showModal={openModal} />
     </SaveBlockModalContextProvider>
   );

@@ -10,7 +10,7 @@ export default async function Layout({
       <header>
         <Navbar />
       </header>
-      <main className="flex flex-1 flex-col items-center justify-start gap-4 px-2">
+      <main className="w-screen flex flex-col items-center justify-start gap-4 px-2 pb-4">
         <Title />
         {children}
       </main>

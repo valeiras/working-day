@@ -35,7 +35,7 @@ const Modal: React.FC<PropsWithChildren> = ({ children }) => {
   }, []);
 
   return (
-    <dialog className="modal overflow-y-hidden" ref={modalRef}>
+    <dialog className="modal overflow-y-hidden max-w-full" ref={modalRef}>
       <div className="modal-box flex flex-col gap-2">{children}</div>
     </dialog>
   );

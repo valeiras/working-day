@@ -36,7 +36,7 @@ const TimePerProject: React.FC = () => {
           <XAxis dataKey="name" tickFormatter={shortenTick} />
           <YAxis />
           <CartesianGrid strokeDasharray="3 3" />
-          <Tooltip />
+          <Tooltip contentStyle={{ borderRadius: "20px" }} itemStyle={{ color: primary }} />
           <Legend height={LEGEND_HEIGHT} />
           <Bar dataKey="hours" fill={Color(primary).alpha(0.9).string()} barSize={30} name="Total hours per project" />
         </BarChart>

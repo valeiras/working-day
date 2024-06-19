@@ -2,7 +2,7 @@
 
 import React from "react";
 import { CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from "recharts";
-import { themeColors } from "@/app/lib/colors";
+import { base100, displayColors, primary } from "@/app/lib/colors";
 import { shortenDate, shortenTick } from "@/app/lib/utils";
 import Color from "color";
 
@@ -23,11 +23,11 @@ const TimePerDayAndProjectLineChart: React.FC<Props> = ({ chartData, projects })
         <XAxis dataKey="date" tickFormatter={shortenDate} />
         <YAxis />
         <CartesianGrid strokeDasharray="3 3" />
-        <Tooltip />
+        <Tooltip contentStyle={{ borderRadius: "5px" }} itemStyle={{ color: primary }} />
         <Legend align="center" formatter={shortenTick} height={LEGEND_HEIGHT} />
         {projects?.map(({ name }, idx) => {
-          const round = Math.floor(idx / themeColors.length);
-          const color = Color(themeColors[idx % themeColors.length])
+          const round = Math.floor(idx / displayColors.length);
+          const color = Color(displayColors[idx % displayColors.length])
             .alpha(0.9)
             .lighten(0.5)
             .desaturate(round / (round + 1 + 1))

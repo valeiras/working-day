@@ -10,7 +10,6 @@ import { CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, BarChart, Ba
 import Color from "color";
 import StatsContainer from "./StatsContainer";
 import { LEGEND_HEIGHT, RESPONSIVE_CONTAINER_HEIGHT, RESPONSIVE_CONTAINER_WIDTH } from "@/app/lib/constants";
-import ChartSkeleton from "./ChartSkeleton";
 
 const TimePerProject: React.FC = () => {
   const { data, isLoading } = useQuery({
@@ -26,25 +25,16 @@ const TimePerProject: React.FC = () => {
   });
 
   return (
-    <StatsContainer title="Total hours per project">
+    <StatsContainer title="Total hours per project" isLoading={isLoading}>
       <ResponsiveContainer width={RESPONSIVE_CONTAINER_WIDTH} height={RESPONSIVE_CONTAINER_HEIGHT} debounce={1}>
-        {isLoading ? (
-          <ChartSkeleton />
-        ) : (
-          <BarChart data={chartData}>
-            <XAxis dataKey="name" tickFormatter={shortenTick} />
-            <YAxis />
-            <CartesianGrid strokeDasharray="3 3" />
-            <Tooltip />
-            <Legend height={LEGEND_HEIGHT} />
-            <Bar
-              dataKey="hours"
-              fill={Color(primary).alpha(0.9).string()}
-              barSize={30}
-              name="Total hours per project"
-            />
-          </BarChart>
-        )}
+        <BarChart data={chartData}>
+          <XAxis dataKey="name" tickFormatter={shortenTick} />
+          <YAxis />
+          <CartesianGrid strokeDasharray="3 3" />
+          <Tooltip />
+          <Legend height={LEGEND_HEIGHT} />
+          <Bar dataKey="hours" fill={Color(primary).alpha(0.9).string()} barSize={30} name="Total hours per project" />
+        </BarChart>
       </ResponsiveContainer>
     </StatsContainer>
   );

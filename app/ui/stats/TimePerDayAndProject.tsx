@@ -35,8 +35,8 @@ const TimePerDayAndProject: React.FC = () => {
   }
 
   return (
-    <StatsContainer title="Total hours per project and day:">
-      {isLoading ? <ChartSkeleton /> : <TimePerDayAndProjectBarChart chartData={chartData} projects={projects} />}
+    <StatsContainer title="Total hours per project and day:" isLoading={isLoading}>
+      <TimePerDayAndProjectBarChart chartData={chartData} projects={projects} />
     </StatsContainer>
   );
 };

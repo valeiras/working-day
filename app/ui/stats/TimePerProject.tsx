@@ -9,7 +9,12 @@ import React from "react";
 import { CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, BarChart, Bar, Legend } from "recharts";
 import Color from "color";
 import StatsContainer from "./StatsContainer";
-import { LEGEND_HEIGHT, RESPONSIVE_CONTAINER_HEIGHT, RESPONSIVE_CONTAINER_WIDTH } from "@/app/lib/constants";
+import {
+  CHART_MARGIN,
+  LEGEND_HEIGHT,
+  RESPONSIVE_CONTAINER_HEIGHT,
+  RESPONSIVE_CONTAINER_WIDTH,
+} from "@/app/lib/constants";
 
 const TimePerProject: React.FC = () => {
   const { data, isLoading } = useQuery({
@@ -27,7 +32,7 @@ const TimePerProject: React.FC = () => {
   return (
     <StatsContainer title="Total hours per project" isLoading={isLoading}>
       <ResponsiveContainer width={RESPONSIVE_CONTAINER_WIDTH} height={RESPONSIVE_CONTAINER_HEIGHT} debounce={1}>
-        <BarChart data={chartData}>
+        <BarChart data={chartData} margin={CHART_MARGIN}>
           <XAxis dataKey="name" tickFormatter={shortenTick} />
           <YAxis />
           <CartesianGrid strokeDasharray="3 3" />

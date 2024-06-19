@@ -9,6 +9,7 @@ import React from "react";
 import StatsContainer from "./StatsContainer";
 import TimePerDayAndProjectBarChart from "./TimePerDayAndProjectBarChart";
 import ChartSkeleton from "./ChartSkeleton";
+import TimePerDayAndProjectLineChart from "./TimePerDayAndProjectLineChart";
 
 const TimePerDayAndProject: React.FC = () => {
   const { data, isLoading } = useQuery({
@@ -36,7 +37,8 @@ const TimePerDayAndProject: React.FC = () => {
 
   return (
     <StatsContainer title="Total hours per project and day:" isLoading={isLoading}>
-      <TimePerDayAndProjectBarChart chartData={chartData} projects={projects} />
+      {/* <TimePerDayAndProjectBarChart chartData={chartData} projects={projects} /> */}
+      <TimePerDayAndProjectLineChart chartData={chartData} projects={projects} />
     </StatsContainer>
   );
 };

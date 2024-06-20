@@ -21,7 +21,7 @@ const TimePerDayAndProjectLineChart: React.FC<Props> = ({ chartData, projects })
     <ResponsiveContainer width={RESPONSIVE_CONTAINER_WIDTH} height={RESPONSIVE_CONTAINER_HEIGHT} debounce={1}>
       <LineChart data={chartData} margin={CHART_MARGIN}>
         <XAxis dataKey="date" tickFormatter={shortenDate} />
-        <YAxis />
+        <YAxis domain={[0, "dataMax"]} />
         <CartesianGrid strokeDasharray="3 3" />
         <Tooltip contentStyle={{ borderRadius: "5px" }} itemStyle={{ color: primary }} />
         <Legend align="center" formatter={shortenTick} height={LEGEND_HEIGHT} />
@@ -32,7 +32,7 @@ const TimePerDayAndProjectLineChart: React.FC<Props> = ({ chartData, projects })
             .lighten(0.5)
             .desaturate(round / (round + 1 + 1))
             .string();
-          return <Line key={name} type="monotone" dataKey={name} stroke={color} dot={false} />;
+          return <Line key={name} type="monotone" dataKey={name} stroke={color} dot={false} strokeWidth={2} />;
         })}
       </LineChart>
     </ResponsiveContainer>

@@ -22,17 +22,17 @@ export const getWorkedHours = ({
 };
 
 export const getWorkedHoursPerDay = ({ projects }: { projects: ProjectWithWorkingTimes[] | null | undefined }) => {
-  const workedHours: Record<string, Record<string, string>> = {};
+  const workedHours: Record<string, Record<string, number>> = {};
 
-  const emptyTimes: Record<string, string> = {};
-  projects?.forEach(({ name }) => (emptyTimes[name] = "0"));
+  const emptyTimes: Record<string, number> = {};
+  projects?.forEach(({ name }) => (emptyTimes[name] = 0));
 
   projects?.forEach((project) => {
     const { workingBlocks, activeBlock, name } = project;
     workingBlocks.forEach(({ workingTimeSeconds, createdAt }) => {
       const dateStr = formatDate(new Date(createdAt));
       if (!workedHours[dateStr]) workedHours[dateStr] = { ...emptyTimes };
-      workedHours[dateStr][name] = (parseFloat(workedHours[dateStr][name]) + workingTimeSeconds / 3600).toFixed(2);
+      workedHours[dateStr][name] = parseFloat((workedHours[dateStr][name] + workingTimeSeconds / 3600).toFixed(2));
     });
   });
 

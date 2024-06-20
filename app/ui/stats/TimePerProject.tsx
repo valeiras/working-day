@@ -15,6 +15,9 @@ import {
   RESPONSIVE_CONTAINER_HEIGHT,
   RESPONSIVE_CONTAINER_WIDTH,
 } from "@/app/lib/constants";
+import StatsProjectSelector from "./StatsProjectSelector";
+import { useSelectedProjects } from "@/app/lib/hooks";
+import StatsControlsContainer from "./StatsControlsContainer";
 
 const TimePerProject: React.FC = () => {
   const { data, isLoading } = useQuery({
@@ -25,7 +28,9 @@ const TimePerProject: React.FC = () => {
   const projects = data?.data;
 
   const { workedHours: hours } = getWorkedHours({ projects });
-  const chartData = projects?.map(({ id, name }) => {
+  const { selectedProjects, setIsSelected } = useSelectedProjects(projects);
+
+  const chartData = selectedProjects?.map(({ id, name }) => {
     return { name, hours: hours[id].toFixed(2) };
   });
 
@@ -34,13 +39,16 @@ const TimePerProject: React.FC = () => {
       <ResponsiveContainer width={RESPONSIVE_CONTAINER_WIDTH} height={RESPONSIVE_CONTAINER_HEIGHT} debounce={1}>
         <BarChart data={chartData} margin={CHART_MARGIN}>
           <XAxis dataKey="name" tickFormatter={shortenTick} />
-          <YAxis />
+          <YAxis domain={[0, "dataMax"]} />
           <CartesianGrid strokeDasharray="3 3" />
           <Tooltip contentStyle={{ borderRadius: "20px" }} itemStyle={{ color: primary }} />
           <Legend height={LEGEND_HEIGHT} />
           <Bar dataKey="hours" fill={Color(primary).alpha(0.9).string()} barSize={30} name="Total hours per project" />
         </BarChart>
       </ResponsiveContainer>
+      <StatsControlsContainer>
+        <StatsProjectSelector setIsSelected={setIsSelected} projects={projects} />
+      </StatsControlsContainer>
     </StatsContainer>
   );
 };

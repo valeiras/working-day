@@ -10,6 +10,9 @@ import StatsContainer from "./StatsContainer";
 import TimePerDayAndProjectBarChart from "./TimePerDayAndProjectBarChart";
 import ChartSkeleton from "./ChartSkeleton";
 import TimePerDayAndProjectLineChart from "./TimePerDayAndProjectLineChart";
+import StatsControlsContainer from "./StatsControlsContainer";
+import StatsProjectSelector from "./StatsProjectSelector";
+import { useSelectedProjects } from "@/app/lib/hooks";
 
 const TimePerDayAndProject: React.FC = () => {
   const { data, isLoading } = useQuery({
@@ -25,6 +28,8 @@ const TimePerDayAndProject: React.FC = () => {
   const date = new Date();
   date.setDate(date.getDate() - daysBack);
 
+  const { selectedProjects, setIsSelected } = useSelectedProjects(projects);
+
   const chartData: Record<string, string>[] = [];
   for (let ii = 0; ii < daysBack; ii++) {
     const day = new Date(date);
@@ -38,7 +43,10 @@ const TimePerDayAndProject: React.FC = () => {
   return (
     <StatsContainer title="Total hours per project and day:" isLoading={isLoading}>
       {/* <TimePerDayAndProjectBarChart chartData={chartData} projects={projects} /> */}
-      <TimePerDayAndProjectLineChart chartData={chartData} projects={projects} />
+      <TimePerDayAndProjectLineChart chartData={chartData} projects={selectedProjects} />
+      <StatsControlsContainer>
+        <StatsProjectSelector setIsSelected={setIsSelected} projects={projects} />
+      </StatsControlsContainer>
     </StatsContainer>
   );
 };

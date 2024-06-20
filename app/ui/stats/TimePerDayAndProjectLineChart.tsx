@@ -24,12 +24,17 @@ const TimePerDayAndProjectLineChart: React.FC<Props> = ({ chartData, projects })
         <YAxis domain={[0, "dataMax"]} />
         <CartesianGrid strokeDasharray="3 3" />
         <Tooltip contentStyle={{ borderRadius: "5px" }} itemStyle={{ color: primary }} />
-        <Legend align="center" formatter={shortenTick} height={LEGEND_HEIGHT} />
+        <Legend
+          align="center"
+          formatter={shortenTick}
+          height={LEGEND_HEIGHT}
+          wrapperStyle={{ textAlign: "center", left: 10 }}
+        />
         {projects?.map(({ name }, idx) => {
           const round = Math.floor(idx / displayColors.length);
           const color = Color(displayColors[idx % displayColors.length])
             .alpha(0.9)
-            .lighten(0.5)
+            .lighten(0.2)
             .desaturate(round / (round + 1 + 1))
             .string();
           return <Line key={name} type="monotone" dataKey={name} stroke={color} dot={false} strokeWidth={2} />;

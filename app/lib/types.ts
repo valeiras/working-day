@@ -24,3 +24,5 @@ export type ProjectColumns =
   | "edit"
   | "alerts"
   | "overtimeThreshold";
+
+export type ChartType = "Bar Chart" | "Line Chart";

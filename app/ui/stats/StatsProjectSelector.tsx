@@ -14,7 +14,7 @@ const StatsProjectSelector: React.FC<Props> = ({ setIsSelected, projects }) => {
       </div>
       <div
         tabIndex={0}
-        className="p-2 flex flex-col w-fit dropdown-content bg-base-200 z-[1] rounded-box max-h-44 overflow-y-auto"
+        className="p-2 flex flex-col w-fit dropdown-content bg-base-200 z-[1] rounded-box max-h-32 sm:max-h-44 overflow-y-auto absolute"
       >
         {projects?.map(({ id, name }) => {
           return (

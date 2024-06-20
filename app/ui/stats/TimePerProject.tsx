@@ -6,7 +6,7 @@ import { getWorkedHours } from "@/app/lib/getWorkedHours";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 
-import { CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, BarChart, Bar, Legend } from "recharts";
+import { CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, BarChart, Bar, Legend, Customized } from "recharts";
 import Color from "color";
 import StatsContainer from "./StatsContainer";
 import {
@@ -42,11 +42,11 @@ const TimePerProject: React.FC = () => {
           <YAxis domain={[0, "dataMax"]} />
           <CartesianGrid strokeDasharray="3 3" />
           <Tooltip contentStyle={{ borderRadius: "20px" }} itemStyle={{ color: primary }} />
-          <Legend height={LEGEND_HEIGHT} />
+          <Legend align="center" formatter={() => "Hours"} height={LEGEND_HEIGHT} />
           <Bar dataKey="hours" fill={Color(primary).alpha(0.9).string()} barSize={30} name="Total hours per project" />
         </BarChart>
       </ResponsiveContainer>
-      <StatsControlsContainer>
+      <StatsControlsContainer className="mt-1">
         <StatsProjectSelector setIsSelected={setIsSelected} projects={projects} />
       </StatsControlsContainer>
     </StatsContainer>

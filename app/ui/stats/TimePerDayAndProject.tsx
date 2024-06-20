@@ -4,17 +4,22 @@ import { getAllProjects } from "@/app/lib/actions";
 import { getWorkedHoursPerDay } from "@/app/lib/getWorkedHours";
 import { formatDate } from "@/app/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
+import React, { useState } from "react";
 
 import StatsContainer from "./StatsContainer";
 import TimePerDayAndProjectBarChart from "./TimePerDayAndProjectBarChart";
-import ChartSkeleton from "./ChartSkeleton";
-import TimePerDayAndProjectLineChart from "./TimePerDayAndProjectLineChart";
 import StatsControlsContainer from "./StatsControlsContainer";
 import StatsProjectSelector from "./StatsProjectSelector";
 import { useSelectedProjects } from "@/app/lib/hooks";
+import ChartTypeSelector from "./ChartTypeSelector";
+import { ChartType } from "@/app/lib/types";
+import TimePerDayAndProjectLineChart from "./TimePerDayAndProjectLineChart";
+
+const chartTypes: ChartType[] = ["Bar Chart", "Line Chart"];
 
 const TimePerDayAndProject: React.FC = () => {
+  const [chartType, setChartType] = useState<ChartType>("Bar Chart");
+
   const { data, isLoading } = useQuery({
     queryKey: ["projects"],
     queryFn: () => getAllProjects(),
@@ -42,10 +47,13 @@ const TimePerDayAndProject: React.FC = () => {
 
   return (
     <StatsContainer title="Total hours per project and day:" isLoading={isLoading}>
-      {/* <TimePerDayAndProjectBarChart chartData={chartData} projects={projects} /> */}
-      <TimePerDayAndProjectLineChart chartData={chartData} projects={selectedProjects} />
+      {chartType === "Bar Chart" && <TimePerDayAndProjectBarChart chartData={chartData} projects={selectedProjects} />}
+      {chartType === "Line Chart" && (
+        <TimePerDayAndProjectLineChart chartData={chartData} projects={selectedProjects} />
+      )}
       <StatsControlsContainer>
         <StatsProjectSelector setIsSelected={setIsSelected} projects={projects} />
+        <ChartTypeSelector name="line-or-bar" values={chartTypes} chartType={chartType} setChartType={setChartType} />
       </StatsControlsContainer>
     </StatsContainer>
   );

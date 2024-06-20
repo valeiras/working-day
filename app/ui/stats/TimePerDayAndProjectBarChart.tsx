@@ -24,7 +24,13 @@ const TimePerDayAndProjectBarChart: React.FC<Props> = ({ chartData, projects }) 
         <YAxis domain={[0, "dataMax"]} />
         <CartesianGrid strokeDasharray="3 3" />
         <Tooltip contentStyle={{ borderRadius: "20px" }} itemStyle={{ color: primary }} />
-        <Legend align="center" formatter={shortenTick} height={LEGEND_HEIGHT} />
+
+        <Legend
+          align="center"
+          formatter={shortenTick}
+          height={LEGEND_HEIGHT}
+          wrapperStyle={{ textAlign: "center", left: 10 }}
+        />
         {projects?.map(({ name, id }, idx) => {
           const round = Math.floor(idx / displayColors.length);
           const color = Color(displayColors[idx % displayColors.length])

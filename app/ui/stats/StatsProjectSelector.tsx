@@ -9,7 +9,7 @@ type Props = {
 const StatsProjectSelector: React.FC<Props> = ({ setIsSelected, projects }) => {
   return (
     <div className="dropdown">
-      <div role="button" tabIndex={0} className="m-1 btn">
+      <div role="button" tabIndex={0} className="m-1 btn btn-primary">
         Select Projects
       </div>
       <div

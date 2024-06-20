@@ -27,8 +27,8 @@ export { default as CurrentTime } from "./projects/CurrentTime";
 export { default as TotalTime } from "./projects/TotalTime";
 export { default as Controls } from "./projects/Controls";
 
-export { default as TimePerProject } from "./stats/TimePerProject";
-export { default as TimePerDayAndProject } from "./stats/TimePerDayAndProject";
-export { default as TimePerDayAndProjectBarChart } from "./stats/TimePerDayAndProjectBarChart";
-export { default as TimePerDayAndProjectLineChart } from "./stats/TimePerDayAndProjectLineChart";
+export { default as TotalTimePerProject } from "./stats/TotalTimePerProject";
+export { default as DailyTimePerProject } from "./stats/DailyTimePerProject";
+export { default as DailyTimePerProjectBarChart } from "./stats/DailyTimePerProjectBarChart";
+export { default as DailyTimePerProjectLineChart } from "./stats/DailyTimePerProjectLineChart";
 export { default as StatsContainer } from "./stats/StatsContainer";

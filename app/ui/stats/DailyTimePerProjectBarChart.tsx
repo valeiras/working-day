@@ -16,7 +16,7 @@ import { ProjectWithWorkingTimes } from "@/app/lib/db/queries";
 
 type Props = { chartData: Record<string, string>[]; projects: ProjectWithWorkingTimes[] | null | undefined };
 
-const TimePerDayAndProjectBarChart: React.FC<Props> = ({ chartData, projects }) => {
+const DailyTimePerProjectBarChart: React.FC<Props> = ({ chartData, projects }) => {
   return (
     <ResponsiveContainer width={RESPONSIVE_CONTAINER_WIDTH} height={RESPONSIVE_CONTAINER_HEIGHT} debounce={1}>
       <BarChart data={chartData} margin={CHART_MARGIN}>
@@ -44,4 +44,4 @@ const TimePerDayAndProjectBarChart: React.FC<Props> = ({ chartData, projects }) 
   );
 };
 
-export default TimePerDayAndProjectBarChart;
+export default DailyTimePerProjectBarChart;

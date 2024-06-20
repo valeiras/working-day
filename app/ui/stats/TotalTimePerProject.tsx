@@ -19,7 +19,7 @@ import StatsProjectSelector from "./StatsProjectSelector";
 import { useSelectedProjects } from "@/app/lib/hooks";
 import StatsControlsContainer from "./StatsControlsContainer";
 
-const TimePerProject: React.FC = () => {
+const TotalTimePerProject: React.FC = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["projects"],
     queryFn: () => getAllProjects(),
@@ -56,4 +56,4 @@ const TimePerProject: React.FC = () => {
 const shortenTick = (value: string) => {
   return value.substring(0, 7) + (value.length > 8 ? "..." : "");
 };
-export default TimePerProject;
+export default TotalTimePerProject;

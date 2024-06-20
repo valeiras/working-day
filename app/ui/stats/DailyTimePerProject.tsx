@@ -7,17 +7,17 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 
 import StatsContainer from "./StatsContainer";
-import TimePerDayAndProjectBarChart from "./TimePerDayAndProjectBarChart";
+import DailyTimePerProjectBarChart from "./DailyTimePerProjectBarChart";
 import StatsControlsContainer from "./StatsControlsContainer";
 import StatsProjectSelector from "./StatsProjectSelector";
 import { useSelectedProjects } from "@/app/lib/hooks";
 import ChartTypeSelector from "./ChartTypeSelector";
 import { ChartType } from "@/app/lib/types";
-import TimePerDayAndProjectLineChart from "./TimePerDayAndProjectLineChart";
+import DailyTimePerProjectLineChart from "./DailyTimePerProjectLineChart";
 
 const chartTypes: ChartType[] = ["Bar Chart", "Line Chart"];
 
-const TimePerDayAndProject: React.FC = () => {
+const DailyTimePerProject: React.FC = () => {
   const [chartType, setChartType] = useState<ChartType>("Bar Chart");
 
   const { data, isLoading } = useQuery({
@@ -46,11 +46,9 @@ const TimePerDayAndProject: React.FC = () => {
   }
 
   return (
-    <StatsContainer title="Total hours per project and day:" isLoading={isLoading}>
-      {chartType === "Bar Chart" && <TimePerDayAndProjectBarChart chartData={chartData} projects={selectedProjects} />}
-      {chartType === "Line Chart" && (
-        <TimePerDayAndProjectLineChart chartData={chartData} projects={selectedProjects} />
-      )}
+    <StatsContainer title="Daily hours per project:" isLoading={isLoading}>
+      {chartType === "Bar Chart" && <DailyTimePerProjectBarChart chartData={chartData} projects={selectedProjects} />}
+      {chartType === "Line Chart" && <DailyTimePerProjectLineChart chartData={chartData} projects={selectedProjects} />}
       <StatsControlsContainer>
         <StatsProjectSelector setIsSelected={setIsSelected} projects={projects} />
         <ChartTypeSelector name="line-or-bar" values={chartTypes} chartType={chartType} setChartType={setChartType} />
@@ -59,4 +57,4 @@ const TimePerDayAndProject: React.FC = () => {
   );
 };
 
-export default TimePerDayAndProject;
+export default DailyTimePerProject;

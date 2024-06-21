@@ -10,11 +10,9 @@ This project is a full-stack application created using Next. Data is persisted i
 
 ### TODO:
 
-- Add a project selector for the chart
-- Add a chart type selector
 - Add date selectors to the chart
-- Correct the modals in mobile apps
 - Make the skeletons match the cards
-- Add alerts.
+- Add toasts informing of the success or failure of operations
+- Add time-based alerts.
 - Add overtime thresholds.
 - Use tanstack table for the table

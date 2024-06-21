@@ -36,7 +36,7 @@ const DailyTimePerProject: React.FC = () => {
   const { selectedProjects, setIsSelected } = useSelectedProjects(projects);
 
   const chartData: Record<string, string>[] = [];
-  for (let ii = 0; ii < daysBack; ii++) {
+  for (let ii = 0; ii <= daysBack; ii++) {
     const day = new Date(date);
     day.setDate(day.getDate() + ii);
     const dateStr = formatDate(day);

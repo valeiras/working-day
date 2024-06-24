@@ -32,3 +32,4 @@ export { default as DailyTimePerProject } from "./stats/DailyTimePerProject";
 export { default as DailyTimePerProjectBarChart } from "./stats/DailyTimePerProjectBarChart";
 export { default as DailyTimePerProjectLineChart } from "./stats/DailyTimePerProjectLineChart";
 export { default as StatsContainer } from "./stats/StatsContainer";
+export { default as DateRangeSelector } from "./stats/DateRangeSelector";

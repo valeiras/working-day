@@ -3,12 +3,12 @@ import { computeAccumulatedTimerSeconds, formatDate } from "./utils";
 
 export const getWorkedHours = ({
   projects,
-  startDate,
-  endDate,
+  initialDate,
+  finalDate,
 }: {
   projects: ProjectWithWorkingTimes[] | null | undefined;
-  startDate?: Date;
-  endDate?: Date;
+  initialDate?: Date;
+  finalDate?: Date;
 }) => {
   const workedHours: Record<number, number> = {};
 
@@ -21,22 +21,38 @@ export const getWorkedHours = ({
   };
 };
 
-export const getWorkedHoursPerDay = ({ projects }: { projects: ProjectWithWorkingTimes[] | null | undefined }) => {
+export const getWorkedHoursPerDay = ({
+  projects,
+  initialDate,
+  finalDate,
+}: {
+  projects: ProjectWithWorkingTimes[] | null | undefined;
+  initialDate: Date;
+  finalDate: Date;
+}) => {
   const workedHours: Record<string, Record<string, number>> = {};
 
   const emptyTimes: Record<string, number> = {};
   projects?.forEach(({ name }) => (emptyTimes[name] = 0));
 
+  const currDate: Date = new Date(initialDate);
+  while (currDate <= finalDate) {
+    const dateStr = formatDate(currDate);
+    workedHours[dateStr] = { ...emptyTimes };
+    currDate.setDate(currDate.getDate() + 1);
+  }
+
   projects?.forEach((project) => {
-    const { workingBlocks, activeBlock, name } = project;
+    const { workingBlocks, name } = project;
     workingBlocks.forEach(({ workingTimeSeconds, createdAt }) => {
-      const dateStr = formatDate(new Date(createdAt));
-      if (!workedHours[dateStr]) workedHours[dateStr] = { ...emptyTimes };
-      workedHours[dateStr][name] = parseFloat((workedHours[dateStr][name] + workingTimeSeconds / 3600).toFixed(2));
+      const creationDate = new Date(createdAt);
+      if (creationDate >= initialDate && creationDate <= finalDate) {
+        const dateStr = formatDate(new Date(createdAt));
+        workedHours[dateStr][name] = parseFloat((workedHours[dateStr][name] + workingTimeSeconds / 3600).toFixed(2));
+      }
     });
   });
 
-  // TODO: take into account the active block
   return {
     workedHours,
   };

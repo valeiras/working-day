@@ -15,7 +15,6 @@ import ChartTypeSelector from "./ChartTypeSelector";
 import { ChartType } from "@/app/lib/types";
 import DailyTimePerProjectLineChart from "./DailyTimePerProjectLineChart";
 import { useStatsContext } from "@/app/contexts/StatsContext";
-import { getDateFromDateString } from "@/app/lib/dateUtils";
 
 const chartTypes: ChartType[] = ["Bar Chart", "Line Chart"];
 
@@ -25,12 +24,8 @@ const DailyTimePerProject: React.FC = () => {
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: ["projects with dates"],
-    queryFn: () =>
-      getProjectsInTimeRange({
-        initialDate,
-        finalDate,
-      }),
+    queryKey: ["projects"],
+    queryFn: () => getAllProjects(),
     refetchOnWindowFocus: false,
   });
 
@@ -40,23 +35,12 @@ const DailyTimePerProject: React.FC = () => {
 
   const projects = data?.data;
 
-  const { workedHours: hours } = getWorkedHoursPerDay({ projects });
-
-  const daysBack = 30;
-  const date = new Date();
-  date.setDate(date.getDate() - daysBack);
-
+  const { workedHours: hours } = getWorkedHoursPerDay({ projects, initialDate, finalDate });
   const { selectedProjects, setIsSelected } = useSelectedProjects(projects);
 
-  const chartData: Record<string, string>[] = [];
-  for (let ii = 0; ii <= daysBack; ii++) {
-    const day = new Date(date);
-    day.setDate(day.getDate() + ii);
-    const dateStr = formatDate(day);
-    if (hours[dateStr] === undefined) continue;
-
-    chartData.push({ date: dateStr, ...hours[dateStr] });
-  }
+  const chartData: Record<string, string>[] = Object.entries(hours).map(([dateStr, hours]) => {
+    return { date: dateStr, ...hours };
+  });
 
   return (
     <StatsContainer title="Daily hours per project:" isLoading={isLoading}>

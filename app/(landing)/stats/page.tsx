@@ -8,7 +8,7 @@ const Stats: React.FC = () => {
   return (
     <StatsContextProvider>
       <div className="grid grid-cols-1 lg:grid-cols-2 w-full md:w-4/5 max-w-[1200px] gap-2">
-        <TotalTimePerProject />
+        {/* <TotalTimePerProject /> */}
         <DailyTimePerProject />
       </div>
       <DateRangeSelector />

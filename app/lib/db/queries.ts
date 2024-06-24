@@ -83,13 +83,11 @@ export const selectAllProjectsInTimeRange = async ({
       .from("projects")
       .select(
         `name, id,
-        activeBlock:working_blocks!projects_active_block_id_fkey(id, times:working_times(id, startTime:start_time, pauseTime:pause_time)),
         workingBlocks:working_blocks!working_blocks_project_id_fkey(id, workingTimeSeconds:working_time_seconds, createdAt: created_at)`
       )
       .gte("workingBlocks.created_at", initialDate.toISOString())
-      .lte("workingBlocks.created_at", finalDate.toISOString())
+      // .lte("workingBlocks.created_at", finalDate.toISOString())
       .order("name", { ascending: true })
-      .order("id", { referencedTable: "working_blocks.working_times", ascending: false })
       .returns<ProjectWithWorkingTimes[]>()
   );
 };

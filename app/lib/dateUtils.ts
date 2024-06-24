@@ -49,3 +49,16 @@ export const getPastLastOfMonth = () => {
   date.setDate(daysInMonth);
   return date;
 };
+
+const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+
+export const isValidDate = (dateString: string) => {
+  return dateRegex.test(dateString);
+};
+
+export const getDateFromDateString = (dateString: string) => {
+  if (!isValidDate(dateString)) throw new Error("Invalid date");
+
+  const [year, month, day] = dateString.split("-");
+  return new Date(Number(year), Number(month) - 1, Number(day));
+};

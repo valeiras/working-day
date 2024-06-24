@@ -2,6 +2,7 @@
 
 import { useStatsContext } from "@/app/contexts/StatsContext";
 import {
+  getDateFromDateString,
   getDateString,
   getPastFirstOfMonth,
   getPastLastOfMonth,
@@ -10,6 +11,7 @@ import {
   getThisFirstOfMonth,
   getThisMonday,
 } from "@/app/lib/dateUtils";
+import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 
 const ranges = ["Past week", "Past month", "This week", "This month", "Custom range"] as const;
@@ -20,8 +22,8 @@ const DateRangeSelector: React.FC = () => {
   const { initialDate, finalDate, setInitialDate, setFinalDate } = useStatsContext()!;
 
   useEffect(() => {
-    setInitialDate(getDateString(getThisFirstOfMonth()));
-    setFinalDate(getDateString(new Date()));
+    setInitialDate(getThisFirstOfMonth());
+    setFinalDate(new Date());
     setRange("This month");
   }, [setFinalDate, setInitialDate]);
 
@@ -31,20 +33,20 @@ const DateRangeSelector: React.FC = () => {
 
     switch (newRange) {
       case "Past week":
-        setInitialDate(getDateString(getPastMonday()));
-        setFinalDate(getDateString(getPastSunday()));
+        setInitialDate(getPastMonday());
+        setFinalDate(getPastSunday());
         break;
       case "This week":
-        setInitialDate(getDateString(getThisMonday()));
-        setFinalDate(getDateString(new Date()));
+        setInitialDate(getThisMonday());
+        setFinalDate(new Date());
         break;
       case "Past month":
-        setInitialDate(getDateString(getPastFirstOfMonth()));
-        setFinalDate(getDateString(getPastLastOfMonth()));
+        setInitialDate(getPastFirstOfMonth());
+        setFinalDate(getPastLastOfMonth());
         break;
       case "This month":
-        setInitialDate(getDateString(getThisFirstOfMonth()));
-        setFinalDate(getDateString(new Date()));
+        setInitialDate(getThisFirstOfMonth());
+        setFinalDate(new Date());
         break;
       case "Custom range":
         break;
@@ -68,16 +70,16 @@ const DateRangeSelector: React.FC = () => {
         className="input input-bordered text-sm"
         aria-label="Date"
         type="date"
-        value={initialDate}
-        onChange={(e) => setInitialDate(e.target.value)}
+        value={getDateString(initialDate)}
+        onChange={(e) => setInitialDate(getDateFromDateString(e.target.value))}
         disabled={range !== "Custom range"}
       />
       <input
         className="input input-bordered text-sm"
         aria-label="Date"
         type="date"
-        value={finalDate}
-        onChange={(e) => setFinalDate(e.target.value)}
+        value={getDateString(finalDate)}
+        onChange={(e) => setFinalDate(getDateFromDateString(e.target.value))}
         disabled={range !== "Custom range"}
       />
     </div>

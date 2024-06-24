@@ -5,11 +5,12 @@ import {
   insertProject,
   insertStartTime,
   insertPauseTime,
-  selectAllProjectsWithWorkingTimes,
+  selectAllProjects,
   updateProject,
   updateBlock,
   deleteWorkingTimesByBlockId,
   makeWorkingBlockInactive,
+  selectAllProjectsInTimeRange,
 } from "./db/queries";
 
 export const createNewProject = async ({ name }: { name: string }) => {
@@ -38,7 +39,11 @@ export const addPauseTime = async ({ startTimeId }: { startTimeId: number }) => 
 };
 
 export const getAllProjects = async () => {
-  return selectAllProjectsWithWorkingTimes();
+  return selectAllProjects();
+};
+
+export const getProjectsInTimeRange = async ({ initialDate, finalDate }: { initialDate: Date; finalDate: Date }) => {
+  return selectAllProjectsInTimeRange({ initialDate, finalDate });
 };
 
 export const stopBlock = async ({ blockId, totalTimeSeconds }: { blockId: number; totalTimeSeconds: number }) => {

@@ -41,7 +41,7 @@ const TotalTimePerProject: React.FC = () => {
       <ResponsiveContainer width={RESPONSIVE_CONTAINER_WIDTH} height={RESPONSIVE_CONTAINER_HEIGHT} debounce={1}>
         <BarChart data={chartData} margin={CHART_MARGIN}>
           <XAxis dataKey="name" tickFormatter={shortenTick} />
-          <YAxis domain={[0, "dataMax"]} />
+          <YAxis domain={[0, "dataMax + 1"]} />
           <CartesianGrid strokeDasharray="3 3" />
           <Tooltip contentStyle={{ borderRadius: "20px" }} itemStyle={{ color: primary }} />
           <Legend align="center" formatter={() => "Hours"} height={LEGEND_HEIGHT} />

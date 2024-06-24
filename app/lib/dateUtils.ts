@@ -23,6 +23,12 @@ export const getPastMonday = () => {
   return date;
 };
 
+export const getThisSunday = () => {
+  const date = new Date();
+  date.setDate(date.getDate() - date.getDay() + 7);
+  return date;
+};
+
 export const getPastSunday = () => {
   const date = new Date();
   date.setDate(date.getDate() - date.getDay());
@@ -32,6 +38,13 @@ export const getPastSunday = () => {
 export const getThisFirstOfMonth = () => {
   const date = new Date();
   date.setDate(1);
+  return date;
+};
+
+export const getThisLastOfMonth = () => {
+  const date = new Date();
+  const daysInMonth = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
+  date.setDate(daysInMonth);
   return date;
 };
 

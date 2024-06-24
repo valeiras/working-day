@@ -21,7 +21,7 @@ const DailyTimePerProjectLineChart: React.FC<Props> = ({ chartData, projects }) 
     <ResponsiveContainer width={RESPONSIVE_CONTAINER_WIDTH} height={RESPONSIVE_CONTAINER_HEIGHT} debounce={1}>
       <LineChart data={chartData} margin={CHART_MARGIN}>
         <XAxis dataKey="date" tickFormatter={shortenDate} />
-        <YAxis domain={[0, "dataMax"]} />
+        <YAxis domain={[0, "dataMax + 1"]} />
         <CartesianGrid strokeDasharray="3 3" />
         <Tooltip contentStyle={{ borderRadius: "5px" }} itemStyle={{ color: primary }} />
         <Legend

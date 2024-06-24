@@ -9,12 +9,13 @@ import {
   getPastMonday,
   getPastSunday,
   getThisFirstOfMonth,
+  getThisLastOfMonth,
   getThisMonday,
+  getThisSunday,
 } from "@/app/lib/dateUtils";
-import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 
-const ranges = ["Past week", "Past month", "This week", "This month", "Custom range"] as const;
+const ranges = ["This week", "This month", "Past week", "Past month", "Custom range"] as const;
 type RangeType = (typeof ranges)[number];
 
 const DateRangeSelector: React.FC = () => {
@@ -38,7 +39,7 @@ const DateRangeSelector: React.FC = () => {
         break;
       case "This week":
         setInitialDate(getThisMonday());
-        setFinalDate(new Date());
+        setFinalDate(getThisSunday());
         break;
       case "Past month":
         setInitialDate(getPastFirstOfMonth());
@@ -46,7 +47,7 @@ const DateRangeSelector: React.FC = () => {
         break;
       case "This month":
         setInitialDate(getThisFirstOfMonth());
-        setFinalDate(new Date());
+        setFinalDate(getThisLastOfMonth());
         break;
       case "Custom range":
         break;

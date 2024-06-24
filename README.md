@@ -10,7 +10,7 @@ This project is a full-stack application created using Next. Data is persisted i
 
 ### TODO:
 
-- Add date selectors to the chart
+- Correct the time format for the tooltip
 - Make the skeletons match the cards
 - Add toasts informing of the success or failure of operations
 - Add time-based alerts.

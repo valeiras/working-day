@@ -1,5 +1,6 @@
 "use client";
 
+import { useStatsContext } from "@/app/contexts/StatsContext";
 import {
   getDateString,
   getPastFirstOfMonth,
@@ -9,20 +10,20 @@ import {
   getThisFirstOfMonth,
   getThisMonday,
 } from "@/app/lib/dateUtils";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const ranges = ["Past week", "Past month", "This week", "This month", "Custom range"] as const;
 type RangeType = (typeof ranges)[number];
 
-type Props = {
-  initialDate: string;
-  finalDate: string;
-  setInitialDate: React.Dispatch<React.SetStateAction<string>>;
-  setFinalDate: React.Dispatch<React.SetStateAction<string>>;
-};
-
-const DateRangeSelector: React.FC<Props> = ({ initialDate, finalDate, setInitialDate, setFinalDate }) => {
+const DateRangeSelector: React.FC = () => {
   const [range, setRange] = useState<RangeType>("This month");
+  const { initialDate, finalDate, setInitialDate, setFinalDate } = useStatsContext()!;
+
+  useEffect(() => {
+    setInitialDate(getDateString(getThisFirstOfMonth()));
+    setFinalDate(getDateString(new Date()));
+    setRange("This month");
+  }, [setFinalDate, setInitialDate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newRange: RangeType = e.target.value as RangeType;

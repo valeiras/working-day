@@ -18,8 +18,10 @@ import {
 import StatsProjectSelector from "./StatsProjectSelector";
 import { useSelectedProjects } from "@/app/lib/hooks";
 import StatsControlsContainer from "./StatsControlsContainer";
+import { useStatsContext } from "@/app/contexts/StatsContext";
 
 const TotalTimePerProject: React.FC = () => {
+  const { initialDate, finalDate } = useStatsContext()!;
   const { data, isLoading } = useQuery({
     queryKey: ["projects"],
     queryFn: () => getAllProjects(),
@@ -27,7 +29,7 @@ const TotalTimePerProject: React.FC = () => {
   });
   const projects = data?.data;
 
-  const { workedHours: hours } = getWorkedHours({ projects });
+  const { workedHours: hours } = getWorkedHours({ projects, initialDate, finalDate });
   const { selectedProjects, setIsSelected } = useSelectedProjects(projects);
 
   const chartData = selectedProjects?.map(({ id, name }) => {

@@ -13,7 +13,7 @@ export const getWorkedHours = ({
   const workedHours: Record<number, number> = {};
 
   projects?.forEach((project) => {
-    workedHours[project.id] = computeHours(project);
+    workedHours[project.id] = computeHours({ project, initialDate, finalDate });
   });
 
   return {
@@ -58,10 +58,25 @@ export const getWorkedHoursPerDay = ({
   };
 };
 
-const computeHours = (project: ProjectWithWorkingTimes) => {
+const computeHours = ({
+  project,
+  initialDate,
+  finalDate,
+}: {
+  project: ProjectWithWorkingTimes;
+  initialDate?: Date;
+  finalDate?: Date;
+}) => {
   const { workingBlocks, activeBlock } = project;
-  const pastTimeSeconds = workingBlocks.reduce((acc, { workingTimeSeconds }) => {
-    return acc + (workingTimeSeconds || 0);
+  const pastTimeSeconds = workingBlocks.reduce((acc, { workingTimeSeconds, createdAt }) => {
+    const date = new Date(createdAt);
+    let currTime;
+    if (initialDate && finalDate) {
+      currTime = initialDate <= date && date <= finalDate ? workingTimeSeconds || 0 : 0;
+    } else {
+      currTime = workingTimeSeconds || 0;
+    }
+    return acc + currTime;
   }, 0);
 
   const currentTimeSeconds = computeAccumulatedTimerSeconds(activeBlock?.times || null);

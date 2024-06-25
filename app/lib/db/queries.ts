@@ -7,7 +7,7 @@ import { createClerkServerSupabaseClient } from "./serverSupabaseClient";
 import { PostgrestError, PostgrestBuilder } from "@supabase/postgrest-js";
 import { DBError } from "../errors";
 
-export type StartAndPauseTimes = { id: number; startTime: string; pauseTime: string }[] | null;
+export type StartAndPauseTimes = { id: number; startTime: string; pauseTime: string | null }[] | null;
 
 export type ProjectWithWorkingTimes = {
   name: string;

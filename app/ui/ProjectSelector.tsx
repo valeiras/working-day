@@ -1,17 +1,16 @@
 "use client";
 
 import React from "react";
-import { Tables } from "../lib/db/database.types";
-import { fetcher } from "../lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { getAllProjects } from "../lib/actions";
+import { fetchAllProjects } from "../lib/fetchers";
 
 type Props = { setProjectId: React.Dispatch<React.SetStateAction<number | null>> };
 
 const ProjectSelector: React.FC<Props> = ({ setProjectId }) => {
   const { data, isLoading } = useQuery({
     queryKey: ["projects"],
-    queryFn: () => getAllProjects(),
+    queryFn: fetchAllProjects,
     refetchOnWindowFocus: false,
   });
 
@@ -23,11 +22,12 @@ const ProjectSelector: React.FC<Props> = ({ setProjectId }) => {
         className="select select-primary w-full max-w-xs"
         disabled={projects.length === 0}
         defaultValue="default"
+        data-testid="select-project"
         onChange={(e) => {
           setProjectId(Number(e.target.value));
         }}
       >
-        <option disabled value="default">
+        <option disabled value="default" data-testid="select-project-option">
           {isLoading
             ? "Loading projects..."
             : projects.length > 0
@@ -35,7 +35,7 @@ const ProjectSelector: React.FC<Props> = ({ setProjectId }) => {
             : "There are no projects available."}
         </option>
         {projects.map(({ id, name }) => (
-          <option key={id} value={id}>
+          <option key={id} value={id} data-testid="select-project-option">
             {name}
           </option>
         ))}

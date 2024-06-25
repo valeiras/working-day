@@ -1,6 +1,7 @@
 {
   "name": "working-day",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",
@@ -49,6 +50,7 @@
     "eslint-config-next": "14.2.3",
     "eslint-plugin-testing-library": "^6.2.2",
     "jsdom": "^24.1.0",
+    "msw": "^2.3.1",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.4",
     "typescript": "^5.4.5",

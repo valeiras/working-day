@@ -6,8 +6,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const fetcher = (url: string) => fetch(url).then((res) => res.json());
-
 export const computeAccumulatedTimerCs = (startAndPauseTimes: StartAndPauseTimes) => {
   if (!startAndPauseTimes) return 0;
   return startAndPauseTimes.reduce((acc, curr) => {

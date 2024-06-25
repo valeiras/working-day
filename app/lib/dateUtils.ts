@@ -5,12 +5,6 @@ export const getDateString = (date: Date) => {
   return `${year}-${month}-${day}`;
 };
 
-export const getNDaysBefore = (date: Date, n: number) => {
-  const newDate = new Date(date);
-  newDate.setDate(newDate.getDate() - n);
-  return newDate;
-};
-
 export const getThisMonday = () => {
   const date = new Date();
   date.setDate(date.getDate() - date.getDay() + 1);
@@ -43,7 +37,7 @@ export const getThisFirstOfMonth = () => {
 
 export const getThisLastOfMonth = () => {
   const date = new Date();
-  const daysInMonth = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
+  const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
   date.setDate(daysInMonth);
   return date;
 };
@@ -58,7 +52,7 @@ export const getPastFirstOfMonth = () => {
 export const getPastLastOfMonth = () => {
   const date = new Date();
   date.setMonth(date.getMonth() - 1);
-  const daysInMonth = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
+  const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
   date.setDate(daysInMonth);
   return date;
 };

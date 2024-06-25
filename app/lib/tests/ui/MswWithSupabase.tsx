@@ -9,10 +9,10 @@ const getTestData = async (): Promise<{
   data: ProjectWithWorkingTimes[] | null;
   error?: PostgrestError | null | undefined;
 }> => {
-  return fetch("/projects").then((res) => res.json());
+  return fetch("/api/v1/projects").then((res) => res.json());
 };
 
-const MswAndSupabase: React.FC = () => {
+const MswWithSupabase: React.FC = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["projects"],
     queryFn: getTestData,
@@ -20,12 +20,18 @@ const MswAndSupabase: React.FC = () => {
   });
 
   const projects = data?.data || [];
-  console.log(data);
   return (
     <div>
       <p>{isLoading ? "Loading..." : "Done"}</p>
+      {projects.map((project) => {
+        return (
+          <p key={project.id} data-testid="project-p">
+            {project.name}
+          </p>
+        );
+      })}
     </div>
   );
 };
 
-export default MswAndSupabase;
+export default MswWithSupabase;

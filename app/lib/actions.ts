@@ -12,6 +12,7 @@ import {
   makeWorkingBlockInactive,
   selectAllProjectsInTimeRange,
 } from "./db/queries";
+import { mockUrl } from "./tests/mocks/mockData";
 
 export const createNewProject = async ({ name }: { name: string }) => {
   return insertProject({ name });
@@ -52,6 +53,11 @@ export const stopBlock = async ({ blockId, totalTimeSeconds }: { blockId: number
     deleteWorkingTimesByBlockId({ blockId }),
     makeWorkingBlockInactive({ blockId }),
   ]);
+};
+
+export const callMockServer = async () => {
+  const res = await fetch(mockUrl);
+  return res.json();
 };
 
 export const populateDB = async () => {

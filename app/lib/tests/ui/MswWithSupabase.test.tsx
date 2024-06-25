@@ -1,12 +1,13 @@
 import { server } from "../mocks/server";
-import MswAndSupabase from "./MswAndSupabase";
-import { cleanup, render, screen, waitForElementToBeRemoved } from "@testing-library/react";
+import MswWithSupabase from "./MswWithSupabase";
+import { cleanup, screen, waitForElementToBeRemoved } from "@testing-library/react";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { QueryClient } from "@tanstack/react-query";
 import { renderWithClient } from "../testUtils";
-import Providers from "@/app/providers";
-describe("MswAndSupabase", async () => {
+
+import { mockProjects } from "../mocks/mockData";
+describe("MswWithSupabase", async () => {
   beforeAll(() => server.listen());
   beforeEach(() => {
     cleanup();
@@ -28,16 +29,17 @@ describe("MswAndSupabase", async () => {
   });
 
   it("should render", () => {
-    render(
-      <Providers>
-        <MswAndSupabase />
-      </Providers>
-    );
+    renderWithClient(queryClient, <MswWithSupabase />);
   });
 
   it("should get mockProjects from mock server", async () => {
-    renderWithClient(queryClient, <MswAndSupabase />);
+    renderWithClient(queryClient, <MswWithSupabase />);
     await waitForElementToBeRemoved(() => screen.queryByText("Loading..."), { timeout: 10000 });
     expect(screen.getByText("Done")).toBeDefined();
+    let projects = screen.getAllByTestId("project-p");
+
+    mockProjects.forEach(({ name }, idx) => {
+      expect(projects[idx].textContent).toBe(name);
+    });
   });
 });

@@ -3,7 +3,7 @@ import { http, HttpResponse } from "msw";
 import { mockProjects, mockUrl } from "./mockData";
 
 export const handlers = [
-  http.get(`projects`, () => {
+  http.get(`/api/v1/projects`, () => {
     return HttpResponse.json({ data: mockProjects });
   }),
   http.get(mockUrl, () => {

@@ -2,14 +2,13 @@
 
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getAllProjects } from "../../actions";
 import { mockUrl } from "../mocks/mockData";
 
 const getTestData = async (): Promise<{ msg: string }> => {
   return fetch(mockUrl).then((res) => res.json());
 };
 
-const Msw: React.FC = () => {
+const MswWithReactQuery: React.FC = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["projects"],
     queryFn: getTestData,
@@ -23,4 +22,4 @@ const Msw: React.FC = () => {
   );
 };
 
-export default Msw;
+export default MswWithReactQuery;

@@ -77,7 +77,6 @@ export const selectAllProjectsInTimeRange = async ({
 }> => {
   const client = await createClerkServerSupabaseClient();
 
-  console.log(initialDate.toISOString());
   return withErrorHandling(
     client
       .from("projects")
@@ -86,7 +85,7 @@ export const selectAllProjectsInTimeRange = async ({
         workingBlocks:working_blocks!working_blocks_project_id_fkey(id, workingTimeSeconds:working_time_seconds, createdAt: created_at)`
       )
       .gte("workingBlocks.created_at", initialDate.toISOString())
-      // .lte("workingBlocks.created_at", finalDate.toISOString())
+      .lte("workingBlocks.created_at", finalDate.toISOString())
       .order("name", { ascending: true })
       .returns<ProjectWithWorkingTimes[]>()
   );

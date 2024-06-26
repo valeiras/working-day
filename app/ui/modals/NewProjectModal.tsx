@@ -1,6 +1,6 @@
 "use client";
 
-import { createNewProject } from "@/app/lib/actions";
+import { createNewProject } from "@/app/lib/projectFetchers";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { newProjectFormSchema, NewProjectFormSchemaType } from "../../lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";

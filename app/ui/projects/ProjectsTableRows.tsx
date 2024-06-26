@@ -1,6 +1,6 @@
 "use client";
 
-import { getAllProjects } from "@/app/lib/actions";
+import { getAllProjects } from "@/app/lib/projectFetchers";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import ProjectRow from "./ProjectRow";

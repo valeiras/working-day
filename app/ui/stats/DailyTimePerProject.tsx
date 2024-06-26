@@ -1,6 +1,6 @@
 "use client";
 
-import { getAllProjects } from "@/app/lib/actions";
+import { getAllProjects } from "@/app/lib/projectFetchers";
 import { getWorkedHoursPerDay } from "@/app/lib/getWorkedHours";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";

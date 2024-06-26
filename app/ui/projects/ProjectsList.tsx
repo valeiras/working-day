@@ -1,6 +1,6 @@
 "use client";
 
-import { getAllProjects } from "@/app/lib/actions";
+import { getAllProjects } from "@/app/lib/projectFetchers";
 import { useDBSynchronizer, useLocalTimerArray } from "@/app/lib/hooks";
 import { cn } from "@/app/lib/utils";
 import { useQuery } from "@tanstack/react-query";

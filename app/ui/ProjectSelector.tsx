@@ -2,14 +2,14 @@
 
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchAllProjects } from "../lib/fetchers";
+import { getAllProjects } from "../lib/projectFetchers";
 
 type Props = { setProjectId: React.Dispatch<React.SetStateAction<number | null>> };
 
 const ProjectSelector: React.FC<Props> = ({ setProjectId }) => {
   const { data, isLoading } = useQuery({
     queryKey: ["projects"],
-    queryFn: fetchAllProjects,
+    queryFn: getAllProjects,
     refetchOnWindowFocus: false,
   });
 

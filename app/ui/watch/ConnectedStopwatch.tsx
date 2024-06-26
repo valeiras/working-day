@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import { getAllProjects } from "@/app/lib/actions";
+import { getAllProjects } from "@/app/lib/projectFetchers";
 import { useQuery } from "@tanstack/react-query";
 import Watch from "./Watch";
 import { useDBTimer, useLocalTimer } from "@/app/lib/hooks";

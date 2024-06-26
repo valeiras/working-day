@@ -14,6 +14,9 @@ import {
 } from "./db/queries";
 import { mockUrl } from "./tests/mocks/mockData";
 
+// These operations can be performed via these server actions or via calls to route handlers. I am using the route handlers,
+// since I have't been able to mock the server actions.
+
 export const createNewProject = async ({ name }: { name: string }) => {
   return insertProject({ name });
 };

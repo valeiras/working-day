@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "next dev --turbo",
     "build": "next build",
+    "reinstall": "rm -r node_modules && npm install",
     "start": "next start",
     "build-and-start": "next build && next start",
     "import-supabase": "supabase gen types typescript --project-id \"gqcaeplynsenfupeaxwn\" --schema public | Set-Content -Encoding utf8 app/lib/db/database.types.ts",

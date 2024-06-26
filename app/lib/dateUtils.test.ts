@@ -88,6 +88,7 @@ describe("getPastFirstOfMonth", () => {
 });
 describe("getThisLastOfMonth", () => {
   test("returns a day of the current month", () => {
+    console.log(getThisLastOfMonth());
     expect(getThisLastOfMonth().getMonth()).toEqual(new Date().getMonth());
   });
 });

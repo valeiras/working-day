@@ -12,7 +12,6 @@ import {
   makeWorkingBlockInactive,
   selectAllProjectsInTimeRange,
 } from "./db/queries";
-import { mockUrl } from "./tests/mocks/mockData";
 
 // These operations can be performed via these server actions or via calls to route handlers. I am using the route handlers,
 // since I have't been able to mock the server actions.
@@ -56,11 +55,6 @@ export const stopBlock = async ({ blockId, totalTimeSeconds }: { blockId: number
     deleteWorkingTimesByBlockId({ blockId }),
     makeWorkingBlockInactive({ blockId }),
   ]);
-};
-
-export const callMockServer = async () => {
-  const res = await fetch(mockUrl);
-  return res.json();
 };
 
 export const populateDB = async () => {

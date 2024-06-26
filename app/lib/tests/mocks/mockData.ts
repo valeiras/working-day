@@ -13,7 +13,7 @@ export const mockProjects: ProjectWithWorkingTimes[] = [
   },
   {
     name: "Paused project",
-    id: 57,
+    id: 1,
     activeBlock: {
       id: 458,
       times: [{ id: 536, pauseTime: "2024-06-25T05:13:40.385+00:00", startTime: "2024-06-25T05:13:37.82728+00:00" }],

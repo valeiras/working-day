@@ -21,8 +21,8 @@ const NewProjectModal = forwardRef<HTMLDialogElement, Props>(function NewProject
 
   const onSubmit: SubmitHandler<NewProjectFormSchemaType> = async (data) => {
     await createNewProject({ name: data.name });
-    closeModal();
     reset();
+    closeModal();
     queryClient.invalidateQueries({ queryKey: ["projects"] });
   };
 

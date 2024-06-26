@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchAllProjects } from "../lib/fetchers";
+import { getAllProjects } from "../lib/projectFetchers";
 
 type Props = { setProjectId: React.Dispatch<React.SetStateAction<number | null>> };
 

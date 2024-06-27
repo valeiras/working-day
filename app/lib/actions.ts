@@ -1,8 +1,7 @@
 "use server";
 
 import {
-  insertBlock,
-  insertProject,
+  createBlock,
   insertStartTime,
   insertPauseTime,
   selectAllProjects,
@@ -10,18 +9,11 @@ import {
   updateBlock,
   deleteWorkingTimesByBlockId,
   makeWorkingBlockInactive,
-  selectAllProjectsInTimeRange,
 } from "./db/queries";
-
-// These operations can be performed via these server actions or via calls to route handlers. I am using the route handlers,
-// since I have't been able to mock the server actions.
-
-export const createNewProject = async ({ name }: { name: string }) => {
-  return insertProject({ name });
-};
+import { mockUrl } from "./tests/mocks/mockData";
 
 export const createNewBlock = async ({ projectId }: { projectId: number }) => {
-  return insertBlock({ projectId });
+  return createBlock({ projectId });
 };
 
 export const setActiveBlock = async ({ projectId, blockId }: { projectId: number; blockId: number | null }) => {
@@ -41,14 +33,6 @@ export const addPauseTime = async ({ startTimeId }: { startTimeId: number }) => 
   return insertPauseTime({ startTimeId });
 };
 
-export const getAllProjects = async () => {
-  return selectAllProjects();
-};
-
-export const getProjectsInTimeRange = async ({ initialDate, finalDate }: { initialDate: Date; finalDate: Date }) => {
-  return selectAllProjectsInTimeRange({ initialDate, finalDate });
-};
-
 export const stopBlock = async ({ blockId, totalTimeSeconds }: { blockId: number; totalTimeSeconds: number }) => {
   await Promise.all([
     updateBlock({ blockId, blockData: { working_time_seconds: totalTimeSeconds } }),
@@ -57,10 +41,15 @@ export const stopBlock = async ({ blockId, totalTimeSeconds }: { blockId: number
   ]);
 };
 
+export const callMockServer = async () => {
+  const res = await fetch(mockUrl);
+  return res.json();
+};
+
 export const populateDB = async () => {
   const daysBack = 45;
 
-  const { data: projects } = await getAllProjects();
+  const { data: projects } = await selectAllProjects();
   if (!projects) return;
 
   const date = new Date();
@@ -83,7 +72,7 @@ export const populateDB = async () => {
       const startWorkingHour = 8 + Math.random() * 4;
       day.setMinutes(startWorkingHour * 60);
 
-      const { data: block } = await insertBlock({
+      const { data: block } = await createBlock({
         projectId,
         createdAt: day,
         workingTimeSeconds: Math.round(workingTimeHours * 60 * 60),

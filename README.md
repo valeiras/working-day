@@ -10,9 +10,6 @@ This project is a full-stack application created using Next. Data is persisted i
 
 ### TODO:
 
-- Correct the time format for the tooltip
+- Correct the time format for the tooltip, and the weird formatting of the stats
 - Make the skeletons match the cards
 - Add toasts informing of the success or failure of operations
-- Add time-based alerts.
-- Add overtime thresholds.
-- Use tanstack table for the table

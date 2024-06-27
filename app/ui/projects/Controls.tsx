@@ -1,7 +1,7 @@
 "use client";
 
 import { useProjectsContext } from "@/app/contexts/ProjectsContext";
-import { useSaveBlockModalContext } from "@/app/contexts/SaveBlockModalContext";
+import { useSaveBlockContext } from "@/app/contexts/SaveBlockContext";
 import { ProjectWithWorkingTimes } from "@/app/lib/db/queries";
 import { useDBTimer } from "@/app/lib/hooks";
 import { LocalTimerArray } from "@/app/lib/hooks/useLocalTimerArray";
@@ -19,7 +19,7 @@ type Props = {
 const Controls: React.FC<Props> = ({ project, isFetching, localTimerArray, className }) => {
   const projectId = project.id;
   const { isSubmitting, setIsSubmitting, setLastSubmittedProjectId } = useProjectsContext()!;
-  const { setModalTimerCs, setModalBlockId, modalRef, handleStopRef } = useSaveBlockModalContext()!;
+  const { setModalTimerCs, setModalBlockId, modalRef, handleStopRef } = useSaveBlockContext()!;
 
   const { isRunning, handleLocalStart, handleLocalPause, handleLocalStop, isActive, currentTimersCs } = localTimerArray;
 

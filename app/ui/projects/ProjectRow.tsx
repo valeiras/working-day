@@ -37,7 +37,7 @@ const ProjectRow: React.FC<Props> = ({ project, idx, columns, isFetching, localT
     alerts: { content: <>Mail(8h)</> },
     overtimeThreshold: { content: <>8h/day</> },
     edit: {
-      content: <EditButtons />,
+      content: <EditButtons projectId={project.id} />,
       className: "text-right",
     },
   };

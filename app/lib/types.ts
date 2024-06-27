@@ -1,10 +1,10 @@
 import * as z from "zod";
 
-export const newProjectFormSchema = z.object({
+export const ProjectFormSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
 });
 
-export type NewProjectFormSchemaType = z.infer<typeof newProjectFormSchema>;
+export type ProjectFormSchemaType = z.infer<typeof ProjectFormSchema>;
 
 export const saveBlockFormSchema = z.object({
   hours: z.coerce.number(),

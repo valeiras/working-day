@@ -7,12 +7,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { formatTime } from "@/app/lib/utils";
 import { stopBlock } from "@/app/lib/actions";
 import { useQueryClient } from "@tanstack/react-query";
-import { useSaveBlockModalContext } from "@/app/contexts/SaveBlockModalContext";
+import { useSaveBlockContext } from "@/app/contexts/SaveBlockContext";
 
 const SaveBlockModal = () => {
   const queryClient = useQueryClient();
 
-  const { modalBlockId: blockId, modalTimerCs, modalRef, handleStopRef } = useSaveBlockModalContext()!;
+  const { modalBlockId: blockId, modalTimerCs, modalRef, handleStopRef } = useSaveBlockContext()!;
 
   const closeModal = () => {
     modalRef.current?.close();

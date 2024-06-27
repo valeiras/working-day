@@ -1,21 +1,13 @@
 "use client";
 
-import { getAllProjects } from "@/app/lib/projectFetchers";
-import { useDBSynchronizer, useLocalTimerArray } from "@/app/lib/hooks";
+import { useDBSynchronizer, useLocalTimerArray, useProjects } from "@/app/lib/hooks";
 import { cn } from "@/app/lib/utils";
-import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import ProjectCard from "./ProjectCard";
 
 type Props = { className: string };
 const ProjectsList: React.FC<Props> = ({ className }) => {
-  const { data, isFetching } = useQuery({
-    queryKey: ["projects"],
-    queryFn: () => getAllProjects(),
-    refetchOnWindowFocus: false,
-  });
-
-  const projects = data?.data;
+  const { projects, isFetching } = useProjects();
   const localTimerArray = useLocalTimerArray();
   useDBSynchronizer({ projects, localTimerArray });
 

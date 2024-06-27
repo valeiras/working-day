@@ -11,7 +11,7 @@ import {
   RefObject,
 } from "react";
 
-type SaveBlockModalContextType = {
+type SaveBlockContextType = {
   modalTimerCs: number;
   setModalTimerCs: Dispatch<SetStateAction<number>>;
   modalBlockId: number | null;
@@ -20,13 +20,13 @@ type SaveBlockModalContextType = {
   modalRef: MutableRefObject<HTMLDialogElement | null>;
 } | null;
 
-const SaveBlockModalContext = createContext<SaveBlockModalContextType>(null);
+const SaveBlockContext = createContext<SaveBlockContextType>(null);
 
-export const useSaveBlockModalContext = () => {
-  return useContext<SaveBlockModalContextType>(SaveBlockModalContext);
+export const useSaveBlockContext = () => {
+  return useContext<SaveBlockContextType>(SaveBlockContext);
 };
 
-export const SaveBlockModalContextProvider: React.FC<{
+export const SaveBlockContextProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
   const [modalBlockId, setModalBlockId] = useState<number | null>(null);
@@ -35,7 +35,7 @@ export const SaveBlockModalContextProvider: React.FC<{
   const modalRef = useRef<HTMLDialogElement>(null);
 
   return (
-    <SaveBlockModalContext.Provider
+    <SaveBlockContext.Provider
       value={{
         modalTimerCs,
         setModalTimerCs,
@@ -46,6 +46,6 @@ export const SaveBlockModalContextProvider: React.FC<{
       }}
     >
       {children}
-    </SaveBlockModalContext.Provider>
+    </SaveBlockContext.Provider>
   );
 };

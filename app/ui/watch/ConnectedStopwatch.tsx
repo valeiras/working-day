@@ -1,26 +1,18 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
-import { getAllProjects } from "@/app/lib/projectFetchers";
-import { useQuery } from "@tanstack/react-query";
+import React, { useEffect } from "react";
 import Watch from "./Watch";
-import { useDBTimer, useLocalTimer } from "@/app/lib/hooks";
+import { useDBTimer, useLocalTimer, useProjects } from "@/app/lib/hooks";
 import { getSingleTimer } from "@/app/lib/getTimers";
 import SaveBlockModal from "../modals/SaveBlockModal";
-import { useSaveBlockModalContext } from "@/app/contexts/SaveBlockModalContext";
+import { useSaveBlockContext } from "@/app/contexts/SaveBlockContext";
 
 type Props = { projectId: number | null };
 const ConnectedStopwatch: React.FC<Props> = ({ projectId }) => {
   const [isStale, setIsStale] = React.useState<boolean>(false);
-  const { setModalBlockId, setModalTimerCs, handleStopRef, modalRef } = useSaveBlockModalContext()!;
+  const { setModalBlockId, setModalTimerCs, handleStopRef, modalRef } = useSaveBlockContext()!;
 
-  const { data, isFetching } = useQuery({
-    queryKey: ["projects"],
-    queryFn: () => getAllProjects(),
-    refetchOnWindowFocus: false,
-  });
-
-  const projects = data?.data || [];
+  const { projects, isFetching } = useProjects();
   const currProject = projects.find((project) => project.id === projectId);
 
   const {

@@ -14,7 +14,7 @@ const ProjectCard: React.FC<Props> = ({ project, localTimerArray, isFetching }) 
       <div className="flex flex-row justify-between items-center font-bold text-base">
         <div>{project.name}</div>
         <div className="text-xl">
-          <EditButtons />
+          <EditButtons projectId={project.id} />
         </div>
       </div>
       <hr className="mb-3 mt-1 h-px border-0 bg-secondary" />

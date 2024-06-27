@@ -1,9 +1,7 @@
 "use client";
 
-import { getAllProjects } from "@/app/lib/projectFetchers";
 import { primary } from "@/app/lib/colors";
 import { getWorkedHours } from "@/app/lib/getWorkedHours";
-import { useQuery } from "@tanstack/react-query";
 import React from "react";
 
 import { CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, BarChart, Bar, Legend, Customized } from "recharts";
@@ -16,18 +14,13 @@ import {
   RESPONSIVE_CONTAINER_WIDTH,
 } from "@/app/lib/constants";
 import StatsProjectSelector from "./StatsProjectSelector";
-import { useSelectedProjects } from "@/app/lib/hooks";
+import { useProjects, useSelectedProjects } from "@/app/lib/hooks";
 import StatsControlsContainer from "./StatsControlsContainer";
 import { useStatsContext } from "@/app/contexts/StatsContext";
 
 const TotalTimePerProject: React.FC = () => {
   const { initialDate, finalDate } = useStatsContext()!;
-  const { data, isLoading } = useQuery({
-    queryKey: ["projects"],
-    queryFn: () => getAllProjects(),
-    refetchOnWindowFocus: false,
-  });
-  const projects = data?.data;
+  const { projects, isLoading } = useProjects();
 
   const { workedHours: hours } = getWorkedHours({ projects, initialDate, finalDate });
   const { selectedProjects, setIsSelected } = useSelectedProjects(projects);

@@ -1,17 +1,30 @@
-import Link from "next/link";
+import { useEditProjectContext } from "@/app/contexts/EditProjectContext";
 import React from "react";
-import { FaList } from "react-icons/fa6";
-import { MdEdit } from "react-icons/md";
+import { MdEdit, MdDelete } from "react-icons/md";
 
-const EditButtons: React.FC = () => {
+type Props = { projectId: number };
+const EditButtons: React.FC<Props> = ({ projectId }) => {
+  const { setProjectId, editModalRef, deleteModalRef } = useEditProjectContext()!;
+
+  const handleEditClick = () => {
+    setProjectId(projectId);
+    console.log(editModalRef);
+    editModalRef.current?.showModal();
+  };
+
+  const handleDeleteClick = () => {
+    setProjectId(projectId);
+    deleteModalRef.current?.showModal();
+  };
+
   return (
     <div className="flex gap-2">
-      <Link href="/projects">
+      <button onClick={handleEditClick}>
         <MdEdit />
-      </Link>
-      <Link href="/projects">
-        <FaList />
-      </Link>
+      </button>
+      <button onClick={handleDeleteClick}>
+        <MdDelete />
+      </button>
     </div>
   );
 };

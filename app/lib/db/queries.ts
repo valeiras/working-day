@@ -35,7 +35,7 @@ export async function authenticateAndRedirect() {
   return userId;
 }
 
-export const insertProject = async ({
+export const createProject = async ({
   name,
 }: {
   name: string;
@@ -77,7 +77,6 @@ export const selectAllProjectsInTimeRange = async ({
 }> => {
   const client = await createClerkServerSupabaseClient();
 
-  console.log(initialDate.toISOString());
   return withErrorHandling(
     client
       .from("projects")
@@ -86,7 +85,7 @@ export const selectAllProjectsInTimeRange = async ({
         workingBlocks:working_blocks!working_blocks_project_id_fkey(id, workingTimeSeconds:working_time_seconds, createdAt: created_at)`
       )
       .gte("workingBlocks.created_at", initialDate.toISOString())
-      // .lte("workingBlocks.created_at", finalDate.toISOString())
+      .lte("workingBlocks.created_at", finalDate.toISOString())
       .order("name", { ascending: true })
       .returns<ProjectWithWorkingTimes[]>()
   );
@@ -105,6 +104,19 @@ export const updateProject = async ({
   const client = await createClerkServerSupabaseClient();
 
   return withErrorHandling(client.from("projects").update(projectData).eq("id", projectId).select().maybeSingle());
+};
+
+export const deleteProject = async ({
+  projectId,
+}: {
+  projectId: number;
+}): Promise<{
+  data: Tables<"projects"> | null;
+  error?: PostgrestError | null;
+}> => {
+  const client = await createClerkServerSupabaseClient();
+
+  return withErrorHandling(client.from("projects").delete().eq("id", projectId));
 };
 
 export const updateBlock = async ({
@@ -158,7 +170,7 @@ export const makeWorkingBlockInactive = async ({ blockId }: { blockId: number })
   );
 };
 
-export const insertBlock = async ({
+export const createBlock = async ({
   projectId,
   createdAt,
   workingTimeSeconds,

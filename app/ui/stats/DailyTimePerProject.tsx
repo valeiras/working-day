@@ -1,15 +1,14 @@
 "use client";
 
-import { getAllProjects } from "@/app/lib/projectFetchers";
 import { getWorkedHoursPerDay } from "@/app/lib/getWorkedHours";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 
 import StatsContainer from "./StatsContainer";
 import DailyTimePerProjectBarChart from "./DailyTimePerProjectBarChart";
 import StatsControlsContainer from "./StatsControlsContainer";
 import StatsProjectSelector from "./StatsProjectSelector";
-import { useSelectedProjects } from "@/app/lib/hooks";
+import { useProjects, useSelectedProjects } from "@/app/lib/hooks";
 import ChartTypeSelector from "./ChartTypeSelector";
 import { ChartType } from "@/app/lib/types";
 import DailyTimePerProjectLineChart from "./DailyTimePerProjectLineChart";
@@ -22,17 +21,11 @@ const DailyTimePerProject: React.FC = () => {
   const { initialDate, finalDate } = useStatsContext()!;
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["projects"],
-    queryFn: () => getAllProjects(),
-    refetchOnWindowFocus: false,
-  });
+  const { projects, isLoading } = useProjects();
 
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: ["projects with dates"] });
   }, [initialDate, finalDate, queryClient]);
-
-  const projects = data?.data;
 
   const { workedHours: hours } = getWorkedHoursPerDay({ projects, initialDate, finalDate });
   const { selectedProjects, setIsSelected } = useSelectedProjects(projects);

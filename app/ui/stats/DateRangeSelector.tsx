@@ -57,7 +57,7 @@ const DateRangeSelector: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-row gap-2 items-center">
+    <div className="flex flex-col sm:flex-row gap-2 items-center">
       <select name="dateRange" className="select select-bordered w-48" value={range} onChange={handleChange}>
         {ranges.map((range) => {
           return (
@@ -68,15 +68,16 @@ const DateRangeSelector: React.FC = () => {
         })}
       </select>
       <input
-        className="input input-bordered text-sm"
+        className="input input-bordered text-sm w-full sm:w-fit"
         aria-label="Date"
         type="date"
         value={getDateString(initialDate)}
         onChange={(e) => setInitialDate(getDateFromDateString(e.target.value))}
         disabled={range !== "Custom range"}
       />
+      -
       <input
-        className="input input-bordered text-sm"
+        className="input input-bordered text-sm w-full sm:w-fit"
         aria-label="Date"
         type="date"
         value={getDateString(finalDate)}

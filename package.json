@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "next dev --turbo",
     "build": "next build",
-    "reinstall": "rm -r node_modules && npm install",
     "start": "next start",
     "build-and-start": "next build && next start",
     "import-supabase": "supabase gen types typescript --project-id \"gqcaeplynsenfupeaxwn\" --schema public | Set-Content -Encoding utf8 app/lib/db/database.types.ts",
@@ -17,7 +16,6 @@
     "@clerk/nextjs": "^5.1.5",
     "@hookform/resolvers": "^3.6.0",
     "@supabase/ssr": "^0.3.0",
-    "@supabase/supabase-js": "^2.43.6",
     "@tailwindcss/typography": "^0.5.13",
     "@tanstack/react-query": "^5.45.1",
     "@tanstack/react-query-devtools": "^5.45.1",

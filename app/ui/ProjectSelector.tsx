@@ -1,19 +1,12 @@
 "use client";
 
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getAllProjects } from "../lib/projectFetchers";
+import { useProjects } from "../lib/hooks";
 
 type Props = { setProjectId: React.Dispatch<React.SetStateAction<number | null>> };
 
 const ProjectSelector: React.FC<Props> = ({ setProjectId }) => {
-  const { data, isLoading } = useQuery({
-    queryKey: ["projects"],
-    queryFn: getAllProjects,
-    refetchOnWindowFocus: false,
-  });
-
-  const projects = data?.data || [];
+  const { projects, isLoading } = useProjects();
 
   return (
     <div className="flex flex-col gap-4">

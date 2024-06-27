@@ -10,7 +10,12 @@ const columns: ProjectColumns[] = ["index", "name", "totalTime", "currentTime", 
 type Props = { className?: string };
 const ProjectsTable: React.FC<Props> = ({ className }) => {
   return (
-    <div className={cn("flex flex-col items-stretch gap-4 bg-base-300 rounded-xl shadow-lg p-6 -mx-6", className)}>
+    <div
+      className={cn(
+        "flex flex-col items-stretch gap-4 bg-base-300 rounded-xl shadow-lg p-6 -mx-6 min-w-[800px]",
+        className
+      )}
+    >
       <h2 className="text-lg text-center font-medium">Projects:</h2>
       <div className="overflow-x-auto">
         <table className="table">

@@ -30,8 +30,12 @@ const DailyTimePerProject: React.FC = () => {
   const { workedHours: hours } = getWorkedHoursPerDay({ projects, initialDate, finalDate });
   const { selectedProjects, setIsSelected } = useSelectedProjects(projects);
 
-  const chartData: Record<string, string>[] = Object.entries(hours).map(([dateStr, hours]) => {
-    return { date: dateStr, ...hours };
+  const chartData: Record<string, string>[] = Object.entries(hours).map(([dateStr, hoursThatDay]) => {
+    const output: Record<string, string> = { date: dateStr };
+    Object.entries(hoursThatDay).forEach(([projectId, time]) => {
+      output[projectId] = String(time);
+    });
+    return { date: dateStr, ...hoursThatDay };
   });
 
   return (

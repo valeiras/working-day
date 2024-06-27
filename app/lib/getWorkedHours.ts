@@ -30,6 +30,7 @@ export const getWorkedHoursPerDay = ({
   initialDate: Date;
   finalDate: Date;
 }) => {
+  // For each day, compute the total worked hours for each project.
   const workedHours: Record<string, Record<string, number>> = {};
 
   const emptyTimes: Record<string, number> = {};
@@ -66,7 +67,7 @@ const computeHours = ({
   project: ProjectWithWorkingTimes;
   initialDate?: Date;
   finalDate?: Date;
-}) => {
+}): number => {
   const { workingBlocks, activeBlock } = project;
   const pastTimeSeconds = workingBlocks.reduce((acc, { workingTimeSeconds, createdAt }) => {
     const date = new Date(createdAt);

@@ -2,8 +2,8 @@
 
 import React from "react";
 import { CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from "recharts";
-import { base100, displayColors, primary } from "@/app/lib/colors";
-import { shortenDate, shortenTick } from "@/app/lib/utils";
+import { displayColors, primary } from "@/app/lib/colors";
+import { formatHours, shortenDate, shortenTick } from "@/app/lib/utils";
 import Color from "color";
 
 import {
@@ -21,9 +21,9 @@ const DailyTimePerProjectLineChart: React.FC<Props> = ({ chartData, projects }) 
     <ResponsiveContainer width={RESPONSIVE_CONTAINER_WIDTH} height={RESPONSIVE_CONTAINER_HEIGHT} debounce={1}>
       <LineChart data={chartData} margin={CHART_MARGIN}>
         <XAxis dataKey="date" tickFormatter={shortenDate} />
-        <YAxis domain={[0, "dataMax + 1"]} />
+        <YAxis domain={[0, "dataMax + 1"]} tickFormatter={(value) => value.toFixed(0)} />
         <CartesianGrid strokeDasharray="3 3" />
-        <Tooltip contentStyle={{ borderRadius: "5px" }} itemStyle={{ color: primary }} />
+        <Tooltip contentStyle={{ borderRadius: "5px" }} itemStyle={{ color: primary }} formatter={formatHours} />
         <Legend
           align="center"
           formatter={shortenTick}

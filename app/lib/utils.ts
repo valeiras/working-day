@@ -39,6 +39,13 @@ export const shortenTick = (value: string) => {
   return value.substring(0, 7) + (value.length > 8 ? "..." : "");
 };
 
+export const formatHours = (value: string) => {
+  const time = parseFloat(value);
+  const hours = Math.floor(time);
+  const minutes = Math.floor((time - hours) * 60);
+  return `${hours}h ${minutes.toString().padStart(2, "0")}m`;
+};
+
 export const formatTime = (timerCs: number) => {
   const hours = Math.floor(timerCs / 360000)
     .toString()

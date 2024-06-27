@@ -57,8 +57,13 @@ const DateRangeSelector: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col sm:flex-row gap-2 items-center">
-      <select name="dateRange" className="select select-bordered w-48" value={range} onChange={handleChange}>
+    <div className="grid grid-cols-[auto_auto_auto] sm:flex sm:flex-row gap-2 items-center">
+      <select
+        name="dateRange"
+        className="col-span-3 select select-bordered sm:w-48"
+        value={range}
+        onChange={handleChange}
+      >
         {ranges.map((range) => {
           return (
             <option key={range} value={range}>
